@@ -30,21 +30,25 @@ import 'package:provider/provider.dart';
 
 class BetWidgetNew extends StatelessWidget {
   final Function onSubmitCallBack;
+  final Function onKeyboardEntry;
   final PlayerAction action;
   final int remainingTime;
   final List<int> playerCards;
   final BoardAttributesObject boardAttributesObject;
   final GameState gameState;
   final Seat seat;
+  final double initialValue;
 
   BetWidgetNew({
     @required this.seat,
+    @required this.onKeyboardEntry,
     @required this.gameState,
     @required this.action,
     @required this.playerCards,
     @required this.boardAttributesObject,
     this.onSubmitCallBack,
     this.remainingTime,
+    this.initialValue,
   });
 
   _buildOtherBetOptionsButton(double angle, {Widget child}) {
@@ -479,6 +483,8 @@ class BetWidgetNew extends StatelessWidget {
     );
   }
 
+  ValueNotifier<double> valueNotifierVal;
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -495,277 +501,261 @@ class BetWidgetNew extends StatelessWidget {
 
     final bool isCentsGame = gameState.gameInfo.chipUnit == ChipUnit.CENT;
 
-    return ListenableProvider<ValueNotifier<double>>(
-      create: (_) => ValueNotifier<double>(
-        action.minRaiseAmount.toDouble(),
-      ),
-      builder: (BuildContext context, _) {
-        final valueNotifierVal = context.read<ValueNotifier<double>>();
-        return Container(
-          // margin: EdgeInsets.only(bottom: 30),
-          width: MediaQuery.of(context).size.width,
-          height: boardAttributes.footerHeight,
-          padding: EdgeInsets.only(
-            right: 3,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 4.0,
+    return Material(
+      color: Colors.transparent,
+      child: ListenableProvider<ValueNotifier<double>>(
+        create: (_) => ValueNotifier<double>(
+          action.minRaiseAmount.toDouble(),
+        ),
+        builder: (BuildContext context, _) {
+          valueNotifierVal = context.read<ValueNotifier<double>>();
+          if (initialValue != null) {
+            valueNotifierVal.value = initialValue;
+          }
+
+          return Container(
+            // margin: EdgeInsets.only(bottom: 30),
+            width: MediaQuery.of(context).size.width,
+            height: boardAttributes.footerHeight,
+            padding: EdgeInsets.only(
+              right: 3,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 4.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                                // bottom: 30.0,
+                                ),
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                      'assets/images/bet-widget/add-sub-background.png',
+                                    ),
+                                    fit: BoxFit.fill)),
+                            padding: EdgeInsets.all(4.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                BetButton(
+                                    onTapDown: (v) {
+                                      _startIncrementDecrement(
+                                          true, valueNotifierVal, isCentsGame);
+                                    },
+                                    onTapUp: (v) {
+                                      _stopIncrementDecrement();
+                                    },
+                                    onTap: () {
+                                      _stopIncrementDecrement();
+                                    },
+                                    theme: appTheme,
+                                    iconData: Icons.add),
+                                SizedBox(
+                                  height: 4.0,
+                                ),
+                                BetButton(
+                                    onTapDown: (v) {
+                                      _startIncrementDecrement(
+                                          false, valueNotifierVal, isCentsGame);
+                                    },
+                                    onTapUp: (v) {
+                                      _stopIncrementDecrement();
+                                    },
+                                    onTap: () {
+                                      _stopIncrementDecrement();
+                                    },
+                                    theme: appTheme,
+                                    iconData: Icons.remove),
+                                SizedBox(
+                                  height: 4.0,
+                                ),
+                                BetButton(
+                                    onTap: () async {
+                                      onKeyboardEntry(
+                                          valueNotifierVal.value, isCentsGame);
+                                    },
+                                    theme: appTheme,
+                                    iconData: Icons.keyboard),
+                              ],
+                            ),
+                          ),
+                          betAmountList(context, valueNotifierVal, appTheme),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(
-                            bottom: 30.0,
-                          ),
+                          width: 80.pw,
                           decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                    'assets/images/bet-widget/add-sub-background.png',
-                                  ),
-                                  fit: BoxFit.fill)),
-                          padding: EdgeInsets.all(4.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              BetButton(
-                                  onTapDown: (v) {
-                                    _startIncrementDecrement(
-                                        true, valueNotifierVal, isCentsGame);
-                                  },
-                                  onTapUp: (v) {
-                                    _stopIncrementDecrement();
-                                  },
-                                  onTap: () {
-                                    _stopIncrementDecrement();
-                                  },
-                                  theme: appTheme,
-                                  iconData: Icons.add),
-                              SizedBox(
-                                height: 4.0,
-                              ),
-                              BetButton(
-                                  onTapDown: (v) {
-                                    _startIncrementDecrement(
-                                        false, valueNotifierVal, isCentsGame);
-                                  },
-                                  onTapUp: (v) {
-                                    _stopIncrementDecrement();
-                                  },
-                                  onTap: () {
-                                    _stopIncrementDecrement();
-                                  },
-                                  theme: appTheme,
-                                  iconData: Icons.remove),
-                              SizedBox(
-                                height: 4.0,
-                              ),
-                              BetButton(
-                                  onTap: () async {
-                                    double min =
-                                        action.minRaiseAmount.toDouble();
-                                    double max =
-                                        action.maxRaiseAmount.toDouble();
-
-                                    final double res =
-                                        await NumericKeyboard2.show(
-                                      context,
-                                      title: 'Enter your bet',
-                                      min: min,
-                                      currentVal: valueNotifierVal.value,
-                                      max: max,
-                                      decimalAllowed: isCentsGame,
-                                    );
-
-                                    if (res != null)
-                                      valueNotifierVal.value = res;
-                                  },
-                                  theme: appTheme,
-                                  iconData: Icons.keyboard),
-                            ],
+                            border: Border.all(
+                                color: Colors.blueGrey.shade800, width: 2),
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.blueGrey.shade900,
                           ),
-                        ),
-                        betAmountList(context, valueNotifierVal, appTheme),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        width: 80.pw,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.blueGrey.shade800, width: 2),
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.blueGrey.shade900,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(2),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              /* bet amount */
-                              ValueListenableBuilder<double>(
-                                valueListenable: valueNotifierVal,
-                                builder: (_, double betAmount, __) =>
-                                    GestureDetector(
-                                  onTap: () async {
-                                    double min =
-                                        action.minRaiseAmount.toDouble();
-                                    double max =
-                                        action.maxRaiseAmount.toDouble();
-
-                                    final double res =
-                                        await NumericKeyboard2.show(
-                                      context,
-                                      title: 'Enter your bet',
-                                      min: min,
-                                      currentVal: valueNotifierVal.value,
-                                      max: max,
-                                      decimalAllowed: isCentsGame,
-                                    );
-
-                                    if (res != null)
-                                      valueNotifierVal.value = res;
-                                  },
-                                  child: Container(
-                                    width: double.maxFinite,
-                                    // alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                              'assets/images/bet-widget/header.png',
-                                            ),
-                                            fit: BoxFit.fill)),
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            DataFormatter.chipsFormat(
-                                                betAmount),
-                                            style: TextStyle(
-                                              fontSize: 8.dp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.yellowAccent,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                /* bet amount */
+                                ValueListenableBuilder<double>(
+                                  valueListenable: valueNotifierVal,
+                                  builder: (_, double betAmount, __) =>
+                                      GestureDetector(
+                                    onTap: () async {
+                                      onKeyboardEntry(betAmount, isCentsGame);
+                                    },
+                                    child: Container(
+                                      width: double.maxFinite,
+                                      // alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                'assets/images/bet-widget/header.png',
+                                              ),
+                                              fit: BoxFit.fill)),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Center(
+                                            child: Text(
+                                              DataFormatter.chipsFormat(
+                                                  betAmount),
+                                              style: TextStyle(
+                                                fontSize: 8.dp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.yellowAccent,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     double value = valueNotifierVal.value;
-                              //     if (isCentsGame) {
-                              //       value += 0.01;
-                              //     } else {
-                              //       value++;
-                              //     }
-                              //     if (value > action.maxRaiseAmount) {
-                              //       value = action.maxRaiseAmount.toDouble();
-                              //     }
-                              //     valueNotifierVal.value = value;
-                              //   },
-                              //   child: Container(
-                              //     height: 24,
-                              //     width: double.maxFinite,
-                              //     decoration: BoxDecoration(
-                              //         color: Colors.blueGrey.shade400),
-                              //     child: Icon(
-                              //       Icons.add,
-                              //       size: 18,
-                              //     ),
-                              //   ),
-                              // ),
-                              Consumer<ValueNotifier<double>>(
-                                  builder: (_, vnBetAmount, __) {
-                                log(vnBetAmount.value.toString());
-                                return BetSlider(
-                                  initialValue: vnBetAmount.value,
-                                  max: action.maxRaiseAmount.toDouble(),
-                                  min: action.minRaiseAmount.toDouble(),
-                                  chipsCount: 12,
-                                  chipSize: Size(50, 25),
-                                  onChanged: (value) {
-                                    if (gameState.gameInfo.chipUnit ==
-                                        ChipUnit.DOLLAR) {
-                                      vnBetAmount.value =
-                                          value.round().toDouble();
-                                    } else {
-                                      vnBetAmount.value = value;
-                                    }
-                                  },
-                                );
-                              }),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     double value = valueNotifierVal.value;
-                              //     if (isCentsGame) {
-                              //       value -= 0.01;
-                              //     } else {
-                              //       value--;
-                              //     }
-                              //     if (value < action.minRaiseAmount) {
-                              //       value = action.minRaiseAmount.toDouble();
-                              //     }
-                              //     valueNotifierVal.value = value;
-                              //   },
-                              //   child: Container(
-                              //     height: 24,
-                              //     width: double.maxFinite,
-                              //     decoration:
-                              //         BoxDecoration(color: Colors.blueGrey.shade300),
-                              //     child: Icon(
-                              //       Icons.remove,
-                              //       size: 18,
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     double value = valueNotifierVal.value;
+                                //     if (isCentsGame) {
+                                //       value += 0.01;
+                                //     } else {
+                                //       value++;
+                                //     }
+                                //     if (value > action.maxRaiseAmount) {
+                                //       value = action.maxRaiseAmount.toDouble();
+                                //     }
+                                //     valueNotifierVal.value = value;
+                                //   },
+                                //   child: Container(
+                                //     height: 24,
+                                //     width: double.maxFinite,
+                                //     decoration: BoxDecoration(
+                                //         color: Colors.blueGrey.shade400),
+                                //     child: Icon(
+                                //       Icons.add,
+                                //       size: 18,
+                                //     ),
+                                //   ),
+                                // ),
+                                Consumer<ValueNotifier<double>>(
+                                    builder: (_, vnBetAmount, __) {
+                                  log(vnBetAmount.value.toString());
+
+                                  return BetSlider(
+                                    initialValue: vnBetAmount.value,
+                                    max: action.maxRaiseAmount.toDouble(),
+                                    min: action.minRaiseAmount.toDouble(),
+                                    chipsCount: 12,
+                                    chipSize: Size(50, 25),
+                                    onChanged: (value) {
+                                      if (gameState.gameInfo.chipUnit ==
+                                          ChipUnit.DOLLAR) {
+                                        vnBetAmount.value =
+                                            value.round().toDouble();
+                                      } else {
+                                        vnBetAmount.value = value;
+                                      }
+                                    },
+                                  );
+                                }),
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     double value = valueNotifierVal.value;
+                                //     if (isCentsGame) {
+                                //       value -= 0.01;
+                                //     } else {
+                                //       value--;
+                                //     }
+                                //     if (value < action.minRaiseAmount) {
+                                //       value = action.minRaiseAmount.toDouble();
+                                //     }
+                                //     valueNotifierVal.value = value;
+                                //   },
+                                //   child: Container(
+                                //     height: 24,
+                                //     width: double.maxFinite,
+                                //     decoration:
+                                //         BoxDecoration(color: Colors.blueGrey.shade300),
+                                //     child: Icon(
+                                //       Icons.remove,
+                                //       size: 18,
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              _buildRaiseButton(
-                  theme: appTheme,
-                  onTap: () {
-                    appService.appSettings.showBetTip = false;
-                    onSubmitCallBack?.call(valueNotifierVal.value);
-                  },
-                  text: (action.actions.firstWhere(
-                            (element) => element.actionName == BET,
-                            orElse: () => null,
-                          ) !=
-                          null)
-                      ? BET
-                      : RAISE),
-            ],
-          ),
-        );
-      },
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                // _buildRaiseButton(
+                //   theme: appTheme,
+                //   onTap: () {
+                //     appService.appSettings.showBetTip = false;
+                //     onSubmitCallBack?.call(valueNotifierVal.value);
+                //   },
+                //   text: (action.actions.firstWhere(
+                //             (element) => element.actionName == BET,
+                //             orElse: () => null,
+                //           ) !=
+                //           null)
+                //       ? BET
+                //       : RAISE,
+                // ),
+              ],
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  void bet() {
+    appService.appSettings.showBetTip = false;
+    onSubmitCallBack?.call(valueNotifierVal.value);
   }
 
   Widget _buildBetAmountChild({

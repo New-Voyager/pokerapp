@@ -236,7 +236,7 @@ class _FooterViewState extends State<FooterView>
               (gameState.getBoardAttributes(context).isOrientationHorizontal)
                   ? Size(MediaQuery.of(context).size.width - 80,
                       gameState.gameUIState.holeCardsViewSize.height)
-                  : Size(MediaQuery.of(context).size.width - 270,
+                  : Size(MediaQuery.of(context).size.width,
                       gameState.gameUIState.holeCardsViewSize.height);
           return Center(
             child: HoleCardsViewAndFooterActionView(
@@ -579,14 +579,11 @@ class _FooterViewState extends State<FooterView>
       //   children.add(_buildGameInfo(gameState));
       // }
       /* hand analyse view */
-      // children.add(_buildHandAnalyseView(context));
+      children.add(_buildHandAnalyseView(context));
       /* communication widgets */
-      // children.add(_buildCommunicationWidget());
-      children.add(Align(
-        alignment: Alignment.bottomCenter,
-        child: FooterGameActionView(gameState: gameState),
-      ));
-      children.add(_buildCommunicationHandAnalyseView(context));
+      children.add(_buildCommunicationWidget());
+
+      // children.add(_buildCommunicationHandAnalyseView(context));
       // nothing to display here
     } else if (!gameState.isPlaying) {
       // the player can join the waitlist
@@ -597,21 +594,21 @@ class _FooterViewState extends State<FooterView>
       children.add(_buildSeatConfirmWidget(context));
 
       /* hand analyse view */
-      // children.add(_buildHandAnalyseView(context));
+      children.add(_buildHandAnalyseView(context));
       /* communication widgets */
-      // children.add(_buildCommunicationWidget());
+      children.add(_buildCommunicationWidget());
 
-      children.add(_buildCommunicationHandAnalyseView(context));
+      // children.add(_buildCommunicationHandAnalyseView(context));
     } else {
       /* build main view - straddle prompt, hole cards, action view*/
       children.add(_buildMainView(gameState));
       /* hand analyse view */
-      // children.add(_buildHandAnalyseView(context));
+      children.add(_buildHandAnalyseView(context));
 
       /* communication widgets */
-      // children.add(_buildCommunicationWidget());
+      children.add(_buildCommunicationWidget());
 
-      children.add(_buildCommunicationHandAnalyseView(context));
+      // children.add(_buildCommunicationHandAnalyseView(context));
 
       /* seat confirm widget */
       children.add(_buildSeatConfirmWidget(context));
@@ -672,7 +669,7 @@ class _FooterViewState extends State<FooterView>
 
     return DebugBorderWidget(
       color: Colors.white,
-      child: Stack(children: [
+      child: Stack(clipBehavior: Clip.none, children: [
         Container(
           width: double.infinity,
           height: double.infinity,

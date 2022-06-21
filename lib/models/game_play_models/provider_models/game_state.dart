@@ -222,6 +222,7 @@ class GameState {
   BuildContext mainScreenContext;
 
   CommunityCardState communityCardState;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,

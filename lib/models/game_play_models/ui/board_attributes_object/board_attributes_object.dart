@@ -842,7 +842,7 @@ class BoardAttributesObject extends ChangeNotifier {
       }
       return 0.50;
     }
-    return 0.45;
+    return 0.35;
   }
 
   double get boardHeightAdjust {

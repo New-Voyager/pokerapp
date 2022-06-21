@@ -105,7 +105,7 @@ class GamePlayObjects {
   }
 
   void initialzeBoardAttributes() {
-    BoardOrientation orientation = BoardOrientation.horizontal;
+    BoardOrientation orientation = BoardOrientation.vertical;
     if (PlatformUtils.isWeb) {
       orientation = BoardOrientation.horizontal;
     }

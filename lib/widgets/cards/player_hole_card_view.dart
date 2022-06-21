@@ -113,11 +113,11 @@ class _CardEyeState extends State<CardEye> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: widget.gameState.gameUIState.cardSize.height / 1.8,
+        top: widget.gameState.gameUIState.cardSize.height / 1.9,
         // bottom: 30,
         left: widget.gameState.boardAttributes.isOrientationHorizontal
             ? (widget.marked ? 8 : 12)
-            : (widget.marked ? 7 : 8),
+            : (widget.marked ? 17 : 20),
         child: DebugBorderWidget(
           color: Colors.transparent,
           child: Icon(

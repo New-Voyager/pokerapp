@@ -346,31 +346,31 @@ class GameUIState {
     bool isCardVisible,
   ) {
     if (cardsLength == 2) {
-      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 5;
+      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 3.8;
       if (Screen.isLargeScreen) {
         cardsDisplacement =
             gameState.gameUIState.holeCardsViewSize.width * 0.25;
       }
     } else if (cardsLength == 3) {
-      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 8;
+      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 5.5;
       if (Screen.isLargeScreen) {
         cardsDisplacement =
             gameState.gameUIState.holeCardsViewSize.width * 0.17;
       }
     } else if (cardsLength == 4) {
-      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 12;
+      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 7.5;
       if (Screen.isLargeScreen) {
         cardsDisplacement =
             gameState.gameUIState.holeCardsViewSize.width * 0.14;
       }
     } else if (cardsLength == 5) {
-      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 15;
+      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 10;
       if (Screen.isLargeScreen) {
         cardsDisplacement =
             gameState.gameUIState.holeCardsViewSize.width * 0.12;
       }
     } else if (cardsLength == 6) {
-      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 20;
+      cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 10;
       if (Screen.isLargeScreen) {
         cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width * 0.1;
       }
@@ -381,31 +381,31 @@ class GameUIState {
         if (Screen.isLargeScreen) {
           cardsDisplacement = cardsDisplacement * 1.1;
         } else {
-          cardsDisplacement = cardsDisplacement * 1.1;
+          cardsDisplacement = cardsDisplacement * 1;
         }
       } else if (cardsLength == 3) {
         if (Screen.isLargeScreen) {
           cardsDisplacement = cardsDisplacement * 1.2;
         } else {
-          cardsDisplacement = cardsDisplacement * 1.2;
+          cardsDisplacement = cardsDisplacement * 1;
         }
       } else if (cardsLength == 4) {
         if (Screen.isLargeScreen) {
           cardsDisplacement = cardsDisplacement * 1.1;
         } else {
-          cardsDisplacement = cardsDisplacement * 1.3;
+          cardsDisplacement = cardsDisplacement * 1.1;
         }
       } else if (cardsLength == 5) {
         if (Screen.isLargeScreen) {
           cardsDisplacement = cardsDisplacement * 0.9;
         } else {
-          cardsDisplacement = cardsDisplacement * 1.5;
+          cardsDisplacement = cardsDisplacement * 1.2;
         }
       } else if (cardsLength == 6) {
         if (Screen.isLargeScreen) {
           cardsDisplacement = cardsDisplacement * 0.9;
         } else {
-          cardsDisplacement = cardsDisplacement * 1.8;
+          cardsDisplacement = cardsDisplacement * 1.05;
         }
       }
     }
