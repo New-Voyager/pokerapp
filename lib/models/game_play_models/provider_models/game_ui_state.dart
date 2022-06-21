@@ -23,6 +23,7 @@ class GameUIState {
   Rect tableRect;
   Rect playerOnTableRectRelativeBoard;
   Rect tableRectRelativeToBoard;
+  Size prevSize;
   // table base height is 10% of the total table height
   double _tableBaseHeight = 1;
 
@@ -42,14 +43,27 @@ class GameUIState {
   GlobalKey rearrangeKey = GlobalKey();
   Rect rearrangeRect;
 
-  void init() {
+  bool init(BuildContext context) {
+    print('TableResize: GameUIState::init');
+
+    if (prevSize == null) {
+      prevSize = MediaQuery.of(context).size;
+    } else {
+      Size currentSize = MediaQuery.of(context).size;
+      if (currentSize == prevSize) {
+        // do nothing
+        return false;
+      }
+      prevSize = currentSize;
+    }
+
     NamePlateWidgetParent.setWidth(90);
     tableWidthFactor = 0.90;
 
     if (PlatformUtils.isWeb) {
       // web is same as 7inch screen
-      tableWidthFactor = 0.80;
-      double width = (Screen.width) / 6;
+      tableWidthFactor = 0.60 * (prevSize.height / prevSize.width);
+      double width = (prevSize.width * tableWidthFactor) / 6;
       log('Width: $width');
       //NamePlateWidgetParent.setWidth(90);
       NamePlateWidgetParent.setWidth(width);
@@ -70,9 +84,10 @@ class GameUIState {
         chipAmountScale = 1.0;
       }
     }
+    return true;
   }
 
-  void initSeatPos() {
+  void initSeatPos({bool force = false}) {
     final pot = this.playerOnTableRect;
     final table = this.tableRect;
 
@@ -231,12 +246,14 @@ class GameUIState {
 
   double _getDeflateFactor() {
     // todo: if needed, we can put factor here
-    if (Screen.isLargeScreen) return 0.90;
-    return 0.95;
+    if (Screen.isLargeScreen) {
+      return 0.90;
+    }
+    return 0.90;
   }
 
-  void calculateCenterViewRect() {
-    if (_centerViewRect != null) {
+  void calculateCenterViewRect({bool force = false}) {
+    if (!force && _centerViewRect != null) {
       return;
     }
 
@@ -400,8 +417,8 @@ class GameUIState {
   }
 
   // rectangle relative to board co-ordinates
-  Rect getTableRect() {
-    if (tableRectRelativeToBoard != null) {
+  Rect getTableRect({bool force}) {
+    if (!force && tableRectRelativeToBoard != null) {
       return tableRectRelativeToBoard;
     }
 
@@ -418,8 +435,8 @@ class GameUIState {
   }
 
   // rectangle relative to board co-ordinates
-  Rect getPlayersOnTableRect() {
-    if (playerOnTableRectRelativeBoard != null) {
+  Rect getPlayersOnTableRect({bool force = false}) {
+    if (!force && playerOnTableRectRelativeBoard != null) {
       return playerOnTableRectRelativeBoard;
     }
 
@@ -453,8 +470,9 @@ class GameUIState {
     return playerOnTableRectRelativeBoard;
   }
 
-  void calculatePlayersOnTablePositionPostFrame() {
-    if (playerOnTablePositionVn.value != null) return;
+  void calculatePlayersOnTablePositionPostFrame({bool force = false}) {
+    // log('TableResize: calculatePlayersOnTablePositionPostFrame');
+    if (!force && playerOnTablePositionVn.value != null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       while (playerOnTableKey.currentContext == null) {
         await Future.delayed(const Duration(milliseconds: 10));
@@ -476,11 +494,13 @@ class GameUIState {
         box.size.height,
       );
 
-      getTableRect();
-      getPlayersOnTableRect();
-      initSeatPos();
-      calculateCenterViewRect();
+      getTableRect(force: force);
+      getPlayersOnTableRect(force: force);
+      initSeatPos(force: force);
+      calculateCenterViewRect(force: force);
       playerOnTablePositionVn.value = playerOnTablePos;
+      print(
+          'TableResize: screenSize: ${prevSize} board: (${playerOnTableRect.width}x${playerOnTableRect.height}) tableSize: (${tableRect.width}x${tableRect.height}), centerView: (${_centerViewRect.width}x(${_centerViewRect.height}))');
     });
   }
 

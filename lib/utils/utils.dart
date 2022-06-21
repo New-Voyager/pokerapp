@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:developer' as developer;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -383,3 +384,100 @@ DateTime findLastDateOfTheWeek(DateTime dateTime) {
   ret = DateTime(ret.year, ret.month, ret.day, 23, 59, 59);
   return ret;
 }
+
+class ProfileClass {
+  Stopwatch gameLoading;
+  Stopwatch initStateTime;
+  Stopwatch gameInfoFetch;
+  Stopwatch queryCurrentHand;
+  Stopwatch boardBuildTime;
+  Stopwatch gameComServiceTime;
+  Stopwatch gameStateTime;
+
+  List<String> profileLogs = [];
+  void startGameLoading() {
+    gameLoading = Stopwatch();
+    gameLoading.start();
+  }
+
+  void stopGameLoading() {
+    gameLoading.stop();
+    developer.log(
+        'Performance: Game loading time: ${gameLoading.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Game loading time: ${gameLoading.elapsedMilliseconds}ms');
+  }
+
+  void startInitStateTime() {
+    initStateTime = Stopwatch();
+    initStateTime.start();
+  }
+
+  void stopInitStateTime() {
+    initStateTime.stop();
+    developer.log(
+        'Performance: Init state time: ${initStateTime.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Init state time: ${initStateTime.elapsedMilliseconds}ms');
+  }
+
+  void startGameInfoFetch() {
+    gameInfoFetch = Stopwatch();
+    gameInfoFetch.start();
+  }
+
+  void stopGameInfoFetch() {
+    gameInfoFetch.stop();
+    developer.log(
+        'Performance: Game info fetch time: ${gameInfoFetch.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Game info fetch time: ${gameInfoFetch.elapsedMilliseconds}ms');
+  }
+
+  void startQueryCurrentHand() {
+    queryCurrentHand = Stopwatch();
+    queryCurrentHand.start();
+  }
+
+  void stopQueryCurrentHand() {
+    queryCurrentHand.stop();
+    developer.log(
+        'Performance: Query current hand time: ${queryCurrentHand.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Query current hand time: ${queryCurrentHand.elapsedMilliseconds}ms');
+  }
+
+  void startBoardBuildTime() {
+    boardBuildTime = Stopwatch()..start();
+  }
+
+  void stopBoardBuildTime() {
+    boardBuildTime.stop();
+    developer.log(
+        'Performance: Board build time: ${boardBuildTime.elapsedMilliseconds}ms');
+    profileLogs.add(
+        'Performance: Board build time: ${boardBuildTime.elapsedMilliseconds}ms');
+  }
+
+  void startGameServiceTime() {
+    gameComServiceTime = Stopwatch()..start();
+  }
+
+  void stopGameServiceTime() {
+    gameComServiceTime.stop();
+    profileLogs.add(
+        'Performance: Game com service time: ${gameComServiceTime.elapsedMilliseconds}ms');
+  }
+
+  void startGameStateTime() {
+    gameStateTime = Stopwatch()..start();
+  }
+
+  void stopGameStateTime() {
+    gameStateTime.stop();
+    profileLogs.add(
+        'Performance: Game state initialize time: ${gameStateTime.elapsedMilliseconds}ms');
+  }
+}
+
+ProfileClass Profile = ProfileClass();

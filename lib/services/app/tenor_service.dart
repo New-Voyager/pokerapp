@@ -6,7 +6,8 @@ import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 import 'package:pokerapp/services/tenor/src/tenor.dart';
 
 class TenorService {
-  static final String _token = "Poker Club App	64Q3AL13ME20";
+  static final String _token = "AIzaSyDJuyVzy0Q-pN3LAyvfUnzAvEtDvoKlYU4";
+  static final String secret = "Poker Club App";
 
   static Tenor tenor = Tenor(apiKey: _token);
 
@@ -31,7 +32,7 @@ class TenorService {
     );
 
     /* return from cache if not NULL */
-    if (cacheResults != null) return cacheResults;
+    // if (cacheResults != null && cacheResults.length > 0) return cacheResults;
 
     TenorResponse res = await tenor.searchGIF(
       query,

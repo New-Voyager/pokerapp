@@ -39,6 +39,17 @@ class ClubsUpdateState extends ChangeNotifier {
   }
 }
 
+class TournamentUpdateState extends ChangeNotifier {
+  int tournamentId;
+  dynamic jsonMessage;
+
+  notify(int tournamentId, dynamic json) {
+    this.tournamentId = tournamentId;
+    this.jsonMessage = json;
+    notifyListeners();
+  }
+}
+
 class PendingApproval {
   String name;
   double amount;

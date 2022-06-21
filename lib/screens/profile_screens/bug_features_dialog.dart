@@ -39,7 +39,7 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(4),
             child: Text(
               "Report",
               textAlign: TextAlign.center,
@@ -47,7 +47,7 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
                   .copyWith(color: theme.accentColor),
             ),
           ),
-          AppDimensionsNew.getVerticalSizedBox(8),
+          AppDimensionsNew.getVerticalSizedBox(4),
           RadioToggleButtonsWidget<String>(
             values: ['Bug', 'Feature'],
             defaultValue: isSelected[0] ? 0 : 1,
@@ -62,7 +62,7 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
           CardFormTextField(
             hintText: "Enter text",
             controller: _controller,
-            maxLines: 4,
+            maxLines: 3,
             theme: theme,
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
@@ -107,7 +107,7 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
                 ),
                 TextSpan(
                   style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
-                    color: Colors.blue.shade700,
+                    color: Color.fromARGB(255, 178, 209, 227),
                   ),
                   text: "https://discord.gg/dxDE9HJFuW",
                   recognizer: TapGestureRecognizer()
@@ -127,12 +127,32 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
                 ),
                 TextSpan(
                   style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
-                    color: Colors.blue.shade700,
+                    color: Color.fromARGB(255, 178, 209, 227),
                   ),
                   text: "@PokerClubApp",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
                       final url = 'https://t.me/PokerClubApp';
+                      if (await canLaunchUrl(Uri.parse(url))) {
+                        await launchUrl(
+                          Uri.parse(url),
+                        );
+                      }
+                    },
+                ),
+                TextSpan(
+                  style: AppDecorators.getHeadLine5Style(theme: theme)
+                      .copyWith(color: theme.accentColor),
+                  text: "\n\nEmail: ",
+                ),
+                TextSpan(
+                  style: AppDecorators.getHeadLine5Style(theme: theme).copyWith(
+                    color: Color.fromARGB(255, 178, 209, 227),
+                  ),
+                  text: "contact@pokerclub.app",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      final url = 'contact@pokerclub.app';
                       if (await canLaunchUrl(Uri.parse(url))) {
                         await launchUrl(
                           Uri.parse(url),

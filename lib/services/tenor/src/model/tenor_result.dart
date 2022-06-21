@@ -15,18 +15,20 @@ class TenorResult extends Equatable {
   String itemurl;
   String cache;
   TenorGif media;
-  TenorResult({
-    this.hasCaption = false,
-    this.hasaudio = false,
-    this.shares = 0,
-    this.id,
-    this.title,
-    this.created,
-    this.url,
-    this.itemurl,
-    this.media,
-    this.cache,
-  });
+  String previewUrl;
+
+  TenorResult(
+      {this.hasCaption = false,
+      this.hasaudio = false,
+      this.shares = 0,
+      this.id,
+      this.title,
+      this.created,
+      this.url,
+      this.itemurl,
+      this.media,
+      this.cache,
+      this.previewUrl});
 
   Map<String, dynamic> toMap() {
     return {
@@ -40,6 +42,7 @@ class TenorResult extends Equatable {
       'itemurl': itemurl,
       'media': media?.toMap(),
       'cache': cache,
+      'previewUrl': previewUrl,
     };
   }
 
@@ -57,7 +60,14 @@ class TenorResult extends Equatable {
     } else {
       media = rawMedia;
     }
-
+    String previewUrl = '';
+    if (map['media_formats'] != null &&
+        map['media_formats']["tinygif"] != null) {
+      previewUrl = map['media_formats']["tinygif"]["url"];
+    }
+    if (map['media'] != null && map['media']["tinygif"] != null) {
+      previewUrl = map['media']["tinygif"]["url"];
+    }
     return TenorResult(
       hasCaption: map['hascaption'] ?? false,
       hasaudio: map['hasaudio'] ?? false,
@@ -66,6 +76,7 @@ class TenorResult extends Equatable {
       title: map['title'],
       created: '${map['created']}',
       url: map['url'],
+      previewUrl: previewUrl,
       itemurl: map['itemurl'],
       media: TenorGif.fromMap(media),
       cache: map['cache'],

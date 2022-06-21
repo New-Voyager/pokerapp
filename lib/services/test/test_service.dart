@@ -305,6 +305,12 @@ class TestService {
       board1: [1, 2, 177],
       // board2: [17, 18, 20],
     );
+    gameState.communityCardState.addTurnCard(board1Card: 18
+        // board2: [17, 18, 20],
+        );
+    gameState.communityCardState.addRiverCard(board1Card: 20
+        // board2: [17, 18, 20],
+        );
   }
 
   static Future<void> addTurnCard() async {

@@ -20,9 +20,11 @@ Future<TenorResponse> tenorRequestGif(
   if (contentFilter != null) {
     url += '&contentfilter=' + contentFilter.toString().split('.').last;
   }
-  if (mediaFilter != null) {
-    url += '&media_filter=' + mediaFilter.toString().split('.').last;
-  }
+  // if (mediaFilter != null) {
+  //   url += '&media_filter=' + mediaFilter.toString().split('.').last;
+  // }
+  url += '&media_filter=' + 'tinygif';
+
   if (size != null) {
     url += '&ar_range=' + size.toString().split('.').last;
   }

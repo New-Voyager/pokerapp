@@ -520,8 +520,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Widget _buildBody(AppTheme theme) {
     log('======== 1 _buildBody ========');
     // show a progress indicator if the game info object is null
-    if (gamePlayObjects.gameInfoModel == null)
+    if (gamePlayObjects.gameInfoModel == null ||
+        gamePlayObjects.gameState == null) {
       return Center(child: CircularProgressWidget());
+    }
     log('======== 2 _buildBody ========');
 
     /* get the screen sizes, and initialize the board attributes */
@@ -535,8 +537,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       hostSeatChangePlayers: gamePlayObjects.hostSeatChangeSeats,
       seatChangeInProgress: gamePlayObjects.hostSeatChangeInProgress,
     );
-
-    return MultiProvider(
+    var body = MultiProvider(
       providers: providers,
       builder: (BuildContext context, _) {
         _showWaitListHandlingNotification();
@@ -564,12 +565,19 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               return ListenableProvider<BoardAttributesObject>(
                   create: (_) => gamePlayObjects.gameState.boardAttributes,
                   builder: (context, _) {
-                    return _buildCoreBody(
+                    Profile.startBoardBuildTime();
+
+                    var body = _buildCoreBody(
                         context, gamePlayObjects.boardAttributes);
+                    Profile.stopBoardBuildTime();
+                    Profile.stopGameLoading();
+                    return body;
                   });
             });
       },
     );
+
+    return body;
   }
 
   @override

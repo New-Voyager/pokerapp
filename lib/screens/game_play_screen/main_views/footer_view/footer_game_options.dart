@@ -2,27 +2,14 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/time_bank.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget_new.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:pokerapp/utils/color_generator.dart';
-import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/listenable.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
@@ -86,6 +73,9 @@ class _FooterGameActionViewState extends State<FooterGameActionView> {
         builder: (_, TableState tableState, __) =>
             ValueListenableBuilder2<String, String>(vnGameStatus, vnTableStatus,
                 builder: (_, gameStatus, tableStatus, __) {
+              if (!widget.gameState.isHost()) {
+                return SizedBox.shrink();
+              }
               // if table is running, don't show the buttons
               if (widget.gameState.tableState.gameStatus !=
                       AppConstants.GAME_CONFIGURED ||

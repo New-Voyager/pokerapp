@@ -21,6 +21,7 @@ class AppState extends ChangeNotifier {
   Flavor _currentFlavor;
   PendingApprovalsState buyinApprovals = PendingApprovalsState();
   ClubsUpdateState clubUpdateState = ClubsUpdateState();
+  TournamentUpdateState tournamentUpdateState = TournamentUpdateState();
 
   CacheService cacheService = CacheService();
   List<IapAppCoinProduct> enabledProducts = [];

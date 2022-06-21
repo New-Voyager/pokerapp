@@ -3,7 +3,7 @@
 //  source: hand.proto
 //
 // @dart = 2.12
-// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
 
 import 'dart:core' as $core;
 
@@ -163,7 +163,7 @@ class HandAction extends $pb.GeneratedMessage {
 class HandActionLog extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandActionLog', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
     ..a<$core.double>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potStart', $pb.PbFieldType.OD)
-    ..p<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pots', $pb.PbFieldType.PD)
+    ..p<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pots', $pb.PbFieldType.KD)
     ..pc<HandAction>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'actions', $pb.PbFieldType.PM, subBuilder: HandAction.create)
     ..pc<SeatsInPots>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM, subBuilder: SeatsInPots.create)
     ..hasRequiredFields = false
@@ -459,7 +459,7 @@ class BetRaiseOption extends $pb.GeneratedMessage {
 class NextSeatAction extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'NextSeatAction', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
     ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
-    ..pc<ACTION>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'availableActions', $pb.PbFieldType.PE, valueOf: ACTION.valueOf, enumValues: ACTION.values)
+    ..pc<ACTION>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'availableActions', $pb.PbFieldType.KE, valueOf: ACTION.valueOf, enumValues: ACTION.values, defaultEnumValue: ACTION.ACTION_UNKNOWN)
     ..a<$core.double>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'straddleAmount', $pb.PbFieldType.OD, protoName: 'straddleAmount')
     ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'callAmount', $pb.PbFieldType.OD, protoName: 'callAmount')
     ..a<$core.double>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'raiseAmount', $pb.PbFieldType.OD, protoName: 'raiseAmount')
@@ -1066,8 +1066,8 @@ class HighHandWinner extends $pb.GeneratedMessage {
     ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerName')
     ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhRank', $pb.PbFieldType.OU3)
-    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.PU3)
-    ..p<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.KU3)
+    ..p<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCards', $pb.PbFieldType.KU3)
     ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
     ..a<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardNo', $pb.PbFieldType.OU3)
     ..hasRequiredFields = false
@@ -1354,7 +1354,7 @@ class PlayerActRound extends $pb.GeneratedMessage {
 
 class SeatsInPots extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SeatsInPots', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
-    ..p<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seats', $pb.PbFieldType.PU3)
+    ..p<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seats', $pb.PbFieldType.KU3)
     ..a<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pot', $pb.PbFieldType.OD)
     ..hasRequiredFields = false
   ;
@@ -1409,7 +1409,7 @@ class SeatsInPots extends $pb.GeneratedMessage {
 
 class SeatBetting extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SeatBetting', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
-    ..p<$core.double>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatBet', $pb.PbFieldType.PD)
+    ..p<$core.double>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatBet', $pb.PbFieldType.KD)
     ..hasRequiredFields = false
   ;
 
@@ -1519,6 +1519,137 @@ class RoundState extends $pb.GeneratedMessage {
   void clearBetIndex() => clearField(3);
 }
 
+class PlayerMovedTable extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PlayerMovedTable', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
+    ..a<$core.int>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tournamentId', $pb.PbFieldType.OU3)
+    ..a<$core.int>(20, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'oldTableNo', $pb.PbFieldType.OU3)
+    ..a<$core.int>(30, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'newTableNo', $pb.PbFieldType.OU3)
+    ..a<$core.int>(31, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'newTableSeatNo', $pb.PbFieldType.OU3)
+    ..aOS(40, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameCode')
+    ..a<$fixnum.Int64>(60, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOS(70, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameInfo')
+    ..hasRequiredFields = false
+  ;
+
+  PlayerMovedTable._() : super();
+  factory PlayerMovedTable({
+    $core.int? tournamentId,
+    $core.int? oldTableNo,
+    $core.int? newTableNo,
+    $core.int? newTableSeatNo,
+    $core.String? gameCode,
+    $fixnum.Int64? playerId,
+    $core.String? gameInfo,
+  }) {
+    final _result = create();
+    if (tournamentId != null) {
+      _result.tournamentId = tournamentId;
+    }
+    if (oldTableNo != null) {
+      _result.oldTableNo = oldTableNo;
+    }
+    if (newTableNo != null) {
+      _result.newTableNo = newTableNo;
+    }
+    if (newTableSeatNo != null) {
+      _result.newTableSeatNo = newTableSeatNo;
+    }
+    if (gameCode != null) {
+      _result.gameCode = gameCode;
+    }
+    if (playerId != null) {
+      _result.playerId = playerId;
+    }
+    if (gameInfo != null) {
+      _result.gameInfo = gameInfo;
+    }
+    return _result;
+  }
+  factory PlayerMovedTable.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory PlayerMovedTable.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  PlayerMovedTable clone() => PlayerMovedTable()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  PlayerMovedTable copyWith(void Function(PlayerMovedTable) updates) => super.copyWith((message) => updates(message as PlayerMovedTable)) as PlayerMovedTable; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static PlayerMovedTable create() => PlayerMovedTable._();
+  PlayerMovedTable createEmptyInstance() => create();
+  static $pb.PbList<PlayerMovedTable> createRepeated() => $pb.PbList<PlayerMovedTable>();
+  @$core.pragma('dart2js:noInline')
+  static PlayerMovedTable getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PlayerMovedTable>(create);
+  static PlayerMovedTable? _defaultInstance;
+
+  @$pb.TagNumber(10)
+  $core.int get tournamentId => $_getIZ(0);
+  @$pb.TagNumber(10)
+  set tournamentId($core.int v) { $_setUnsignedInt32(0, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasTournamentId() => $_has(0);
+  @$pb.TagNumber(10)
+  void clearTournamentId() => clearField(10);
+
+  @$pb.TagNumber(20)
+  $core.int get oldTableNo => $_getIZ(1);
+  @$pb.TagNumber(20)
+  set oldTableNo($core.int v) { $_setUnsignedInt32(1, v); }
+  @$pb.TagNumber(20)
+  $core.bool hasOldTableNo() => $_has(1);
+  @$pb.TagNumber(20)
+  void clearOldTableNo() => clearField(20);
+
+  @$pb.TagNumber(30)
+  $core.int get newTableNo => $_getIZ(2);
+  @$pb.TagNumber(30)
+  set newTableNo($core.int v) { $_setUnsignedInt32(2, v); }
+  @$pb.TagNumber(30)
+  $core.bool hasNewTableNo() => $_has(2);
+  @$pb.TagNumber(30)
+  void clearNewTableNo() => clearField(30);
+
+  @$pb.TagNumber(31)
+  $core.int get newTableSeatNo => $_getIZ(3);
+  @$pb.TagNumber(31)
+  set newTableSeatNo($core.int v) { $_setUnsignedInt32(3, v); }
+  @$pb.TagNumber(31)
+  $core.bool hasNewTableSeatNo() => $_has(3);
+  @$pb.TagNumber(31)
+  void clearNewTableSeatNo() => clearField(31);
+
+  @$pb.TagNumber(40)
+  $core.String get gameCode => $_getSZ(4);
+  @$pb.TagNumber(40)
+  set gameCode($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(40)
+  $core.bool hasGameCode() => $_has(4);
+  @$pb.TagNumber(40)
+  void clearGameCode() => clearField(40);
+
+  @$pb.TagNumber(60)
+  $fixnum.Int64 get playerId => $_getI64(5);
+  @$pb.TagNumber(60)
+  set playerId($fixnum.Int64 v) { $_setInt64(5, v); }
+  @$pb.TagNumber(60)
+  $core.bool hasPlayerId() => $_has(5);
+  @$pb.TagNumber(60)
+  void clearPlayerId() => clearField(60);
+
+  @$pb.TagNumber(70)
+  $core.String get gameInfo => $_getSZ(6);
+  @$pb.TagNumber(70)
+  set gameInfo($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(70)
+  $core.bool hasGameInfo() => $_has(6);
+  @$pb.TagNumber(70)
+  void clearGameInfo() => clearField(70);
+}
+
 class CurrentHandState extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CurrentHandState', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
     ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
@@ -1532,8 +1663,8 @@ class CurrentHandState extends $pb.GeneratedMessage {
     ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'smallBlind', $pb.PbFieldType.OD)
     ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'straddle', $pb.PbFieldType.OD)
     ..m<$core.int, PlayerActRound>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playersActed', entryClassName: 'CurrentHandState.PlayersActedEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: PlayerActRound.create, packageName: const $pb.PackageName('game'))
-    ..p<$core.int>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards', $pb.PbFieldType.PU3)
-    ..p<$core.int>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards2', $pb.PbFieldType.PU3, protoName: 'board_cards_2')
+    ..p<$core.int>(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards', $pb.PbFieldType.KU3)
+    ..p<$core.int>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards2', $pb.PbFieldType.KU3, protoName: 'board_cards_2')
     ..aOS(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cardsStr', protoName: 'cardsStr')
     ..aOS(16, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cards2Str', protoName: 'cards2Str')
     ..aOS(17, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCards')
@@ -1542,7 +1673,7 @@ class CurrentHandState extends $pb.GeneratedMessage {
     ..a<$core.int>(20, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nextSeatToAct', $pb.PbFieldType.OU3)
     ..a<$core.int>(21, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'remainingActionTime', $pb.PbFieldType.OU3)
     ..aOM<NextSeatAction>(22, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nextSeatAction', subBuilder: NextSeatAction.create)
-    ..p<$core.double>(23, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pots', $pb.PbFieldType.PD)
+    ..p<$core.double>(23, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pots', $pb.PbFieldType.KD)
     ..a<$core.double>(24, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potUpdates', $pb.PbFieldType.OD)
     ..a<$core.int>(25, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'noCards', $pb.PbFieldType.OU3)
     ..aOB(36, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bombPot')
@@ -1907,12 +2038,12 @@ class HandWinner extends $pb.GeneratedMessage {
     ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
     ..aOB(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'loCard')
     ..a<$core.double>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount', $pb.PbFieldType.OD)
-    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'winningCards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'winningCards', $pb.PbFieldType.KU3)
     ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'winningCardsStr')
     ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rankStr')
     ..a<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rank', $pb.PbFieldType.OU3)
-    ..p<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCards', $pb.PbFieldType.PU3)
-    ..p<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerCards', $pb.PbFieldType.KU3)
+    ..p<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardCards', $pb.PbFieldType.KU3)
     ..hasRequiredFields = false
   ;
 
@@ -2139,12 +2270,12 @@ class BoardCardRank extends $pb.GeneratedMessage {
     ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardNo', $pb.PbFieldType.OU3)
     ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
     ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hiRank', $pb.PbFieldType.OU3)
-    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hiCards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hiCards', $pb.PbFieldType.KU3)
     ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lowFound')
     ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'loRank', $pb.PbFieldType.OU3)
-    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'loCards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'loCards', $pb.PbFieldType.KU3)
     ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhRank', $pb.PbFieldType.OU3)
-    ..p<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.KU3)
     ..hasRequiredFields = false
   ;
 
@@ -2278,7 +2409,7 @@ class BoardCardRank extends $pb.GeneratedMessage {
 class Board extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Board', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
     ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardNo', $pb.PbFieldType.OU3)
-    ..p<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cards', $pb.PbFieldType.KU3)
     ..m<$core.int, BoardCardRank>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerRank', entryClassName: 'Board.PlayerRankEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: BoardCardRank.create, packageName: const $pb.PackageName('game'))
     ..hasRequiredFields = false
   ;
@@ -2495,7 +2626,7 @@ class PotWinnersV2 extends $pb.GeneratedMessage {
     ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potNo', $pb.PbFieldType.OU3)
     ..a<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'amount', $pb.PbFieldType.OD)
     ..pc<BoardWinner>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'boardWinners', $pb.PbFieldType.PM, subBuilder: BoardWinner.create)
-    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsInPots', $pb.PbFieldType.PU3)
+    ..p<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsInPots', $pb.PbFieldType.KU3)
     ..hasRequiredFields = false
   ;
 
@@ -2680,10 +2811,10 @@ class HandPlayerBalance extends $pb.GeneratedMessage {
 class PlayerHandInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PlayerHandInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
     ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..p<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cards', $pb.PbFieldType.KU3)
     ..e<HandStatus>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playedUntil', $pb.PbFieldType.OE, defaultOrMaker: HandStatus.HandStatus_UNKNOWN, valueOf: HandStatus.valueOf, enumValues: HandStatus.values)
     ..aOM<HandPlayerBalance>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'balance', subBuilder: HandPlayerBalance.create)
-    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.PU3)
+    ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.KU3)
     ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhRank', $pb.PbFieldType.OU3)
     ..a<$core.double>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'received', $pb.PbFieldType.OD)
     ..a<$core.double>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rakePaid', $pb.PbFieldType.OD)

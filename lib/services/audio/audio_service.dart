@@ -9,7 +9,7 @@ import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:pokerapp/utils/platform.dart';
 
 const String clickSound = 'assets/sound_effects/button_press.mp3';
-const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
+const String betRaiseSound = 'assets/sound_effects/bet_call.mp3';
 const String allInSound = 'assets/sound_effects/allin.mp3';
 const String foldSound = 'assets/sound_effects/fold.mp3';
 const String checkSound = 'assets/sound_effects/check.mp3';
@@ -19,12 +19,13 @@ const String pitch2Sound = 'assets/sound_effects/pitch2.mp3';
 const String pitch3Sound = 'assets/sound_effects/pitch3.mp3';
 const String pitch4Sound = 'assets/sound_effects/pitch4.mp3';
 const String newHandSound = 'assets/sound_effects/new_hand.mp3';
-const String playerTurnSound = 'assets/sound_effects/player_turn.mp3';
+const String playerTurnSound = 'assets/sound_effects/player_turn.wav';
 const String flopSound = 'assets/sound_effects/flop.mp3';
 const String turnRiverSound = 'assets/sound_effects/flop.mp3';
 const String applauseSound = 'assets/sound_effects/applause.mp3';
 const String fireworksSound = 'assets/animations/fireworks.mp3';
 const String clockTickingSound = 'assets/sound_effects/clock_ticking.mp3';
+const String winnerSound = 'assets/sound_effects/winner.mp3';
 
 class MyJABytesSource extends StreamAudioSource {
   Uint8List _buffer;
@@ -99,6 +100,7 @@ class AudioService {
     await getAudioUri(betRaiseSound);
     await getAudioUri(flopSound);
     await getAudioUri(clockTickingSound);
+    await getAudioUri(winnerSound);
   }
 
   static Future<void> getAudioUri(String soundFile) async {
@@ -130,6 +132,7 @@ class AudioService {
     //if (!_audioFileCache.containsKey(soundFile)) return;
 
     try {
+      justAudioPlayer.setAudioSource(_audioStreamCache[soundFile]);
       if (PlatformUtils.isWeb) {
         justAudioPlayer.setAudioSource(_audioStreamCache[soundFile]);
       } else {
@@ -203,6 +206,10 @@ class AudioService {
 
   static playApplause({bool mute}) {
     playSound(applauseSound, mute: mute);
+  }
+
+  static playWinner({bool mute}) {
+    playSound(winnerSound, mute: mute);
   }
 
   static playFireworks({bool mute}) {

@@ -45,7 +45,7 @@ class _BoardViewVerticalWebState extends State<BoardViewVerticalWeb> {
     super.initState();
 
     gameState = GameState.getState(context);
-    gameState.gameUIState.init();
+    gameState.gameUIState.init(context);
 
     // this calculates the table size after drawing the table image
     gameState.gameUIState.calculateTableSizePostFrame();

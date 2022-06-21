@@ -1,5 +1,10 @@
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game/game_player_settings.dart';
+import 'package:pokerapp/models/game/game_settings.dart';
+import 'package:pokerapp/models/player_info.dart';
+import 'package:uuid/uuid.dart';
 
 import 'player_model.dart';
 
@@ -66,6 +71,8 @@ class GameInfoModel {
   String handToPlayerChannel;
   String gameChatChannel;
   String clientAliveChannel;
+  String tournamentChannel;
+  String tournamentPlayerChannel;
 
   // janus related settings
   bool audioConfEnabled;
@@ -254,6 +261,7 @@ class GameInfoModel {
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
     this.clientAliveChannel = data['clientAliveChannel'];
+    this.tournamentChannel = data['tournamentChannel'];
 
     this.audioConfEnabled = data['audioConfEnabled'] ?? false;
     this.janusUrl = data['janusUrl'];
@@ -270,6 +278,7 @@ class GameInfoModel {
     this.livekitUrl = data['livekitUrl'];
     this.livekitToken = data['livekitToken'];
     this.demoGame = data['demoGame'] ?? false;
+
     this.tournament = true;
   }
 
@@ -439,5 +448,252 @@ class ClubInfo {
           }
         }
     """;
+  }
+}
+
+class GameInfoAll {
+  GameInfoModel gameInfo;
+  ClubInfo clubInfo;
+  GamePlayerSettings gamePlayerSettings;
+  PlayerInfo playerInfo;
+  MyPlayerNotes playerNotes;
+  GameSettings gameSettings;
+  SecretKey encryptionKey;
+
+  static String queryAll({@required gameCode, String clubCode}) {
+    String header = "";
+    if (clubCode != null) {
+      header = """
+        query gameInfoAll(\$clubCode: String!, \$gameCode: String!) {
+      """;
+    } else {
+      header = """
+        query gameInfoAll(\$gameCode: String!) {
+      """;
+    }
+    String query = header;
+    query += gameInfoQuery();
+    if (clubCode != null) {
+      query += clubInfoQuery();
+    }
+    query += gamePlayerSettingsQuery();
+    query += getGameSettingsQuery();
+    query += gamePlayerSettingsQuery();
+    query += playerNotesQuery();
+    query += encryptionKeyQuery();
+    query += myInfoQuery();
+    query += "}";
+    return query;
+  }
+
+  static GameInfoAll build(dynamic data) {
+    final gameInfo = GameInfoModel.fromJson(data['gameInfo']);
+    ClubInfo clubInfo;
+    if (data['clubInfo'] != null) {
+      clubInfo = ClubInfo.fromJson(data['clubInfo']);
+    }
+    final gamePlayerSettings =
+        GamePlayerSettings.fromJson(data['myGameSettings']);
+    final playerInfo = PlayerInfo.fromJson(data);
+    final playerNotes = MyPlayerNotes.fromJson(data['notes']);
+    final gameSettings = GameSettings.fromJson(data['gameSettings']);
+
+    List<int> bytes = Uuid.parse(data['encryptionKey']);
+    var key = SecretKey(bytes);
+
+    return GameInfoAll()
+      ..gameInfo = gameInfo
+      ..clubInfo = clubInfo
+      ..gamePlayerSettings = gamePlayerSettings
+      ..playerInfo = playerInfo
+      ..gameSettings = gameSettings
+      ..playerNotes = playerNotes
+      ..encryptionKey = key;
+  }
+
+  static String clubInfoQuery() {
+    return '''
+          clubInfo(clubCode:\$clubCode) {
+            trackMemberCredit
+            isOwner
+            isManager
+            managerRole {
+              canUpdateCredits
+            }
+          }
+      ''';
+  }
+
+  static String gameInfoQuery() {
+    return '''
+          gameInfo(gameCode:\$gameCode) {
+            gameID
+            gameCode
+            clubCode
+            buyInMax
+            maxPlayers
+            title
+            gameType
+            buyInMin
+            smallBlind
+            bigBlind
+            ante
+            utgStraddleAllowed
+            buttonStraddleAllowed
+            buttonStraddleBet
+            status
+            tableStatus
+            allowRabbitHunt
+            showHandRank
+            waitlistAllowed
+            botGame
+            highHandTracked
+            ipCheck
+            gpsCheck
+            handNum
+            chipUnit
+
+            rakeCap
+            rakePercentage
+
+            sessionTime
+            runningTime
+            noHandsWon
+            noHandsPlayed
+            buyin
+            stack
+
+            seatInfo {
+              availableSeats
+              playersInSeats {
+                name
+                seatNo
+                playerId
+                playerUuid
+                stack
+                buyIn
+                status
+                buyInExpTime
+                breakExpTime
+                breakStartedTime
+              }
+            }
+            allPlayers {
+              id
+              uuid
+              name
+            }
+            actionTime
+            gameToken
+            playerGameStatus
+            gameToPlayerChannel
+            playerToHandChannel
+            handToAllChannel
+            handToPlayerChannel
+            handToPlayerTextChannel
+            gameChatChannel
+            clientAliveChannel
+            playerRunItTwiceConfig
+            playerMuckLosingHandConfig
+            audioConfEnabled
+            janusUrl
+            janusToken
+            janusSecret
+            janusRoomId
+            janusRoomPin
+
+            useAgora
+            agoraToken
+            agoraAppId
+
+            sfuUrl
+
+            livekitUrl
+            livekitToken
+            demoGame
+          }
+    ''';
+  }
+
+  static String gamePlayerSettingsQuery() {
+    return '''
+          myGameSettings:myGameSettings(gameCode:\$gameCode){
+            autoStraddle
+            straddle
+            buttonStraddle
+            bombPotEnabled
+            muckLosingHand
+            runItTwiceEnabled
+            autoReload
+            reloadThreshold
+            reloadTo
+          }
+    ''';
+  }
+
+  static String getGameSettingsQuery() {
+    return '''
+      gameSettings: gameSettings(gameCode :\$gameCode){
+        audioConfEnabled
+        buyInApproval
+        buyInLimit
+        runItTwiceAllowed
+        allowRabbitHunt
+        showHandRank
+        doubleBoardEveryHand
+        bombPotEnabled
+        bombPotBet
+        doubleBoardBombPot
+        bombPotInterval
+        bombPotIntervalInSecs
+        bombPotEveryHand
+        seatChangeAllowed
+        seatChangeTimeout
+        waitlistAllowed
+        seatChangeTimeout
+        waitlistAllowed
+        breakAllowed
+        breakLength
+        ipCheck
+        gpsCheck
+        roeGames
+        dealerChoiceGames
+        resultPauseTime
+        funAnimations
+        chat
+        showResult
+      }
+    ''';
+  }
+
+  static String myInfoQuery() {
+    return '''
+        myInfo: myInfo{
+          id
+          uuid
+          name
+          channel
+        }
+        role: playerRole(gameCode: \$gameCode)  {
+          isHost
+          isOwner
+          isManager
+      }''';
+  }
+
+  static String playerNotesQuery() {
+    return '''
+       notes:   playersWithNotes(gameCode:\$gameCode) {
+          notes
+          playerId
+          playerUuid
+        }
+    ''';
+  }
+
+  static String encryptionKeyQuery() {
+    return '''
+      encryptionKey
+    ''';
   }
 }

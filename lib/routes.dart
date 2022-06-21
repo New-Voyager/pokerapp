@@ -19,6 +19,8 @@ import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournament_details.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournaments.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/system_announcements.dart';
 import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
 import 'package:pokerapp/screens/profile_screens/customize_view.dart';
@@ -26,8 +28,10 @@ import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:pokerapp/screens/profile_screens/privacy_policy.dart';
 import 'package:pokerapp/screens/profile_screens/table_selector.dart';
+import 'package:pokerapp/screens/util_screens/logs_screen.dart';
 import 'package:pokerapp/services/app/appinfo_service.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -39,7 +43,6 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 
 class Routes {
-
   Routes._();
 
   //SplashScreen
@@ -153,6 +156,14 @@ class Routes {
   // gamescreen holecard view.
   static const String attributions = "/attributions";
 
+  // tournaments view
+  static const String tournaments = "/tournaments";
+
+  static const String tournamentDetails = "/tournament-details";
+
+  // logs view
+  static const String logs = "/logs";
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case initial:
@@ -189,6 +200,7 @@ class Routes {
         String gameCode;
         bool botGame = false;
         bool isFromWaitListNotification = false;
+        Profile.startGameLoading();
         GameInfoModel gameInfo;
         if (settings.arguments is String) {
           gameCode = settings.arguments as String;
@@ -569,6 +581,26 @@ class Routes {
             title: "Attributions",
             text: appInfo.attributions,
           ),
+        );
+
+      case tournaments:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: TournamentsScreen(),
+        );
+
+      case tournamentDetails:
+        var args = settings.arguments as Map<String, dynamic>;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow:
+              TournamentsDetailsScreen(tournamentId: args['tournamentId']),
+        );
+
+      case logs:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: LogsScreen(),
         );
 
       default:

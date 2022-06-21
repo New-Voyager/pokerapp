@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 class UtilService {
   static Future<String> getNatsURL() async {
     if (PlatformUtils.isWeb) {
-      //return "ws://192.168.40.34:8090";
+      //return "ws://192.168.86.53:8090";
+
       return 'wss://nats.pokerclub.app';
     }
 

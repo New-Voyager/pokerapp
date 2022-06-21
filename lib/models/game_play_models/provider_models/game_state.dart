@@ -170,6 +170,7 @@ class GameState {
   bool gameSounds = true;
   GameLocalConfig playerLocalConfig;
   GameHiveStore gameHiveStore;
+  GameInfoAll gameInfoAll; // object that contains all the game info (caching)
   bool replayMode = false;
 
   // high-hand state
@@ -478,6 +479,21 @@ class GameState {
     _initializeCardDistributionMap();
   }
 
+  bool isAdmin() {
+    if (_currentPlayer?.role?.isHost == true ||
+        _currentPlayer?.role?.isManager == true ||
+        _currentPlayer?.role?.isOwner == true) return true;
+
+    return false;
+  }
+
+  bool isHost() {
+    if (_currentPlayer?.role?.isHost == true) {
+      return true;
+    }
+    return false;
+  }
+
   void close() {
     if (!this.replayMode) {
       if (gameHiveStore != null) {
@@ -551,6 +567,14 @@ class GameState {
 
   bool get isTournament {
     return this._gameInfo.tournament ?? false;
+  }
+
+  int get tournamentId {
+    return this.tournamentId;
+  }
+
+  int get tournamentTableNo {
+    return this.tournamentTableNo;
   }
 
   bool get ended {
@@ -690,6 +714,14 @@ class GameState {
     this._gameSettings.roeGames.addAll(settings.roeGames);
     this._gameSettings.dealerChoiceGames = [];
     this._gameSettings.dealerChoiceGames.addAll(settings.dealerChoiceGames);
+  }
+
+  void setGameSettings(GameSettings settings) {
+    this._gameSettings = settings;
+  }
+
+  void setPlayerSettings(GamePlayerSettings settings) {
+    this._playerSettings = settings;
   }
 
   Future<void> refreshPlayerSettings() async {

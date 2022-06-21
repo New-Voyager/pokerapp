@@ -3,7 +3,7 @@
 //  source: hand.proto
 //
 // @dart = 2.12
-// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields,deprecated_member_use_from_same_package
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,deprecated_member_use_from_same_package,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
 
 import 'dart:core' as $core;
 import 'dart:convert' as $convert;
@@ -283,6 +283,22 @@ const RoundState_PlayerBalanceEntry$json = const {
 
 /// Descriptor for `RoundState`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List roundStateDescriptor = $convert.base64Decode('CgpSb3VuZFN0YXRlEisKB2JldHRpbmcYASABKAsyES5nYW1lLlNlYXRCZXR0aW5nUgdiZXR0aW5nEkoKDnBsYXllcl9iYWxhbmNlGAIgAygLMiMuZ2FtZS5Sb3VuZFN0YXRlLlBsYXllckJhbGFuY2VFbnRyeVINcGxheWVyQmFsYW5jZRIbCgliZXRfaW5kZXgYAyABKA1SCGJldEluZGV4GkAKElBsYXllckJhbGFuY2VFbnRyeRIQCgNrZXkYASABKA1SA2tleRIUCgV2YWx1ZRgCIAEoAVIFdmFsdWU6AjgB');
+@$core.Deprecated('Use playerMovedTableDescriptor instead')
+const PlayerMovedTable$json = const {
+  '1': 'PlayerMovedTable',
+  '2': const [
+    const {'1': 'tournament_id', '3': 10, '4': 1, '5': 13, '10': 'tournamentId'},
+    const {'1': 'old_table_no', '3': 20, '4': 1, '5': 13, '10': 'oldTableNo'},
+    const {'1': 'new_table_no', '3': 30, '4': 1, '5': 13, '10': 'newTableNo'},
+    const {'1': 'new_table_seat_no', '3': 31, '4': 1, '5': 13, '10': 'newTableSeatNo'},
+    const {'1': 'game_code', '3': 40, '4': 1, '5': 9, '10': 'gameCode'},
+    const {'1': 'player_id', '3': 60, '4': 1, '5': 4, '10': 'playerId'},
+    const {'1': 'game_info', '3': 70, '4': 1, '5': 9, '10': 'gameInfo'},
+  ],
+};
+
+/// Descriptor for `PlayerMovedTable`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List playerMovedTableDescriptor = $convert.base64Decode('ChBQbGF5ZXJNb3ZlZFRhYmxlEiMKDXRvdXJuYW1lbnRfaWQYCiABKA1SDHRvdXJuYW1lbnRJZBIgCgxvbGRfdGFibGVfbm8YFCABKA1SCm9sZFRhYmxlTm8SIAoMbmV3X3RhYmxlX25vGB4gASgNUgpuZXdUYWJsZU5vEikKEW5ld190YWJsZV9zZWF0X25vGB8gASgNUg5uZXdUYWJsZVNlYXRObxIbCglnYW1lX2NvZGUYKCABKAlSCGdhbWVDb2RlEhsKCXBsYXllcl9pZBg8IAEoBFIIcGxheWVySWQSGwoJZ2FtZV9pbmZvGEYgASgJUghnYW1lSW5mbw==');
 @$core.Deprecated('Use currentHandStateDescriptor instead')
 const CurrentHandState$json = const {
   '1': 'CurrentHandState',

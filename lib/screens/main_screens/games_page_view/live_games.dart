@@ -20,10 +20,12 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournament_settings.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/screens/profile_screens/bug_features_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/onboarding.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -312,6 +314,15 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
   }
 
+  Future<void> hostTournament() async {
+    int tournamentId = await TournamentSettingsView.show(
+      context,
+    );
+    Alerts.showNotification(titleText: 'Tournament: $tournamentId is created');
+    final natsClient = Provider.of<Nats>(context, listen: false);
+    natsClient.subscribeTournamentMessages(tournamentId);
+  }
+
   void _handleGameRefresh(AppState appState) {
     if (!mounted) return;
     final int currentIndex = appState.currentIndex;
@@ -454,6 +465,70 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   Widget getMainView(AppTheme appTheme) {
+    List<Widget> secondRowChildren = [];
+    bool tournament = true;
+    bool logging = true;
+    if (tournament) {
+      secondRowChildren.addAll([
+        Align(
+            alignment: Alignment.centerLeft,
+            child: RoundRectButton(
+              onTap: () async {
+                hostTournament();
+              },
+              text: 'Host Tournament', //_appScreenText["host"],
+              theme: appTheme,
+            )),
+        Align(
+            alignment: Alignment.center,
+            child: RoundRectButton(
+              onTap: () async {
+                Navigator.pushNamed(
+                  context,
+                  Routes.tournaments,
+                );
+              },
+              text: 'Tournaments', //_appScreenText["host"],
+              theme: appTheme,
+            ))
+      ]);
+    }
+    logging = false;
+    if (logging) {
+      secondRowChildren.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: RoundRectButton(
+            onTap: () async {
+              Navigator.pushNamed(
+                context,
+                Routes.logs,
+              );
+            },
+            text: 'Logs', //_appScreenText["host"],
+            theme: appTheme,
+          ),
+        ),
+      );
+    }
+    Widget secondRow = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ...secondRowChildren,
+        // Align(
+        //     alignment: Alignment.centerRight,
+        //     child: RoundRectButton(
+        //       onTap: () async {
+        //         Alerts.showDailog(
+        //           context: context,
+        //           child: BugsFeaturesWidget(),
+        //         );
+        //       },
+        //       text: 'Feedback', //_appScreenText["host"],
+        //       theme: appTheme,
+        //     )),
+      ],
+    );
     return Container(
       decoration: AppDecorators.bgRadialGradient(appTheme),
       child: SafeArea(
@@ -514,15 +589,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 ],
               ),
             ),
-            // Align(
-            //     alignment: Alignment.centerRight,
-            //     child: CircleImageButton(
-            //       onTap: () {},
-            //       icon: Icons.email,
-            //       theme: appTheme,
-            //     )),
+            //secondRow,
             Align(
-                alignment: Alignment.topRight,
+                alignment: Alignment.centerRight,
                 child: RoundRectButton(
                   onTap: () async {
                     Alerts.showDailog(
@@ -533,6 +602,15 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   text: 'Feedback', //_appScreenText["host"],
                   theme: appTheme,
                 )),
+            secondRow,
+            // Align(
+            //     alignment: Alignment.centerRight,
+            //     child: CircleImageButton(
+            //       onTap: () {},
+            //       icon: Icons.email,
+            //       theme: appTheme,
+            //     )),
+
             TabBar(
               physics: const BouncingScrollPhysics(),
               tabs: [

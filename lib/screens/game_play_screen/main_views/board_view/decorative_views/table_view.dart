@@ -18,16 +18,18 @@ class TableView extends StatelessWidget {
     final animationDuration = const Duration(milliseconds: 250);
     final gameState = GameState.getState(context);
     String tableAsset;
+    final boardAttributes = gameState.getBoardAttributes(context);
     if (!PlatformUtils.isWeb) {
       tableAsset = appService.appSettings.tableAsset;
-      if (gameState.getBoardAttributes(context).isOrientationHorizontal) {
+      if (boardAttributes.isOrientationHorizontal) {
         tableAsset = appService.appSettings.tableAsset;
       } else {
         tableAsset = "assets/images/table/new_vertical.png";
       }
     } else {
-      if (gameState.getBoardAttributes(context).isOrientationHorizontal) {
+      if (boardAttributes.isOrientationHorizontal) {
         tableAsset = 'assets/images/table/redtable.png';
+        //tableAsset = "assets/images/table/web.png";
       } else {
         tableAsset = 'assets/images/table/new_vertical.png';
       }

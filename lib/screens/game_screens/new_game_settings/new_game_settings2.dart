@@ -148,6 +148,8 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
   AppTextScreen appScreenText;
   NewGameModelProvider gameSettings;
   bool loading = false;
+  bool showBuyInOption = true;
+  bool buttonStraddle = true;
   @override
   void initState() {
     loading = true;
@@ -172,6 +174,16 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
       gameSettings.settings.roeGames.addAll([GameType.HOLDEM, GameType.PLO]);
     }
     determinePlayerCounts(gameSettings);
+    if (widget.clubHomePageModel != null &&
+        widget.clubHomePageModel.trackMemberCredit) {
+      gameSettings.settings.buyInApprovalLimit =
+          BuyInApprovalLimit.BUYIN_CREDIT_LIMIT;
+      showBuyInOption = false;
+    }
+    // disable button straddle for now
+    buttonStraddle = false;
+    gameSettings.buttonStraddle = buttonStraddle;
+    gameSettings.actionTime = 15;
     loading = false;
     super.initState();
   }
@@ -253,6 +265,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
   }
 
   Widget _buildBuyinConfig(AppTheme theme, NewGameModelProvider gmp) {
+    if (!showBuyInOption) {
+      return const SizedBox.shrink();
+    }
     return DecoratedContainer(
       theme: theme,
       children: [
@@ -386,6 +401,9 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
   }
 
   Widget _buildButtonStraddleConfig(AppTheme theme, NewGameModelProvider gmp) {
+    if (!buttonStraddle) {
+      return const SizedBox.shrink();
+    }
     return DecoratedContainer2(
       theme: theme,
       children: [
@@ -1305,14 +1323,14 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
 
                               /* sep */
                               NewGameSettings2.sepV8,
-                              // _buildRadio(
-                              //   label: appScreenText['botGame'],
-                              //   value: gmp.botGame,
-                              //   onChange: (bool b) {
-                              //     gmp.botGame = b;
-                              //   },
-                              //   theme: theme,
-                              // ),
+                              _buildRadio(
+                                label: appScreenText['botGame'],
+                                value: gmp.botGame,
+                                onChange: (bool b) {
+                                  gmp.botGame = b;
+                                },
+                                theme: theme,
+                              ),
                               /* location check */
                               _buildRadio(
                                 label: appScreenText['locationCheck'],
@@ -1488,13 +1506,6 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                         }
                       },
                     ),
-                    // CircleImageButton(
-                    //   onTap: () async {
-                    //     await onSaveSettings(context, theme, gmp);
-                    //   },
-                    //   icon: Icons.save,
-                    //   theme: theme,
-                    // ),
                   ],
                 ),
               ],
