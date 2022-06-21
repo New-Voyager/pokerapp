@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:pokerapp/build_info.dart';
@@ -30,6 +31,7 @@ import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:crypto/src/sha1.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class WebHomeScreen extends StatefulWidget {
   const WebHomeScreen({Key key}) : super(key: key);
@@ -42,6 +44,8 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
   final _textController = TextEditingController();
   AppTextScreen _appScreenText;
   AppTheme _appTheme;
+  bool loading = true;
+  WebBrowserInfo webBrowserInfo;
   // BuildContext _context;
 
   @override
@@ -49,13 +53,25 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
     super.initState();
     _appScreenText = getAppTextScreen("registration");
     _appTheme = AppTheme.getTheme(context);
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    deviceInfo.webBrowserInfo.then((value) {
+      webBrowserInfo = value;
+      loading = false;
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     // _context = context;
     _appTheme = AppTheme.getTheme(context);
-
+    if (loading) {
+      return CircularProgressIndicator();
+    }
+    String info = "Version: ${versionNumber} Updated: ${releaseDate}";
+    info = info + "\n";
+    info = info +
+        'Browser: ${webBrowserInfo.platform} Agent: ${webBrowserInfo.userAgent} AppName: ${webBrowserInfo.userAgent}';
     // Check for errors
     return WillPopScope(
         onWillPop: () async {
@@ -166,11 +182,13 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
             ),
           ),
           Align(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                'Version: ${versionNumber} Updated: ${releaseDate}',
-                style: AppTextStyles.T3.copyWith(color: Colors.grey),
-              )),
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              info,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.T3.copyWith(color: Colors.grey),
+            ),
+          ),
         ]));
   }
 

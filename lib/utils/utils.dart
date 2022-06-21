@@ -100,6 +100,7 @@ class DeviceInfo {
     await _deviceInfo.initPlateformData();
   }
 
+  static DeviceInfo get deviceInfo => _deviceInfo;
   static String get name {
     return _deviceInfo._deviceData['name'].toString();
   }
