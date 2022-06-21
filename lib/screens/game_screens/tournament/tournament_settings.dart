@@ -52,12 +52,15 @@ class _TournamentSettingsViewState extends State<TournamentSettingsView> {
 
   TextEditingController _tecMaxPlayers = TextEditingController();
   TextEditingController _tecName = TextEditingController();
+  TextEditingController _tecBotsCount = TextEditingController();
+  RegisterBotsDialog _registerBotsDialog;
   TournamentSettings _tournamentSettings = TournamentSettings.defaultSettings();
   @override
   void initState() {
     loading = true;
     _tecMaxPlayers.text = _tournamentSettings.maxPlayers.toString();
     _tecName.text = _tournamentSettings.name;
+    _tecBotsCount.text = _tournamentSettings.botsCount.toString();
 
     loading = false;
     super.initState();
@@ -133,15 +136,16 @@ class _TournamentSettingsViewState extends State<TournamentSettingsView> {
                         LabelText(label: 'Game Type', theme: theme),
                         TournamentSettingsView.sepV8,
                         RadioListWidget<String>(
-                          defaultValue: 'PLO',
+                          defaultValue: 'HOLDEM',
                           wrap: true,
                           values: [
+                            'HOLDEM',
                             'PLO',
                             'Hi-Lo',
-                            '5 Card',
-                            '5 Card Hi-Lo',
-                            '6 Card',
-                            '6 Card Hi-Lo',
+                            // '5 Card',
+                            // '5 Card Hi-Lo',
+                            // '6 Card',
+                            // '6 Card Hi-Lo',
                           ],
                           onSelect: (String value) {
                             if (value == 'PLO') {
@@ -172,17 +176,31 @@ class _TournamentSettingsViewState extends State<TournamentSettingsView> {
                       ],
                     ),
                     TournamentSettingsView.sepV20,
-                    _buildRadio(
-                      label: "Test with bots",
-                      value: false,
-                      onChange: (bool b) {
-                        _tournamentSettings.fillWithBots = b;
-                      },
-                      theme: theme,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelText(label: 'Bots count', theme: theme),
+                        TournamentSettingsView.sepV8,
+                        CardFormTextField(
+                          hintText: "",
+                          controller: _tecBotsCount,
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          theme: theme,
+                        ),
+                      ],
                     ),
+                    // _buildRadio(
+                    //   label: "Test with bots",
+                    //   value: false,
+                    //   onChange: (bool b) {
+                    //     _tournamentSettings.fillWithBots = b;
+                    //   },
+                    //   theme: theme,
+                    // ),
                     TournamentSettingsView.sepV20,
                     ButtonWidget(
-                      text: "Create Tables",
+                      text: "Host",
                       onTap: () async {
                         _tournamentSettings.name = _tecName.text;
                         _tournamentSettings.maxPlayers =
@@ -190,9 +208,25 @@ class _TournamentSettingsViewState extends State<TournamentSettingsView> {
                         if (_tournamentSettings.maxPlayers == 0) {
                           _tournamentSettings.maxPlayers = 6;
                         }
+                        _tournamentSettings.botsCount =
+                            int.parse(_tecBotsCount.text);
+                        if (_tournamentSettings.botsCount >
+                            _tournamentSettings.maxPlayers) {
+                          _tournamentSettings.botsCount =
+                              _tournamentSettings.maxPlayers;
+                        }
+
                         int tournamentId =
                             await TournamentService.scheduleTournament(
                                 _tournamentSettings);
+
+                        // register bots
+                        if (tournamentId != null) {
+                          _registerBotsDialog = RegisterBotsDialog();
+                          _registerBotsDialog.show(context: context);
+                          await TournamentService.registerBots(tournamentId);
+                          _registerBotsDialog.dismiss(context: context);
+                        }
                         Navigator.pop(context, tournamentId);
                       },
                     ),

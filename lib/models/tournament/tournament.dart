@@ -19,29 +19,58 @@ extension TournamentStatusSerialization on TournamentStatus {
       TournamentStatus.values.firstWhere((type) => type.toJson() == s);
 }
 
+enum TournamentPlayingStatus {
+  REGISTERED,
+  JOINED,
+  PLAYING,
+  BUSTED_OUT,
+  SITTING_OUT,
+}
+
+extension TournamentPlayingStatusSerialization on TournamentPlayingStatus {
+  String toJson() => this.toString().split(".").last;
+  static TournamentPlayingStatus fromJson(String s) =>
+      TournamentPlayingStatus.values.firstWhere((type) => type.toJson() == s);
+}
+
 class Tournament {
   String name;
   GameType gameType;
+  int minPlayers;
   int maxPlayers;
-  int registeredPlayers;
-  bool testWithBots;
+  int maxPlayersInTable;
+  List<TournamentPlayer> registeredPlayers;
+  List<TournamentPlayer> tournamentPlayers;
+  List<TournamentTable> tables;
   TournamentStatus status;
   Tournament({
-    @required this.name,
-    @required this.gameType,
-    @required this.maxPlayers,
-    this.registeredPlayers = 0,
-    @required this.testWithBots,
-    @required this.status,
+    this.name,
+    this.gameType,
+    this.maxPlayers,
+    this.registeredPlayers,
+    this.status,
+    this.tournamentPlayers,
+    this.tables,
+    this.minPlayers,
+    this.maxPlayersInTable,
   });
 
-  Tournament.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    gameType = GameType.HOLDEM; //GameType.values[json['gameType']];
-    maxPlayers = json['maxPlayers'];
-    registeredPlayers = json['registeredPlayers'];
-    testWithBots = json['testWithBots'];
-    status = TournamentStatusSerialization.fromJson(json['status']);
+  factory Tournament.fromJson(Map<String, dynamic> json) {
+    Tournament ret = Tournament();
+    ret.name = json['name'];
+    ret.gameType = GameType.HOLDEM; //GameType.values[json['gameType']];
+    ret.maxPlayers = json['maxPlayers'];
+    ret.minPlayers = json['minPlayers'];
+    ret.maxPlayersInTable = json['maxPlayersInTable'];
+    ret.registeredPlayers = (json['registeredPlayers'] as List)
+        .map((player) => TournamentPlayer.fromJson(player))
+        .toList();
+    ret.tables = (json['tables'] as List)
+        .map((table) => TournamentTable.fromJson(table))
+        .toList();
+
+    ret.status = TournamentStatusSerialization.fromJson(json['status']);
+    return ret;
   }
 }
 
@@ -127,26 +156,39 @@ class TournamentPlayer {
   String playerName;
   double stack;
   int seatNo;
-  PlayerStatus status;
+  int tableNo;
+  TournamentPlayingStatus status;
 
   TournamentPlayer({
-    @required this.playerId,
-    @required this.playerUuid,
-    @required this.playerName,
-    @required this.stack,
-    @required this.seatNo,
-    @required this.status,
+    this.playerId,
+    this.playerUuid,
+    this.playerName,
+    this.stack,
+    this.seatNo,
+    this.status,
+    this.tableNo,
   });
 
   factory TournamentPlayer.fromJson(Map<String, dynamic> json) {
-    return TournamentPlayer(
+    final ret = TournamentPlayer(
       playerId: json['playerId'],
       playerUuid: json['playerUuid'],
       playerName: json['playerName'],
-      stack: double.parse(json['stack'].toString()),
-      seatNo: json['seatNo'],
-      status: PlayerStatusSerialization.fromJson(json['status']),
     );
+    if (json['status'] != null) {
+      ret.status =
+          TournamentPlayingStatusSerialization.fromJson(json['status']);
+    }
+    if (json['stack'] != null) {
+      ret.stack = double.parse(json['stack'].toString());
+    }
+    if (json['seatNo'] != null) {
+      ret.seatNo = json['seatNo'];
+    }
+    if (json['tableNo'] != null) {
+      ret.tableNo = json['tableNo'];
+    }
+    return ret;
   }
 }
 
@@ -235,5 +277,20 @@ class TournamentGameInfo {
           .map((e) => TournamentPlayer.fromJson(e))
           .toList(),
     );
+  }
+}
+
+class TournamentTable {
+  int tableNo;
+  List<TournamentPlayer> players;
+  TournamentTable({this.tableNo, this.players});
+
+  factory TournamentTable.fromJson(dynamic json) {
+    TournamentTable table = TournamentTable();
+    table.tableNo = json['no'];
+    table.players = (json['players'] as List)
+        .map((e) => TournamentPlayer.fromJson(e))
+        .toList();
+    return table;
   }
 }

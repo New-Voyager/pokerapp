@@ -19,6 +19,7 @@ import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournament_details.dart';
 import 'package:pokerapp/screens/game_screens/tournament/tournaments.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/system_announcements.dart';
 import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
@@ -157,6 +158,8 @@ class Routes {
 
   // tournaments view
   static const String tournaments = "/tournaments";
+
+  static const String tournamentDetails = "/tournament-details";
 
   // logs view
   static const String logs = "/logs";
@@ -584,6 +587,14 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: TournamentsScreen(),
+        );
+
+      case tournamentDetails:
+        var args = settings.arguments as Map<String, dynamic>;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow:
+              TournamentsDetailsScreen(tournamentId: args['tournamentId']),
         );
 
       case logs:

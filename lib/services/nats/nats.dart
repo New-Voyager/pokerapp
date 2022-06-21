@@ -22,8 +22,11 @@ class Nats {
   bool _initialized = false;
   Subscription _playerSub;
   Map<String, Subscription> _clubSubs = Map<String, Subscription>();
+  Map<int, Subscription> _tournamentSubs = Map<int, Subscription>();
+
   Function(String) playerNotifications;
   Function(String) clubNotifications;
+  Function(String) tournamentNotifications;
 
   // functions listens for disconnection
   List<Function> disconnectListeners = [];
@@ -132,6 +135,12 @@ class Nats {
       }
     }
 
+    if (_tournamentSubs != null) {
+      for (final tournamentSub in _tournamentSubs.values) {
+        tournamentSub.close();
+      }
+    }
+
     _clientSub?.close();
     _clientPub?.close();
     _initialized = false;
@@ -224,6 +233,25 @@ class Nats {
       log('message in player channel: ${message.string}');
       if (playerNotifications != null) {
         playerNotifications(message.string);
+      }
+    });
+  }
+
+  subscribeTournamentMessages(int tournamentId) {
+    String tournamentChannel = 'tournament-$tournamentId';
+    if (_tournamentSubs.containsKey(tournamentChannel)) {
+      return;
+    }
+    log('subscribing to tournament $tournamentChannel messages');
+    Subscription tournamentSub = this._clientSub.sub(tournamentChannel);
+    _tournamentSubs[tournamentId] = tournamentSub;
+    tournamentSub.stream.listen((Message message) {
+      dynamic json = jsonDecode(message.string);
+      if (json['type'] == 'TOURNAMENT_UPDATE') {
+        int tournamentId = json['tournamentId'];
+        String status = json['status'];
+        log('Tournament: TOURNAMENT_UPDATE ${tournamentId} status: ${status}');
+        appState.tournamentUpdateState.notify(json['tournamentId'], json);
       }
     });
   }

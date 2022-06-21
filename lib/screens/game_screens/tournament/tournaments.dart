@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/tournament/tournament.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -33,6 +37,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
   void initState() {
     super.initState();
     TournamentService.getTournamentList().then((value) {
+      appState.tournamentUpdateState.jsonMessage = null;
       tournaments = value;
       loading = false;
       setState(() {});
@@ -58,13 +63,43 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
             ),
             body: loading
                 ? CircularProgressWidget(text: 'Loading...')
-                : ListView.builder(
-                    itemCount: tournaments.length,
-                    itemBuilder: (context, index) {
-                      TournamentListItem tournament = tournaments[index];
-                      return _buildItem(tournament, theme);
-                    },
-                  ),
+                : ListenableProvider<TournamentUpdateState>(
+                    create: (_) => appState.tournamentUpdateState,
+                    builder: (context, child) {
+                      return Consumer<TournamentUpdateState>(
+                          builder: ((context, value, child) {
+                        log('Rebuilding tournaments list');
+                        if (value.jsonMessage != null) {
+                          // update tournament item
+                          int registeredPlayersCount =
+                              value.jsonMessage['registeredPlayersCount'];
+                          int tournamentId = value.jsonMessage['tournamentId'];
+                          int activePlayersCount =
+                              value.jsonMessage['playersCount'];
+                          String status = value.jsonMessage['status'];
+
+                          for (final tournament in tournaments) {
+                            if (tournament.tournamentId == tournamentId) {
+                              tournament.registeredPlayersCount =
+                                  registeredPlayersCount;
+                              tournament.activePlayersCount =
+                                  activePlayersCount;
+                              tournament.status =
+                                  TournamentStatusSerialization.fromJson(
+                                      status);
+                              break;
+                            }
+                          }
+                        }
+                        return ListView.builder(
+                            itemCount: tournaments.length,
+                            itemBuilder: (context, index) {
+                              TournamentListItem tournament =
+                                  tournaments[index];
+                              return _buildItem(tournament, theme);
+                            });
+                      }));
+                    }),
           ),
         ),
       );
@@ -73,18 +108,42 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 
   Widget _buildItem(TournamentListItem tournament, AppTheme theme) {
     List<Widget> options = [];
+    // if (tournament.status == TournamentStatus.ABOUT_TO_START &&
+    //     tournament.registeredPlayersCount == tournament.activePlayersCount) {
+    //   options.add(_buildKickoffTournamentOption(theme, tournament));
+    // } else {
+    //   if (tournament.status == TournamentStatus.SCHEDULED) {
+    //     if (tournament.registeredPlayersCount == tournament.maxPlayers) {
+    //       options.add(_buildStartTournamentOption(theme, tournament));
+    //       options.add(SizedBox(height: 5));
+    //     } else {
+    //       options.add(_buildRegisteringOptions(theme, tournament));
+    //       options.add(SizedBox(height: 5));
+    //       if (tournament.fillWithBots) {
+    //         options.add(_buildFillBotsOption(theme, tournament));
+    //         options.add(SizedBox(height: 5));
+    //       }
+    //     }
+    //   }
+    String status = tournament.status.toString();
     if (tournament.status == TournamentStatus.SCHEDULED) {
-      options.add(_buildRegisteringOptions(theme, tournament));
-      options.add(SizedBox(height: 5));
-      if (tournament.fillWithBots) {
-        options.add(_buildFillBotsOption(theme, tournament));
-        options.add(SizedBox(height: 5));
-      }
-    } else if (tournament.status == TournamentStatus.RUNNING) {
-      options.add(_buildRunningOptions(theme, tournament));
+      status = 'Registering';
     }
 
-    return Container(
+    // if (tournament.registeredPlayersCount != tournament.activePlayersCount) {
+    //   if (tournament.status == TournamentStatus.SCHEDULED &&
+    //       tournament.fillWithBots) {
+    //     options.add(_buildFillBotsOption(theme, tournament));
+    //     options.add(SizedBox(height: 5));
+    //   }
+    // }
+    //}
+
+    // else if (tournament.status == TournamentStatus.RUNNING) {
+    //   options.add(_buildRunningOptions(theme, tournament));
+    // }
+
+    Widget widget = Container(
       decoration: AppDecorators.getGameItemDecoration(theme: theme),
       margin: EdgeInsets.only(
         top: 20,
@@ -110,10 +169,12 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(tournament.name),
+                    Text('${tournament.name} (${tournament.tournamentId})'),
                     Text("Registered " +
                         tournament.registeredPlayersCount.toString()),
-                    Text("Status " + tournament.status.name),
+                    Text("Joined/active " +
+                        tournament.activePlayersCount.toString()),
+                    Text("Status " + status),
                   ],
                 ),
               ),
@@ -126,6 +187,16 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
           )
         ],
       ),
+    );
+
+    return InkWell(
+      onTap: () {
+        Navigator.pushReplacementNamed(context, Routes.tournamentDetails,
+            arguments: {
+              "tournamentId": tournament.tournamentId,
+            });
+      },
+      child: widget,
     );
   }
 
@@ -146,8 +217,47 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     return Column(
       children: [
         RoundRectButton(
-          onTap: () async {},
+          onTap: () async {
+            // fill the tournament with bots
+            log('fill with bots');
+            await TournamentService.registerBots(tournament.tournamentId);
+          },
           text: 'Register Bots',
+          theme: theme,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStartTournamentOption(
+      AppTheme theme, TournamentListItem tournament) {
+    return Column(
+      children: [
+        RoundRectButton(
+          onTap: () async {
+            // fill the tournament with bots
+            log('fill with bots');
+            await TournamentService.triggerAboutToStartTournament(
+                tournament.tournamentId);
+          },
+          text: 'About To Start',
+          theme: theme,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildKickoffTournamentOption(
+      AppTheme theme, TournamentListItem tournament) {
+    return Column(
+      children: [
+        RoundRectButton(
+          onTap: () async {
+            // fill the tournament with bots
+            log('fill with bots');
+            await TournamentService.kickoffTournament(tournament.tournamentId);
+          },
+          text: 'Kickoff',
           theme: theme,
         ),
       ],

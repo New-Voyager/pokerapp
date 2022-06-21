@@ -568,6 +568,14 @@ class GameState {
     return this._gameInfo.tournament ?? false;
   }
 
+  int get tournamentId {
+    return this.tournamentId;
+  }
+
+  int get tournamentTableNo {
+    return this.tournamentTableNo;
+  }
+
   bool get ended {
     return this._gameInfo.status == AppConstants.GAME_ENDED;
   }

@@ -15,16 +15,35 @@ class TournamentService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables;
 
-    String _query = """query {
-      query tournamentInfo($tournamentId: Int!) {
-        tournamentInfo: getTournamentInfo(tournamentId: $tournamentId) {
-          id
-          tournamentChannel
-          # minPlayers
-          # startingChips
-          # maxPlayers
-          # maxPlayersInTable
-        }
+    String _query = """
+      query tournamentInfo(\$tournamentId: Int!) {
+         tournamentInfo: getTournamentInfo(tournamentId: \$tournamentId) {
+            id
+            name
+            tournamentChannel
+            status
+            tables {
+              no
+              players {
+                playerId
+                playerUuid
+                playerName
+                stack
+                status
+                seatNo
+                tableNo
+              }
+            }
+            minPlayers
+            maxPlayers
+            maxPlayersInTable
+            registeredPlayers {
+              playerId
+              playerUuid
+              playerName
+              status
+            }           
+          }
       }""";
 
     variables = {
@@ -41,7 +60,7 @@ class TournamentService {
       }
     }
     debugPrint(jsonEncode(result.data));
-    return Tournament.fromJson(result.data);
+    return Tournament.fromJson(result.data["tournamentInfo"]);
   }
 
   static Future<int> scheduleTournament(TournamentSettings input) async {
@@ -166,5 +185,74 @@ class TournamentService {
     debugPrint(jsonEncode(result.data));
     final ret = GameInfoModel.fromTournamentGameInfoJson(result.data['ti']);
     return ret;
+  }
+
+  static Future<bool> registerBots(int tournamentId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+          mutation fill(\$tournamentId: Int!){
+            ret:   fillBotsTournament(tournamentId: \$tournamentId)
+          }""";
+    Map<String, dynamic> variables = {
+      "tournamentId": tournamentId,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    return result.data['ret'];
+  }
+
+  static Future<bool> triggerAboutToStartTournament(int tournamentId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+          mutation triggerAboutToStartTournament(\$tournamentId: Int!){
+            ret:   triggerAboutToStartTournament(tournamentId: \$tournamentId)
+          }""";
+    Map<String, dynamic> variables = {
+      "tournamentId": tournamentId,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    return result.data['ret'];
+  }
+
+  static Future<bool> kickoffTournament(int tournamentId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+          mutation kickoffTournament(\$tournamentId: Int!){
+            ret:   kickoffTournament(tournamentId: \$tournamentId)
+          }""";
+    Map<String, dynamic> variables = {
+      "tournamentId": tournamentId,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(document: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) {
+      if (result.exception.graphqlErrors.length > 0) {
+        return null;
+      }
+    }
+    return result.data['ret'];
   }
 }

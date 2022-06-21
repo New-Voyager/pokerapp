@@ -14,6 +14,7 @@ class TournamentSettings {
   int maxPlayers;
   bool fillWithBots;
   int maxPlayersInTable;
+  int botsCount;
   TournamentLevelType levelType;
 
   TournamentSettings();
@@ -24,9 +25,10 @@ class TournamentSettings {
     settings.startTime = DateTime.now();
     settings.startingChips = 1000.0;
     settings.minPlayers = 2;
-    settings.maxPlayers = 20;
+    settings.maxPlayers = 6;
     settings.fillWithBots = true;
     settings.maxPlayersInTable = 6;
+    settings.botsCount = 0;
     settings.levelType = TournamentLevelType.STANDARD;
     return settings;
   }
@@ -41,6 +43,7 @@ class TournamentSettings {
       "maxPlayersInTable": maxPlayersInTable,
       "levelType": levelType.toJson(),
       "fillWithBots": fillWithBots,
+      "botsCount": botsCount,
     };
   }
 }

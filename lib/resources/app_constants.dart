@@ -254,6 +254,14 @@ class AppConstants {
       'PLAYER_CONNECTIVITY_RESTORED';
   static const String EXTEND_ACTION_TIMER = 'EXTEND_ACTION_TIMER';
   static const String DEALER_CHOICE_PROMPT = 'DEALER_CHOICE_PROMPT';
+
+  // tournament
+  static const String TOURNAMENT_STARTED = 'TOURNAMENT_STARTED';
+  static const String TOURNAMENT_ENDED = 'TOURNAMENT_ENDED';
+  static const String TOURNAMENT_ENDED_WITH_WINNER =
+      'TOURNAMENT_ENDED_WITH_WINNER';
+  static const String TOURNAMENT_PLAYER_MOVED_TABLE = 'TOURNAMENT_PLAYER_MOVED_TABLE';
+
   static const String DEALER_CHOICE_GAME = 'DEALER_CHOICE_GAME';
 
   static const String PREFLOP = 'PREFLOP';

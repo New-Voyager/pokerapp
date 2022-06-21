@@ -25,6 +25,7 @@ import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games
 import 'package:pokerapp/screens/profile_screens/bug_features_dialog.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/onboarding.dart';
 import 'package:pokerapp/services/test/mock_data.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -318,6 +319,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       context,
     );
     Alerts.showNotification(titleText: 'Tournament: $tournamentId is created');
+    final natsClient = Provider.of<Nats>(context, listen: false);
+    natsClient.subscribeTournamentMessages(tournamentId);
   }
 
   void _handleGameRefresh(AppState appState) {
@@ -512,18 +515,18 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         ...secondRowChildren,
-        Align(
-            alignment: Alignment.centerRight,
-            child: RoundRectButton(
-              onTap: () async {
-                Alerts.showDailog(
-                  context: context,
-                  child: BugsFeaturesWidget(),
-                );
-              },
-              text: 'Feedback', //_appScreenText["host"],
-              theme: appTheme,
-            )),
+        // Align(
+        //     alignment: Alignment.centerRight,
+        //     child: RoundRectButton(
+        //       onTap: () async {
+        //         Alerts.showDailog(
+        //           context: context,
+        //           child: BugsFeaturesWidget(),
+        //         );
+        //       },
+        //       text: 'Feedback', //_appScreenText["host"],
+        //       theme: appTheme,
+        //     )),
       ],
     );
     return Container(
@@ -599,6 +602,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   text: 'Feedback', //_appScreenText["host"],
                   theme: appTheme,
                 )),
+            secondRow,
             // Align(
             //     alignment: Alignment.centerRight,
             //     child: CircleImageButton(
