@@ -776,8 +776,9 @@ class _FooterActionViewState extends State<FooterActionView> {
             child: Stack(
               children: [
                 Positioned(
-                  bottom:
-                      MediaQuery.of(context).size.height - _betBtnPosition.dy,
+                  bottom: (_betBtnPosition != null)
+                      ? MediaQuery.of(context).size.height - _betBtnPosition.dy
+                      : MediaQuery.of(context).size.height,
                   child: Provider<GameState>(
                     create: (_) => gameState,
                     builder: (context, _) {
@@ -839,6 +840,7 @@ class _FooterActionViewState extends State<FooterActionView> {
           // _tableBaseHeight = tableRect.height * 0.10;
           _betBtnPosition = betButton.localToGlobal(Offset.zero);
           log("box size ${_betBtnPosition.dx}, ${_betBtnPosition.dy}");
+          setState(() {});
           break;
         }
         await Future.delayed(const Duration(milliseconds: 10));

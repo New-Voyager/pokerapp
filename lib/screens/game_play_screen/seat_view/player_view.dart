@@ -28,8 +28,10 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/name_plate_widget_parent.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/holecard_nameplate.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:provider/provider.dart';
 
@@ -494,15 +496,14 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // main body
               Opacity(
                 opacity: opacity,
-                child: NamePlateWidget(
-                  widget.seat,
-                  globalKey: key,
-                  boardAttributes: boardAttributes,
-                ),
+                child: HoleCardsNameplate(widget.seat,
+                    globalKey: key, boardAttributes: boardAttributes),
               ),
 
               // result cards shown in player view at the time of result
-              _buildDisplayCardsWidget(widget.seat, gameState.handState),
+              !PlatformUtils.isWeb
+                  ? _buildDisplayCardsWidget(widget.seat, gameState.handState)
+                  : SizedBox.shrink(),
 
               // player notes text
               Visibility(
