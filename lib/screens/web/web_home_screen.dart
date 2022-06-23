@@ -81,114 +81,171 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
         },
         child: Stack(children: [
           Container(
-            decoration: AppDecorators.bgImage(_appTheme),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppDimensionsNew.getVerticalSizedBox(16),
-                  // Logo section
-                  AppNameAndLogoWidget(_appTheme, _appScreenText),
-                  AppDimensionsNew.getVerticalSizedBox(16),
+              decoration: AppDecorators.bgImage(_appTheme),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AppDimensionsNew.getVerticalSizedBox(16),
+                    // Logo section
+                    AppNameAndLogoWidget(_appTheme, _appScreenText),
+                    AppDimensionsNew.getVerticalSizedBox(16),
 
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: AppColorsNew.yellowAccentColor,
-                              radius: 40,
-                              child: IconButton(
-                                icon: Icon(Icons.add),
-                                onPressed: () async {
-                                  final dynamic result =
-                                      await Navigator.of(context).pushNamed(
-                                    WebRoutes.new_game_settings,
-                                  );
-                                  if (result != null) {
-                                    /* show game settings dialog */
-                                    await NewGameSettings2.show(
-                                      context,
-                                      clubCode: "",
-                                      mainGameType: result['gameType'],
-                                      subGameTypes: List.from(
-                                            result['gameTypes'],
-                                          ) ??
-                                          [],
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: AppColorsNew.yellowAccentColor,
+                                radius: 40,
+                                child: IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () async {
+                                    final dynamic result =
+                                        await Navigator.of(context).pushNamed(
+                                      WebRoutes.new_game_settings,
                                     );
-                                  }
-                                },
+                                    if (result != null) {
+                                      /* show game settings dialog */
+                                      await NewGameSettings2.show(
+                                        context,
+                                        clubCode: "",
+                                        mainGameType: result['gameType'],
+                                        subGameTypes: List.from(
+                                              result['gameTypes'],
+                                            ) ??
+                                            [],
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
-                            ),
-                            AppDimensionsNew.getVerticalSizedBox(16),
-                            Text(
-                              "Host a Game",
-                              style: AppStylesNew.valueTextStyle,
-                            ),
-                          ],
+                              AppDimensionsNew.getVerticalSizedBox(16),
+                              Text(
+                                "Host a Game",
+                                style: AppStylesNew.valueTextStyle,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 16),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              TextInputWidget.buildTextFormField(
+                                controller: _textController,
+                                validator: (_) {
+                                  if (_textController.text.isEmpty) {
+                                    return "Enter a valid game code";
+                                  }
+                                  return null;
+                                },
+                                hintText: "Enter Game code",
+                                labelText: "Game code",
+                                onInfoIconPress: () {},
+                                appTheme: _appTheme,
+                              ),
+                              const SizedBox(height: 24),
+                              ButtonWidget(
+                                  text: "Join Game",
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                      WebRoutes.game_play +
+                                          "/" +
+                                          _textController.text,
+                                    );
+                                  }),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(children: [
                       Expanded(
                         child: Column(
                           children: [
-                            TextInputWidget.buildTextFormField(
-                              controller: _textController,
-                              validator: (_) {
-                                if (_textController.text.isEmpty) {
-                                  return "Enter a valid game code";
-                                }
-                                return null;
-                              },
-                              hintText: "Enter Game code",
-                              labelText: "Game code",
-                              onInfoIconPress: () {},
-                              appTheme: _appTheme,
-                            ),
-                            const SizedBox(height: 24),
                             ButtonWidget(
-                                text: "Join Game",
+                                text: "Try It!",
                                 onTap: () {
-                                  Navigator.of(context).pushNamed(
-                                    WebRoutes.game_play +
-                                        "/" +
-                                        _textController.text,
-                                  );
+                                  startDemoGame(context);
                                 }),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          ButtonWidget(
-                              text: "Try It!",
-                              onTap: () {
-                                startDemoGame(context);
-                              }),
-                        ],
+                    ]),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Divider(
+                      height: 24,
+                      color: Colors.grey,
+                      indent: 32,
+                      endIndent: 32,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: AppColorsNew.yellowAccentColor,
+                                radius: 40,
+                                child: IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () async {},
+                                ),
+                              ),
+                              AppDimensionsNew.getVerticalSizedBox(16),
+                              Text(
+                                "Create Tournament",
+                                style: AppStylesNew.valueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: AppColorsNew.yellowAccentColor,
+                                radius: 40,
+                                child: IconButton(
+                                  icon: Icon(Icons.list),
+                                  onPressed: () async {},
+                                ),
+                              ),
+                              AppDimensionsNew.getVerticalSizedBox(16),
+                              Text(
+                                "List Tournaments",
+                                style: AppStylesNew.valueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        info,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.T3.copyWith(color: Colors.grey),
                       ),
                     ),
-                  ])
-                ],
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Text(
-              info,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.T3.copyWith(color: Colors.grey),
-            ),
-          ),
+                  ],
+                ),
+              ))
         ]));
   }
 
