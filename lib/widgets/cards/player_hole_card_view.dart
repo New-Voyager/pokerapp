@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/cards/new_card_view.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 
@@ -35,7 +36,10 @@ class PlayerHoleCardView extends StatelessWidget {
     final gameState = GameState.getState(context);
 
     Widget cardAsset;
-    if (gameState.boardAttributes.isOrientationHorizontal) {
+
+    if (PlatformUtils.isWeb) {
+      cardAsset = card.newWidget;
+    } else if (gameState.boardAttributes.isOrientationHorizontal) {
       cardAsset = SvgPicture.memory(gameState.assets
           .getHoleCard(card.cardNum, color: gameState.colorCards));
     } else {

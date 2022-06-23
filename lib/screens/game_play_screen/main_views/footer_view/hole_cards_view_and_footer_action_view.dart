@@ -237,13 +237,15 @@ class _HoleCardsViewAndFooterActionViewState
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: _buildHoleCardViewAndStraddleDialog(
-              gameState,
-              boardAttributes,
-            ),
-          ),
+          (PlatformUtils.isWeb)
+              ? SizedBox.shrink()
+              : Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildHoleCardViewAndStraddleDialog(
+                    gameState,
+                    boardAttributes,
+                  ),
+                ),
 
           /* dark overlay to show in-front of cards, when the bet widget is displayed */
           _buildDarkBackground(),

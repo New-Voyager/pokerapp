@@ -838,7 +838,7 @@ class BoardAttributesObject extends ChangeNotifier {
   double get footerViewScale {
     if (isOrientationHorizontal) {
       if (PlatformUtils.isWeb) {
-        return 0.45;
+        return 0.20;
       }
       return 0.50;
     }
