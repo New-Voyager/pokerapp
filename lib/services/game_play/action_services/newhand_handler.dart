@@ -262,8 +262,17 @@ class NewHandHandler {
         if (newHand.playersInSeats[seatNo].inhand) {
           seat.player.action.setAnte(newHand.ante);
           pot += newHand.ante;
+          seat.player.action.animateAction = false;
+          seat.player.action.animateBet = true;
         }
       }
+      for (final seatNo in newHand.playersInSeats.keys) {
+        if (newHand.playersInSeats[seatNo].inhand) {
+          final seat = gameState.getSeat(seatNo);
+          seat.notify();
+        }
+      }
+
       await Future.delayed(Duration(milliseconds: 500));
 
       for (final seatNo in newHand.playersInSeats.keys) {
@@ -284,11 +293,25 @@ class NewHandHandler {
       final sbSeat = gameState.getSeat(newHand.sbPos);
       sbSeat.player.action.sb = true;
       sbSeat.player.action.amount = gameState.gameInfo.smallBlind.toDouble();
+      seat.player.action.animateAction = false;
+      seat.player.action.animateBet = true;
+      seat.notify();
+      await Future.delayed(Duration(milliseconds: 300));
+      seat.player.action.animateAction = false;
+      seat.player.action.animateBet = false;
+      seat.notify();
 
       if (gameState.uiClosing) return;
       final bbSeat = gameState.getSeat(newHand.bbPos);
       bbSeat.player.action.bb = true;
       bbSeat.player.action.amount = gameState.gameInfo.bigBlind.toDouble();
+      bbSeat.player.action.animateAction = false;
+      bbSeat.player.action.animateBet = true;
+      bbSeat.notify();
+      await Future.delayed(Duration(milliseconds: 300));
+      bbSeat.player.action.animateAction = false;
+      bbSeat.player.action.animateBet = false;
+      bbSeat.notify();
     }
 
     if (gameState.uiClosing) return;

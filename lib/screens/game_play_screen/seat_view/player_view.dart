@@ -402,9 +402,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     widget.seat.betWidgetUIKey = GlobalKey();
 
     bool animate = widget.seat.player.action.animateAction;
-
+    bool animateBetChips = widget.seat.player.action.animateBet;
     Widget chipAmountWidget;
-
     if (gameState.hostSeatChangeInProgress) {
       chipAmountWidget = SizedBox(width: 5, height: 5);
     } else {
@@ -562,10 +561,17 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                     )
                   : shrinkedSizedBox,
 
+              animateBetChips
+                  ? _animatingChipAmount(chipAmountWidget, bet: true)
+                  : SizedBox.shrink(),
               // /* building the chip amount widget */
               animate
                   ? _animatingChipAmount(chipAmountWidget)
-                  : chipAmountWidget,
+                  : SizedBox.shrink(),
+
+              !animateBetChips && !animate
+                  ? chipAmountWidget
+                  : SizedBox.shrink(),
 
               Consumer<SeatChangeNotifier>(
                 builder: (_, scn, __) {
@@ -641,12 +647,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     );
   }
 
-  ChipAmountAnimatingWidget _animatingChipAmount(Widget chipAmountWidget) {
+  ChipAmountAnimatingWidget _animatingChipAmount(Widget chipAmountWidget,
+      {bool bet = false}) {
+    Key chipKey = ValueKey(_tableState.tableRefresh);
+    if (bet) {
+      chipKey = UniqueKey();
+    }
     return ChipAmountAnimatingWidget(
-      key: ValueKey(_tableState.tableRefresh),
+      key: chipKey,
       seatPos: widget.seat.serverSeatPos,
       child: chipAmountWidget,
       reverse: widget.seat.player.action.winner,
+      bet: bet,
     );
   }
 

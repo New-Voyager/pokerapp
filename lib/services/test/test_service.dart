@@ -407,17 +407,50 @@ class TestService {
     gameState.resetSeatActions();
   }
 
-  static void showBets() {
+  static void clearBets() {
+    BuildContext context = _context;
+
+    final gameState = Provider.of<GameState>(context, listen: false);
+    gameState.resetSeatActions();
+    gameState.notifyAllSeats();
+  }
+
+  static void showBets() async {
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);
     gameState.resetSeatActions();
     for (final seat in gameState.seats) {
       if (seat.player != null) {
+        seat.player.action.animateAction = false;
+        seat.player.action.animateBet = true;
         seat.player.action.setActionProto(ACTION.BET, 40.0);
+        seat.notify();
+        await Future.delayed(Duration(milliseconds: 300));
+        seat.player.action.animateBet = false;
+        seat.player.action.animateAction = false;
+        seat.notify();
       }
     }
-    gameState.notifyAllSeats();
+    // for (final seat in gameState.seats) {
+    //   if (seat.player != null) {
+    //     seat.player.action.animateAction = false;
+    //     seat.player.action.animateBet = false;
+    //     seat.player.action.setActionProto(ACTION.BET, 40.0);
+    //   }
+    // }
+    // gameState.notifyAllSeats();
+    // await Future.delayed(Duration(milliseconds: 300));
+    // for (final seat in gameState.seats) {
+    //   if (seat.player != null) {
+    //     if (seat.seatPos == SeatPos.topCenter1) {
+    //       seat.player.action.animateAction = true;
+    //     }
+    //   }
+    // }
+    // gameState.notifyAllSeats();
+    // await Future.delayed(Duration(milliseconds: 300));
+    // gameState.resetSeatActions();
 
     // final seat1 = gameState.getSeat(1);
     // seat1.player.action.button = true;

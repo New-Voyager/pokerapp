@@ -493,7 +493,11 @@ class PlayerActionHandler {
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
       AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
+      seat.player.action.animateBet = true;
+      seat.notify();
       await Future.delayed(Duration(milliseconds: 500));
+      seat.player.action.animateBet = false;
+      seat.notify();
     } else if (action.action == HandActions.FOLD) {
       AudioService.playFold(mute: _gameState.playerLocalConfig.mute);
       await Future.delayed(Duration(milliseconds: 500));
