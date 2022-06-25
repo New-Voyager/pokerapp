@@ -38,6 +38,7 @@ class GameUIState {
   Map<SeatPos, Offset> seatPosToOffsetMap = {};
   Map<SeatPos, Offset> seatPosCenterMap = {};
   Map<SeatPos, Offset> chipPotViewPos = Map<SeatPos, Offset>();
+  Offset betBtnPos;
 
   Map<int, Rect> cardEyes = Map<int, Rect>();
   double chipAmountScale = 1.0;

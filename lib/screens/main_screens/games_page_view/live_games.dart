@@ -458,7 +458,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   Widget getMainView(AppTheme appTheme) {
     List<Widget> secondRowChildren = [];
-    bool tournament = true;
+    bool tournament = false;
     bool logging = true;
     if (tournament) {
       secondRowChildren.addAll([
