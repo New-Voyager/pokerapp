@@ -625,32 +625,51 @@ class _FooterActionViewState extends State<FooterActionView> {
         /* on tapping on RAISE this button should highlight and show further options */
         case RAISE:
           raise = true;
-          if (!betWidgetShown) {
-            actionWidget = _buildRoundButton(
-              isSelected: _showOptions,
-              text: action.actionName,
-              onTap: () => setState(() {
-                _showOptions = !_showOptions;
-                betWidgetShown = true;
-                widget.isBetWidgetVisible?.call(_showOptions);
-              }),
-              theme: theme,
-            );
-          } else {
-            // closeButton = true;
-            actionWidget = _buildRoundButton(
-              isSelected: _showOptions,
-              text: "dummy",
-              onTap: () {
+          actionWidget = _buildRoundButton(
+            key: _betButtonKey,
+            isSelected: _showOptions,
+            text: action.actionName,
+            onTap: () {
+              if (!betWidgetShown) {
                 setState(() {
                   _showOptions = !_showOptions;
                   betWidgetShown = true;
                   widget.isBetWidgetVisible?.call(_showOptions);
                 });
-              },
-              theme: theme,
-            );
-          }
+
+                _buildBetWidget();
+              } else {
+                _betWidget.bet();
+              }
+            },
+            theme: theme,
+          );
+          // if (!betWidgetShown) {
+          //   actionWidget = _buildRoundButton(
+          //     isSelected: _showOptions,
+          //     text: action.actionName,
+          //     onTap: () => setState(() {
+          //       _showOptions = !_showOptions;
+          //       betWidgetShown = true;
+          //       widget.isBetWidgetVisible?.call(_showOptions);
+          //     }),
+          //     theme: theme,
+          //   );
+          // } else {
+          //   // closeButton = true;
+          //   actionWidget = _buildRoundButton(
+          //     isSelected: _showOptions,
+          //     text: "dummy",
+          //     onTap: () {
+          //       setState(() {
+          //         _showOptions = !_showOptions;
+          //         betWidgetShown = true;
+          //         widget.isBetWidgetVisible?.call(_showOptions);
+          //       });
+          //     },
+          //     theme: theme,
+          //   );
+          // }
           break;
       }
       actionButtons.add(actionWidget);
