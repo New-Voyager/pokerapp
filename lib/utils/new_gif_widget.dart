@@ -43,9 +43,11 @@ class _NewGifWidgetState extends State<NewGifWidget> {
       gifCategories.add(GifCategoryModel("Favourite", favouriteGifs[0]));
     }
     widget.gifSuggestions.forEach((element) async {
-      List<TenorResult> gif =
-          await TenorService.getGifsWithSearch(element, limit: 1);
-      gifCategories.add(GifCategoryModel(element, gif[0]));
+      try {
+        List<TenorResult> gif =
+            await TenorService.getGifsWithSearch(element, limit: 1);
+        gifCategories.add(GifCategoryModel(element, gif[0]));
+      } catch (err) {}
     });
   }
 
@@ -119,71 +121,73 @@ class _NewGifWidgetState extends State<NewGifWidget> {
         ],
       );
 
-  Widget categoryItem(GifCategoryModel category) => InkWell(
-        onTap: () {
-          showCategoryItems = true;
-          _gifs = [];
-          selectedCategory = category.category;
-          if (category.category == "Favourite") {
-            setState(() {
-              _gifs = GameService.fetchFavouriteGifs();
-            });
-          } else {
-            _fetchGifs(query: category.category).then(
-              (value) => setState(() {
-                _gifs = value;
-              }),
-            );
-          }
-        },
-        child: Stack(
-          children: [
-            CachedNetworkImage(
-              cacheManager: ImageCacheManager.instance,
-              imageUrl: category.gif.media.tinygif.url,
-              fit: BoxFit.cover,
-              height: double.infinity,
-              progressIndicatorBuilder: (_, __, ___) {
-                final dims = category.gif.media.gif.dims;
-                return AspectRatio(
-                  aspectRatio: dims[0].toDouble() / dims[1].toDouble(),
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: CupertinoColors.inactiveGray,
-                  ),
-                );
-              },
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0x00000000),
-                    const Color(0xFF000000),
-                  ],
-                  begin: const FractionalOffset(0.5, 0.0),
-                  end: const FractionalOffset(0.5, 1.0),
-                  stops: [0.7, 1.0],
-                  tileMode: TileMode.clamp,
+  Widget categoryItem(GifCategoryModel category) {
+    return InkWell(
+      onTap: () {
+        showCategoryItems = true;
+        _gifs = [];
+        selectedCategory = category.category;
+        if (category.category == "Favourite") {
+          setState(() {
+            _gifs = GameService.fetchFavouriteGifs();
+          });
+        } else {
+          _fetchGifs(query: category.category).then(
+            (value) => setState(() {
+              _gifs = value;
+            }),
+          );
+        }
+      },
+      child: Stack(
+        children: [
+          CachedNetworkImage(
+            cacheManager: ImageCacheManager.instance,
+            imageUrl: category.gif.previewUrl,
+            fit: BoxFit.cover,
+            height: double.infinity,
+            progressIndicatorBuilder: (_, __, ___) {
+              final dims = category.gif.media.gif.dims;
+              return AspectRatio(
+                aspectRatio: 1.0, //dims[0].toDouble() / dims[1].toDouble(),
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: CupertinoColors.inactiveGray,
                 ),
+              );
+            },
+          ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0x00000000),
+                  const Color(0xFF000000),
+                ],
+                begin: const FractionalOffset(0.5, 0.0),
+                end: const FractionalOffset(0.5, 1.0),
+                stops: [0.7, 1.0],
+                tileMode: TileMode.clamp,
               ),
             ),
-            Positioned(
-              bottom: 10,
-              left: 10,
-              child: Text(
-                category.category,
-                style: AppStylesNew.gamePlayScreenPlayerName.copyWith(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w900,
-                  // color: AppColorsNew.labelColor,
-                ),
+          ),
+          Positioned(
+            bottom: 10,
+            left: 10,
+            child: Text(
+              category.category,
+              style: AppStylesNew.gamePlayScreenPlayerName.copyWith(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w900,
+                // color: AppColorsNew.labelColor,
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildBody() => showCategories
       ? Expanded(

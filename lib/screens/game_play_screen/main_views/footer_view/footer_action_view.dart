@@ -827,17 +827,7 @@ class _FooterActionViewState extends State<FooterActionView> {
         final betButton =
             _betButtonKey.currentContext.findRenderObject() as RenderBox;
         if (betButton.size.shortestSide != 0.0) {
-          // tableGlobalTopLeft = box.localToGlobal(Offset.zero);
-          // tableSizeVn.value = box.size;
-          // tableRect = Rect.fromLTWH(
-          //   tableGlobalTopLeft.dx,
-          //   tableGlobalTopLeft.dy,
-          //   box.size.width,
-          //   box.size.height,
-          // );
-          // _tableBaseHeight = tableRect.height * 0.10;
           final gameState = GameState.getState(context);
-
           gameState.gameUIState.betBtnPos =
               betButton.localToGlobal(Offset.zero);
           log("box size ${gameState.gameUIState.betBtnPos.dx}, ${gameState.gameUIState.betBtnPos.dy}");
