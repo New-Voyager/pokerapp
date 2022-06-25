@@ -392,7 +392,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         // scale = 1.3;
       }
     }
-
     // we constrain the size to NOT shift the players widgets
     // and for large size fireworks, we use a scaling factor
     Size fireworksContainer = Size(50, 50);
@@ -402,9 +401,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     widget.seat.betWidgetUIKey = GlobalKey();
 
     bool animate = widget.seat.player.action.animateAction;
-
+    bool animateBetChips = widget.seat.player.action.animateBet;
     Widget chipAmountWidget;
-
     if (gameState.hostSeatChangeInProgress) {
       chipAmountWidget = SizedBox(width: 5, height: 5);
     } else {
@@ -419,6 +417,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         gameState: widget.gameState,
       );
     }
+
+    bool showChipAmount = true;
+    if (animateBetChips || animate) {
+      //|| widget.seat.player.action.anteBet) {
+      showChipAmount = false;
+    }
+
     return DragTarget(
       onWillAccept: (data) {
         // log("SeatChange: Player onWillAccept $data");
@@ -562,10 +567,15 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                     )
                   : shrinkedSizedBox,
 
+              animateBetChips
+                  ? _animatingChipAmount(chipAmountWidget, bet: true)
+                  : SizedBox.shrink(),
               // /* building the chip amount widget */
               animate
                   ? _animatingChipAmount(chipAmountWidget)
-                  : chipAmountWidget,
+                  : SizedBox.shrink(),
+
+              showChipAmount ? chipAmountWidget : SizedBox.shrink(),
 
               Consumer<SeatChangeNotifier>(
                 builder: (_, scn, __) {
@@ -641,12 +651,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     );
   }
 
-  ChipAmountAnimatingWidget _animatingChipAmount(Widget chipAmountWidget) {
+  ChipAmountAnimatingWidget _animatingChipAmount(Widget chipAmountWidget,
+      {bool bet = false}) {
+    Key chipKey = ValueKey(_tableState.tableRefresh);
+    if (bet) {
+      chipKey = UniqueKey();
+    }
     return ChipAmountAnimatingWidget(
-      key: ValueKey(_tableState.tableRefresh),
+      key: chipKey,
       seatPos: widget.seat.serverSeatPos,
       child: chipAmountWidget,
       reverse: widget.seat.player.action.winner,
+      bet: bet,
     );
   }
 

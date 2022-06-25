@@ -17,6 +17,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/buttons.dart';
+import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
@@ -60,6 +61,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
               theme: theme,
               context: context,
               titleText: "Tournaments",
+              showBackButton: !PlatformUtils.isWeb,
             ),
             body: loading
                 ? CircularProgressWidget(text: 'Loading...')
@@ -67,38 +69,46 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
                     create: (_) => appState.tournamentUpdateState,
                     builder: (context, child) {
                       return Consumer<TournamentUpdateState>(
-                          builder: ((context, value, child) {
-                        log('Rebuilding tournaments list');
-                        if (value.jsonMessage != null) {
-                          // update tournament item
-                          int registeredPlayersCount =
-                              value.jsonMessage['registeredPlayersCount'];
-                          int tournamentId = value.jsonMessage['tournamentId'];
-                          int activePlayersCount =
-                              value.jsonMessage['playersCount'];
-                          String status = value.jsonMessage['status'];
+                        builder: ((context, value, child) {
+                          log('Rebuilding tournaments list');
+                          if (value.jsonMessage != null) {
+                            // update tournament item
+                            int registeredPlayersCount =
+                                value.jsonMessage['registeredPlayersCount'];
+                            int tournamentId =
+                                value.jsonMessage['tournamentId'];
+                            int activePlayersCount =
+                                value.jsonMessage['playersCount'];
+                            String status = value.jsonMessage['status'];
 
-                          for (final tournament in tournaments) {
-                            if (tournament.tournamentId == tournamentId) {
-                              tournament.registeredPlayersCount =
-                                  registeredPlayersCount;
-                              tournament.activePlayersCount =
-                                  activePlayersCount;
-                              tournament.status =
-                                  TournamentStatusSerialization.fromJson(
-                                      status);
-                              break;
+                            for (final tournament in tournaments) {
+                              if (tournament.tournamentId == tournamentId) {
+                                tournament.registeredPlayersCount =
+                                    registeredPlayersCount;
+                                tournament.activePlayersCount =
+                                    activePlayersCount;
+                                tournament.status =
+                                    TournamentStatusSerialization.fromJson(
+                                        status);
+                                break;
+                              }
                             }
                           }
-                        }
-                        return ListView.builder(
-                            itemCount: tournaments.length,
-                            itemBuilder: (context, index) {
-                              TournamentListItem tournament =
-                                  tournaments[index];
-                              return _buildItem(tournament, theme);
-                            });
-                      }));
+                          return Center(
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: AppDimensionsNew.maxWidth),
+                              child: ListView.builder(
+                                  itemCount: tournaments.length,
+                                  itemBuilder: (context, index) {
+                                    TournamentListItem tournament =
+                                        tournaments[index];
+                                    return _buildItem(tournament, theme);
+                                  }),
+                            ),
+                          );
+                        }),
+                      );
                     }),
           ),
         ),
@@ -163,26 +173,88 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${tournament.name} (${tournament.tournamentId})'),
-                    Text("Registered " +
-                        tournament.registeredPlayersCount.toString()),
-                    Text("Joined/active " +
-                        tournament.activePlayersCount.toString()),
-                    Text("Status " + status),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${tournament.name}  ',
+                          style: AppDecorators.getHeadLine3Style(theme: theme),
+                        ),
+                        Text(
+                          "#${tournament.tournamentId}",
+                          style: AppDecorators.getHeadLine4Style(theme: theme),
+                        )
+                      ],
+                    ),
+                    Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Registered ",
+                              style:
+                                  AppDecorators.getSubtitle1Style(theme: theme),
+                            ),
+                            Text(
+                              tournament.registeredPlayersCount.toString(),
+                              style: AppDecorators.getAccentTextStyle(
+                                  theme: theme),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Joined/active ",
+                              style:
+                                  AppDecorators.getSubtitle1Style(theme: theme),
+                            ),
+                            Text(
+                              tournament.activePlayersCount.toString(),
+                              style: AppDecorators.getAccentTextStyle(
+                                  theme: theme),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: Colors.transparent,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Status ",
+                          style: AppDecorators.getSubtitle1Style(theme: theme),
+                        ),
+                        Text(
+                          status,
+                          style: AppDecorators.getAccentTextStyle(theme: theme),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: options,
-                  ))
+              Visibility(
+                visible: options.length > 0,
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: options,
+                    )),
+              )
             ]),
           )
         ],

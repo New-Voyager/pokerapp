@@ -338,11 +338,13 @@ class PlayerActedState {
   double _amount = 0.0;
   bool _show = false;
   bool _animate = false;
+  bool _animateBet = false;
   bool _winner = false;
   bool _sb = false;
   bool _bb = false;
   bool _straddle = false;
   bool _button = false;
+  bool _anteBet = false;
 
   PlayerActedState() {
     reset();
@@ -355,6 +357,13 @@ class PlayerActedState {
   get animateAction => this._animate;
 
   set animateAction(bool v) => this._animate = v;
+
+  get animateBet => this._animateBet;
+
+  set animateBet(bool v) => this._animateBet = v;
+
+  get anteBet => this._anteBet;
+  set anteBet(bool anteBet) => this._anteBet = anteBet;
 
   get show => this._show;
 
@@ -481,6 +490,8 @@ class PlayerActedState {
     _bb = false;
     _button = false;
     _straddle = false;
+    _animateBet = false;
+    _anteBet = false;
     if (!(stickAction ?? false)) _playerAction = HandActions.NONE;
   }
 }

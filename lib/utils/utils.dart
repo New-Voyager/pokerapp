@@ -7,7 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:ios_utsname_ext/extension.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournament_settings.dart';
+import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/platform.dart';
+import 'package:provider/provider.dart';
 
 const _cacheStalePeriod = const Duration(days: 1);
 const _maxCacheObjects = 50;
@@ -482,3 +486,15 @@ class ProfileClass {
 }
 
 ProfileClass Profile = ProfileClass();
+
+// Create a tournemnt
+Future<int> hostTournament(BuildContext context) async {
+  int tournamentId = await TournamentSettingsView.show(
+    context,
+  );
+  if (tournamentId == null) return null;
+  Alerts.showNotification(titleText: 'Tournament: $tournamentId is created');
+  final natsClient = Provider.of<Nats>(context, listen: false);
+  natsClient.subscribeTournamentMessages(tournamentId);
+  return tournamentId;
+}

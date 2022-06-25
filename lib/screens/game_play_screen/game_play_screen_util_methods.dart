@@ -62,6 +62,30 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Bets',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.showBets();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Clear Bets',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.clearBets();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Distribute Cards',
           labelBackgroundColor: Colors.black,
           onTap: () {

@@ -32,6 +32,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/textfields.dart';
@@ -314,15 +315,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     }
   }
 
-  Future<void> hostTournament() async {
-    int tournamentId = await TournamentSettingsView.show(
-      context,
-    );
-    Alerts.showNotification(titleText: 'Tournament: $tournamentId is created');
-    final natsClient = Provider.of<Nats>(context, listen: false);
-    natsClient.subscribeTournamentMessages(tournamentId);
-  }
-
   void _handleGameRefresh(AppState appState) {
     if (!mounted) return;
     final int currentIndex = appState.currentIndex;
@@ -466,7 +458,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   Widget getMainView(AppTheme appTheme) {
     List<Widget> secondRowChildren = [];
-    bool tournament = true;
+    bool tournament = false;
     bool logging = true;
     if (tournament) {
       secondRowChildren.addAll([
@@ -474,7 +466,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             alignment: Alignment.centerLeft,
             child: RoundRectButton(
               onTap: () async {
-                hostTournament();
+                await hostTournament(context);
               },
               text: 'Host Tournament', //_appScreenText["host"],
               theme: appTheme,
