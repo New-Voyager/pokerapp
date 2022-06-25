@@ -266,4 +266,12 @@ class AppDecorators {
           )
         ],
       );
+
+  static getLabelTextStyle(AppTheme theme) {
+    return TextStyle(
+      color: theme.greyColor,
+      fontSize: 10.dp,
+      fontWeight: FontWeight.w300,
+    );
+  }
 }
