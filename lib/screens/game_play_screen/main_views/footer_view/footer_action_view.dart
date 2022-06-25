@@ -749,7 +749,15 @@ class _FooterActionViewState extends State<FooterActionView> {
     final boardAttributes = context.read<BoardAttributesObject>();
     final gameState = GameState.getState(context);
     final me = gameState.me;
-
+    double bottom = 0;
+    final height = Screen.height;
+    final width = Screen.width;
+    if (gameState.gameUIState.betBtnPos != null) {
+      bottom = MediaQuery.of(context).size.height -
+          gameState.gameUIState.betBtnPos.dy;
+    } else {
+      bottom = Screen.height - 20.ph;
+    }
     _betWidget = BetWidgetNew(
       gameState: gameState,
       seat: gameState.mySeat,
@@ -776,8 +784,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             child: Stack(
               children: [
                 Positioned(
-                  bottom: MediaQuery.of(context).size.height -
-                      gameState.gameUIState.betBtnPos.dy,
+                  bottom: bottom,
                   child: Provider<GameState>(
                     create: (_) => gameState,
                     builder: (context, _) {
@@ -822,6 +829,10 @@ class _FooterActionViewState extends State<FooterActionView> {
   @override
   void initState() {
     super.initState();
+    initializeBetPos();
+  }
+
+  void initializeBetPos() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       while (true) {
         final betButton =
@@ -849,6 +860,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     final boardAttributes = context.read<BoardAttributesObject>();
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
+    initializeBetPos();
     final me = gameState.me;
     return IntrinsicHeight(
       child: Container(
