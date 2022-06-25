@@ -180,6 +180,10 @@ class WebRoutes {
       }
       log("GameCode: $gameCodeFromUrl");
     }
+    if (settings.arguments != null) {
+      Map<String, dynamic> args = settings.arguments;
+      gameCodeFromUrl = args['gameCode'];
+    }
     log("Got Webroute: ${settings.name}");
 
     switch (routeName) {

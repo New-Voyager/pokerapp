@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/tournament_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/platform.dart';
+import 'package:pokerapp/web-routes.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 
@@ -333,13 +334,25 @@ class _TournamentTablesViewState extends State<TournamentTablesView> {
               return InkWell(
                 onTap: () {
                   String gameCode = 't-${widget.tournamentId}-${table.tableNo}';
-                  // go to game screen from here
-                  Navigator.of(context).pushNamed(
-                    Routes.game_play,
-                    arguments: {
-                      'gameCode': gameCode,
-                    },
-                  );
+                  log('gameCode: $gameCode');
+
+                  if (PlatformUtils.isWeb) {
+                    // go to game screen from here
+                    Navigator.of(context).pushNamed(
+                      WebRoutes.game_play,
+                      arguments: {
+                        'gameCode': gameCode,
+                      },
+                    );
+                  } else {
+                    // go to game screen from here
+                    Navigator.of(context).pushNamed(
+                      Routes.game_play,
+                      arguments: {
+                        'gameCode': gameCode,
+                      },
+                    );
+                  }
                 },
                 child: Container(
                     padding: EdgeInsets.all(10),
