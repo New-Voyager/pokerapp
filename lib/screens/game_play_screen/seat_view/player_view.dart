@@ -392,7 +392,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         // scale = 1.3;
       }
     }
-
     // we constrain the size to NOT shift the players widgets
     // and for large size fireworks, we use a scaling factor
     Size fireworksContainer = Size(50, 50);
@@ -418,6 +417,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         gameState: widget.gameState,
       );
     }
+
+    bool showChipAmount = true;
+    if (animateBetChips || animate) {
+      //|| widget.seat.player.action.anteBet) {
+      showChipAmount = false;
+    }
+
     return DragTarget(
       onWillAccept: (data) {
         // log("SeatChange: Player onWillAccept $data");
@@ -569,9 +575,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   ? _animatingChipAmount(chipAmountWidget)
                   : SizedBox.shrink(),
 
-              !animateBetChips && !animate
-                  ? chipAmountWidget
-                  : SizedBox.shrink(),
+              showChipAmount ? chipAmountWidget : SizedBox.shrink(),
 
               Consumer<SeatChangeNotifier>(
                 builder: (_, scn, __) {

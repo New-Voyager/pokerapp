@@ -344,6 +344,7 @@ class PlayerActedState {
   bool _bb = false;
   bool _straddle = false;
   bool _button = false;
+  bool _anteBet = false;
 
   PlayerActedState() {
     reset();
@@ -360,6 +361,9 @@ class PlayerActedState {
   get animateBet => this._animateBet;
 
   set animateBet(bool v) => this._animateBet = v;
+
+  get anteBet => this._anteBet;
+  set anteBet(bool anteBet) => this._anteBet = anteBet;
 
   get show => this._show;
 
@@ -487,6 +491,7 @@ class PlayerActedState {
     _button = false;
     _straddle = false;
     _animateBet = false;
+    _anteBet = false;
     if (!(stickAction ?? false)) _playerAction = HandActions.NONE;
   }
 }

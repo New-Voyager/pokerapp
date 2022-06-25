@@ -228,6 +228,19 @@ class _FooterViewState extends State<FooterView>
         /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
         final mee = gameState.me;
 
+        gameState.gameUIState.holeCardsViewSize =
+            (gameState.getBoardAttributes(context).isOrientationHorizontal)
+                ? Size(MediaQuery.of(context).size.width - 80,
+                    gameState.gameUIState.holeCardsViewSize.height)
+                : Size(MediaQuery.of(context).size.width,
+                    gameState.gameUIState.holeCardsViewSize.height);
+        return Center(
+          child: HoleCardsViewAndFooterActionView(
+            playerModel: mee,
+            isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+          ),
+        );
+
         if (gameState.gameInfo.status != AppConstants.GAME_CONFIGURED &&
             mee == null &&
             !gameState.customizationMode) {
@@ -585,6 +598,7 @@ class _FooterViewState extends State<FooterView>
       if (PlatformUtils.isWeb) {
         children.add(_buildMainView(gameState));
       }
+      children.add(_buildMainView(gameState));
       /* hand analyse view */
       children.add(_buildHandAnalyseView(context));
       /* communication widgets */
