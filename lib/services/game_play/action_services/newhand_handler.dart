@@ -316,14 +316,13 @@ class NewHandHandler {
 
     if (!newHand.bombPot) {
       final sbSeat = gameState.getSeat(newHand.sbPos);
-      sbSeat.player.action.sb = true;
-      sbSeat.player.action.amount = gameState.gameInfo.smallBlind.toDouble();
-      seat.player.action.animateAction = false;
-      seat.player.action.animateBet = true;
-      // seat.notify();
-      // await Future.delayed(Duration(milliseconds: 300));
-      // seat.player.action.animateAction = false;
-      // seat.player.action.animateBet = false;
+      if (sbSeat.player.inhand) {
+        sbSeat.player.action.sb = true;
+        sbSeat.player.action.amount = gameState.gameInfo.smallBlind.toDouble();
+        sbSeat.player.action.animateAction = false;
+        sbSeat.player.action.animateBet = true;
+        sbSeat.notify();
+      }
 
       if (gameState.uiClosing) return;
       final bbSeat = gameState.getSeat(newHand.bbPos);
@@ -331,16 +330,17 @@ class NewHandHandler {
       bbSeat.player.action.amount = gameState.gameInfo.bigBlind.toDouble();
       bbSeat.player.action.animateAction = false;
       bbSeat.player.action.animateBet = true;
-      seat.notify();
       bbSeat.notify();
       // play the bet sound effect
       AudioService.playBet(mute: gameState.playerLocalConfig.mute);
       await Future.delayed(Duration(milliseconds: 300));
       bbSeat.player.action.animateAction = false;
       bbSeat.player.action.animateBet = false;
-      seat.player.action.animateAction = false;
-      seat.player.action.animateBet = false;
-      seat.notify();
+      if (sbSeat.player.inhand) {
+        sbSeat.player.action.animateAction = false;
+        sbSeat.player.action.animateBet = false;
+      }
+      sbSeat.notify();
       bbSeat.notify();
     }
 

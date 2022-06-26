@@ -95,9 +95,17 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
       valueListenable: widget.chatMessageHolder,
       builder: (_, ChatMessage chatMessage, __) {
         if (chatMessage == null) return const SizedBox.shrink();
-        if (widget.gameState.chatScreenVisible) {
-          return const SizedBox.shrink();
-        }
+
+        log('In chat widget chat visible: ${widget.gameState.chatScreenVisible}');
+        // if (widget.gameState.chatScreenVisible) {
+        //   return const SizedBox.shrink();
+        // }
+
+        // return Container(
+        //   width: 100,
+        //   height: 100,
+        //   color: Colors.red,
+        // );
 
         return Card(
           color: Colors.transparent,
@@ -110,7 +118,7 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
                   clipper: ChatBubbleClipper1(
                     type: BubbleType.receiverBubble,
                   ),
-                  backGroundColor: theme.secondaryColorWithDark(0.60),
+                  backGroundColor: theme.secondaryColorWithDark(0.40),
                   padding: (chatMessage.text != null)
                       ? null
                       : const EdgeInsets.only(
@@ -125,7 +133,8 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
                       : chatMessage.text != null
                           ? Text(
                               _getModifiedText(chatMessage.text),
-                              style: TextStyle(color: Colors.white),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
                             )
                           : AnimatedScale(
                               scale: gifScale,

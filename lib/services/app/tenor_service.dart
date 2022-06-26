@@ -32,7 +32,9 @@ class TenorService {
     );
 
     /* return from cache if not NULL */
-    // if (cacheResults != null && cacheResults.length > 0) return cacheResults;
+    if (cacheResults != null && cacheResults.length > 0) {
+      return cacheResults;
+    }
 
     TenorResponse res = await tenor.searchGIF(
       query,

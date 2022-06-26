@@ -35,47 +35,45 @@ class GifListWidget extends StatelessWidget {
           ),
           itemBuilder: (_, int index) {
             final TenorResult gif = gifs[index];
-
-            if (gif.media.gif == null) return const SizedBox.shrink();
-
-            final String url = gif.itemurl;
-
             /* the preview URL can be a local one: from cache */
-            final String previewUrl =
-                gif.itemurl; //.cache ?? gif.media.tinygif.url;
-
-            final bool isLocal = gif.cache != null;
+            final String previewUrl = gif.previewUrl;
 
             /* we use this dimension to show the placeholder */
-            final Size gifSize = Size(
-              gif.media.gif.dims[0].toDouble(),
-              gif.media.gif.dims[1].toDouble(),
-            );
+            Size gifSize = gif.size;
+            if (gifSize == null) {
+              gifSize = Size(50, 50);
+            }
+
+            Widget image;
+            if (gif.cache != null) {
+              image = Image.file(File(gif.cache));
+            } else {
+              image = CachedNetworkImage(
+                imageUrl: previewUrl,
+                cacheManager: ImageCacheManager.instance,
+                progressIndicatorBuilder: (
+                  context,
+                  url,
+                  downloadProgress,
+                ) =>
+                    AspectRatio(
+                  aspectRatio: gifSize.width / gifSize.height,
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: CupertinoColors.inactiveGray,
+                  ),
+                ),
+              );
+            }
 
             Widget mainGifWidget = GestureDetector(
-              // WE SEND BACK THE PREVIEW URL AS WE DONT CARE ABOUT
-              // GOOD QUALITY GIFS
-              onTap: () => onGifSelect(isLocal ? url : previewUrl),
-              child: isLocal
-                  ? Image.file(File(previewUrl))
-                  : CachedNetworkImage(
-                      imageUrl: previewUrl,
-                      cacheManager: ImageCacheManager.instance,
-                      progressIndicatorBuilder: (
-                        context,
-                        url,
-                        downloadProgress,
-                      ) =>
-                          AspectRatio(
-                        aspectRatio: gifSize.width / gifSize.height,
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          color: CupertinoColors.inactiveGray,
-                        ),
-                      ),
-                    ),
-            );
+                // WE SEND BACK THE PREVIEW URL AS WE DONT CARE ABOUT
+                // GOOD QUALITY GIFS
+                onTap: () {
+                  onGifSelect(previewUrl);
+                },
+                child: image);
 
             if (onRemoveBookMark != null)
               return Stack(

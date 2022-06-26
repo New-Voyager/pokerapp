@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
@@ -34,27 +37,36 @@ class _NewGifWidgetState extends State<NewGifWidget> {
   String selectedCategory = '';
   List<GifCategoryModel> gifCategories = [];
   List<TenorResult> _gifs = [];
+  bool loading = false;
 
   /// SERVICE FUNCTIONS
 
   _fetchGifCategories() async {
-    List<TenorResult> favouriteGifs = GameService.fetchFavouriteGifs();
+    // if (appState.memeCache != null) {
+    //   gifCategories = appState.memeCache;
+    //   return;
+    // }
+
+    List<TenorResult> favouriteGifs = await GameService.fetchFavouriteGifs();
     if (favouriteGifs.length != 0) {
       gifCategories.add(GifCategoryModel("Favourite", favouriteGifs[0]));
     }
-    widget.gifSuggestions.forEach((element) async {
+    for (final element in widget.gifSuggestions) {
       try {
         List<TenorResult> gif =
             await TenorService.getGifsWithSearch(element, limit: 1);
         gifCategories.add(GifCategoryModel(element, gif[0]));
       } catch (err) {}
-    });
+    }
+    log('Gif categories: ${gifCategories.length}');
   }
 
   Future<List<TenorResult>> _fetchGifs({String query}) async {
     setState(() => _gifs = null);
 
-    if (query == null || query.isEmpty) return TenorService.getTrendingGifs();
+    if (query == null || query.isEmpty) {
+      return TenorService.getTrendingGifs();
+    }
 
     // else fetch from search
     return TenorService.getGifsWithSearch(query);
@@ -122,6 +134,43 @@ class _NewGifWidgetState extends State<NewGifWidget> {
       );
 
   Widget categoryItem(GifCategoryModel category) {
+    String imageUrl = category.gif.previewUrl;
+    Widget image;
+    if (category.gif.cache != null) {
+      //imageUrl = 'file://${category.gif.cache}';
+      double ratio = 0;
+      if (category.gif.size != null) {
+        ratio = category.gif.size.width / category.gif.size.height;
+      }
+
+      image = Image.file(
+        File(category.gif.cache),
+        fit: BoxFit.cover,
+        height: double.infinity,
+      );
+    } else {
+      image = CachedNetworkImage(
+        cacheManager: ImageCacheManager.instance,
+        imageUrl: imageUrl,
+        fit: BoxFit.cover,
+        height: double.infinity,
+        progressIndicatorBuilder: (_, __, ___) {
+          //final dims = category.gif.media.gif.dims;
+          double ratio = 0;
+          if (category.gif.size != null) {
+            ratio = category.gif.size.width / category.gif.size.height;
+          }
+          return AspectRatio(
+            aspectRatio: ratio,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: CupertinoColors.inactiveGray,
+            ),
+          );
+        },
+      );
+    }
     return InkWell(
       onTap: () {
         showCategoryItems = true;
@@ -141,23 +190,7 @@ class _NewGifWidgetState extends State<NewGifWidget> {
       },
       child: Stack(
         children: [
-          CachedNetworkImage(
-            cacheManager: ImageCacheManager.instance,
-            imageUrl: category.gif.previewUrl,
-            fit: BoxFit.cover,
-            height: double.infinity,
-            progressIndicatorBuilder: (_, __, ___) {
-              final dims = category.gif.media.gif.dims;
-              return AspectRatio(
-                aspectRatio: 1.0, //dims[0].toDouble() / dims[1].toDouble(),
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: CupertinoColors.inactiveGray,
-                ),
-              );
-            },
-          ),
+          image,
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -236,7 +269,10 @@ class _NewGifWidgetState extends State<NewGifWidget> {
   }
 
   _init() async {
+    loading = true;
     await _fetchGifCategories();
+    log('Gif categories: ${gifCategories.length}');
+    loading = false;
     setState(() {});
   }
 
@@ -258,8 +294,11 @@ class _NewGifWidgetState extends State<NewGifWidget> {
                   child: Divider(color: Colors.grey),
                 ),
 
-                // body
-                _buildBody(),
+                loading
+                    ? Center(child: Text('Loading'))
+                    :
+                    // body
+                    _buildBody(),
               ],
             )
           : Column(
