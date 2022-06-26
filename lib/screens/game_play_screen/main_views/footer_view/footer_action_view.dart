@@ -277,15 +277,15 @@ class _FooterActionViewState extends State<FooterActionView> {
                 : theme.supportingColor);
     Color btnColor = theme.accentColor;
     if (text.toLowerCase().contains("fold")) {
-      btnColor = Colors.red.shade400;
+      btnColor = Colors.blueGrey;
     } else if (text.toLowerCase().contains("call")) {
       btnColor = Colors.green.shade600;
     } else if (text.toLowerCase().contains("bet")) {
-      btnColor = Colors.yellow.shade700;
+      btnColor = Color.fromARGB(255, 188, 162, 59);
     } else if (text.toLowerCase().contains("check")) {
       btnColor = Colors.green.shade700;
     } else if (text.toLowerCase().contains("raise")) {
-      btnColor = Colors.green.shade700;
+      btnColor = Colors.red.shade700;
     } else if (text.toLowerCase().contains("dummy")) {
       return Container(
         height: 32.ph,
