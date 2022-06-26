@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/build_info.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/screen_attributes.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
@@ -41,14 +42,31 @@ class HelpScreen extends StatelessWidget {
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                      child: Image.asset(
-                        AppAssetsNew.logoImage,
-                        height: size.height / 5,
-                        width: size.height / 5,
+                    GestureDetector(
+                      onLongPressDown: (details) {
+                        if (appState.debugMode) {
+                          appState.debugMode = false;
+                          Alerts.showNotification(
+                              titleText: 'Debug',
+                              subTitleText: 'Debug mode is disabled',
+                              leadingIcon: Icons.bug_report);
+                        } else {
+                          appState.debugMode = true;
+                          Alerts.showNotification(
+                              titleText: 'Debug',
+                              subTitleText: 'Debug mode is enabled',
+                              leadingIcon: Icons.bug_report);
+                        }
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+                        child: Image.asset(
+                          AppAssetsNew.logoImage,
+                          height: size.height / 5,
+                          width: size.height / 5,
+                        ),
                       ),
                     ),
                     Container(

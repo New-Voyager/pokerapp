@@ -1323,14 +1323,16 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
 
                               /* sep */
                               NewGameSettings2.sepV8,
-                              _buildRadio(
-                                label: appScreenText['botGame'],
-                                value: gmp.botGame,
-                                onChange: (bool b) {
-                                  gmp.botGame = b;
-                                },
-                                theme: theme,
-                              ),
+                              appState.debugMode
+                                  ? _buildRadio(
+                                      label: appScreenText['botGame'],
+                                      value: gmp.botGame,
+                                      onChange: (bool b) {
+                                        gmp.botGame = b;
+                                      },
+                                      theme: theme,
+                                    )
+                                  : SizedBox.shrink(),
                               /* location check */
                               _buildRadio(
                                 label: appScreenText['locationCheck'],

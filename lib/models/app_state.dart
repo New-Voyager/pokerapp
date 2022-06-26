@@ -19,6 +19,7 @@ class AppState extends ChangeNotifier {
   bool newGame = false;
   bool gameEnded = false;
   bool isInGameScreen = false;
+  bool debugMode = false;
   Flavor _currentFlavor;
   PendingApprovalsState buyinApprovals = PendingApprovalsState();
   ClubsUpdateState clubUpdateState = ClubsUpdateState();

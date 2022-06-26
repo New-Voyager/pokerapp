@@ -427,8 +427,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   Widget build(BuildContext context) {
     _handleGameRefresh(appState);
 
-    return Consumer<AppTheme>(
-      builder: (_, appTheme, __) {
+    return Consumer2<AppTheme, AppState>(
+      builder: (_, appTheme, appState, __) {
         //List<OnboardingStep> steps = getOnboardingSteps(appTheme);
         List<OnboardingStep> steps = [];
         Widget mainView = getMainView(appTheme);
@@ -459,6 +459,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   Widget getMainView(AppTheme appTheme) {
     List<Widget> secondRowChildren = [];
     bool tournament = false;
+    if (appState.debugMode) {
+      tournament = true;
+    }
     bool logging = true;
     if (tournament) {
       secondRowChildren.addAll([
