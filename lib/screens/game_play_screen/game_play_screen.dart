@@ -20,6 +20,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_objects.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_oval.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_vertical.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
@@ -363,6 +364,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // padding = EdgeInsets.only(bottom: footerHeight / 3);
       }
     }
+    boardView = BoardViewOval(
+      gameComService: gameContextObj?.gameComService,
+      gameInfo: gameInfo,
+      onUserTap: onJoinGame,
+      onStartGame: startGame,
+    );
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(

@@ -45,6 +45,7 @@ class PlayerHoleCardView extends StatelessWidget {
     } else {
       cardAsset = card.newWidget;
     }
+
     //final cardAsset = SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg');
     return Stack(
       fit: StackFit.expand,

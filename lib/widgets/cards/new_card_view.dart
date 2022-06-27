@@ -19,9 +19,8 @@ class CardViewNew extends StatelessWidget {
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      // log(constraints.maxHeight.toString() + "loll");
-
       double cardWidth = constraints.maxWidth;
+      double cardHeight = constraints.maxHeight;
       String label = card.label;
       if (card.label == 'T') {
         label = '10';
@@ -41,68 +40,84 @@ class CardViewNew extends StatelessWidget {
         child: Stack(
           children: [
             Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: (cardWidth < 69) ? 4.0 : 8.0,
-                  left: (cardWidth < 69) ? 4.0 : 8.0,
-                  bottom: (cardWidth < 69) ? 0 : 2.0,
-                  right: (cardWidth < 69) ? 1 : 2.0,
-                ),
+                alignment: Alignment.bottomRight,
                 child: hasCardFace
-                    ? Image.asset(cardFace)
-                    : Text(
-                        card.suit,
-                        style: TextStyle(
-                          color: card.color,
-                          fontSize: cardWidth < 69 ? 24.0 : 45.0,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.normal,
-                          fontFamily: '',
-                        ),
-                      ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: (cardWidth < 69) ? 2.0 : 15.0,
-                  top: (cardWidth < 69) ? 4.0 : 20.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      // color: Colors.red,
-                      height: cardWidth < 69 ? 14 : 40,
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          color: card.color,
-                          height: 0.9,
-                          fontSize: cardWidth < 69 ? 18.0 : 50,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kurale',
-                        ),
-                      ),
-                    ),
-                    cardWidth < 69
-                        ? SizedBox.shrink()
-                        : SizedBox(
-                            height: 2,
+                    ? SizedBox(
+                        width: cardWidth / 1.3,
+                        child: FittedBox(
+                            alignment: Alignment.bottomRight,
+                            child: Image.asset(
+                              cardFace,
+                              alignment: Alignment.bottomRight,
+                              fit: BoxFit.contain,
+                            )),
+                      )
+                    : SizedBox(
+                        width: cardWidth / 2,
+                        child: FittedBox(
+                          alignment: Alignment.bottomRight,
+                          child: Text(
+                            card.suit,
+                            style: TextStyle(
+                              color: card.color,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.normal,
+                              fontFamily: '',
+                            ),
                           ),
-                    Text(
-                      card.suit,
-                      style: TextStyle(
-                        color: card.color,
-                        fontSize: cardWidth < 69 ? 12.0 : 30,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.normal,
-                        fontFamily: '',
+                        ),
+                      )),
+            Container(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: cardWidth / 10,
+                    top: cardWidth / 7,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: cardWidth / 2.7,
+                        height: cardWidth / 2.7,
+                        child: FittedBox(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            label,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              height: 0.9,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Kurale',
+                              color: card.color,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: cardHeight / 18,
+                      ),
+                      SizedBox(
+                        width: cardWidth / 3.7,
+                        height: cardWidth / 3.7,
+                        child: FittedBox(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            card.suit,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              height: 0.9,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: '',
+                              fontStyle: FontStyle.normal,
+                              color: card.color,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
