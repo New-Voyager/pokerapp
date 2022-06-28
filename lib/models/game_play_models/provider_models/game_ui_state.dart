@@ -106,7 +106,75 @@ class GameUIState {
     double namePlateWidth = NamePlateWidgetParent.namePlateSize.width;
     double namePlateHeight = NamePlateWidgetParent.namePlateSize.height;
 
-    if (GameState.getState(boardKey.currentContext)
+    if (PlatformUtils.isWeb) {
+      if (GameState.getState(boardKey.currentContext)
+          .getBoardAttributes(boardKey.currentContext)
+          .isOrientationHorizontal) {
+        // top left
+        left = widthGap - topRowAdjust;
+        top = heightGap * 2;
+        topLeftLeft = left;
+        seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
+
+        // top right
+        left = (topLeftLeft + table.width + 2 * topRowAdjust) -
+            namePlateWidth * 1.82;
+        top = heightGap * 2;
+        seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
+
+        // top center 1
+        double remainingWidth = seatPosToOffsetMap[SeatPos.topRight].dx -
+            (seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth);
+        remainingWidth = (remainingWidth - (2 * namePlateWidth));
+        double gap = remainingWidth / 3;
+
+        double topCenter1Left =
+            seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth + gap / 1.5;
+        top = (heightGap - namePlateHeight);
+        seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
+
+        // top center 2
+        double topCenter2Left = seatPosToOffsetMap[SeatPos.topCenter1].dx +
+            namePlateWidth +
+            gap / 2 +
+            gap;
+        seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
+
+        // top center
+        left = (pot.width / 2) - namePlateWidth / 2;
+        seatPosToOffsetMap[SeatPos.topCenter] = Offset(left, top);
+
+        // bottom left
+        left = widthGap + namePlateWidth / 2;
+        top = pot.height - namePlateHeight - heightGap;
+        seatPosToOffsetMap[SeatPos.bottomLeft] = Offset(left, top);
+
+        // bottom center
+        left = (pot.width / 2) - namePlateWidth / 2;
+        top = pot.height - namePlateHeight;
+        seatPosToOffsetMap[SeatPos.bottomCenter] = Offset(left, top);
+
+        // bottom right
+        left = topLeftLeft + table.width - namePlateWidth * 2.25;
+        top = pot.height - namePlateHeight - heightGap;
+        seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
+
+        double remainingHeight = seatPosToOffsetMap[SeatPos.bottomLeft].dy -
+            (seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight);
+        gap = (remainingHeight / 3.5);
+
+        // middle left
+        left = -namePlateWidth / 1.5;
+        top = seatPosToOffsetMap[SeatPos.topLeft].dy +
+            namePlateHeight +
+            gap * 1.75;
+        seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
+
+        // middle right
+        left = pot.width - namePlateWidth * 1.15;
+        seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
+      }
+    } else if (GameState.getState(boardKey.currentContext)
         .getBoardAttributes(boardKey.currentContext)
         .isOrientationHorizontal) {
       // top left
@@ -372,7 +440,8 @@ class GameUIState {
     } else if (cardsLength == 6) {
       cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 10;
       if (Screen.isLargeScreen) {
-        cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width * 0.1;
+        cardsDisplacement =
+            gameState.gameUIState.holeCardsViewSize.width * 0.12;
       }
     }
 

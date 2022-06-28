@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -6,6 +7,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
@@ -13,6 +16,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
+import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
 import 'package:provider/provider.dart';
 
 import '../models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -113,6 +117,19 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
       );
     }
 
+    double cardsPos = -70;
+    bool leftAlign = true;
+
+    if (widget.seat.seatPos == SeatPos.topLeft ||
+        widget.seat.seatPos == SeatPos.middleLeft ||
+        widget.seat.seatPos == SeatPos.bottomLeft ||
+        widget.seat.seatPos == SeatPos.topCenter1 ||
+        widget.seat.seatPos == SeatPos.bottomCenter) {
+      leftAlign = true;
+    } else {
+      leftAlign = false;
+    }
+
     return Consumer3<SeatChangeNotifier, GameContextObject, AppTheme>(
       key: widget.globalKey,
       builder: (
@@ -124,14 +141,14 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
       ) {
         return Container(
           height: 60,
-          width: 100,
+          width: 150,
           clipBehavior: Clip.none,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
               Container(
                 height: 60,
-                width: 100,
+                width: 150,
                 foregroundDecoration: BoxDecoration(
                   border: Border.all(
                     width: 2,
@@ -155,19 +172,27 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
                 child: Stack(
                   children: [
                     Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: leftAlign
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 30.0),
+                        padding: leftAlign
+                            ? const EdgeInsets.only(left: 30.0)
+                            : const EdgeInsets.only(right: 30.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: leftAlign
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              playerName,
-                              style: TextStyle(
+                            FittedBox(
+                              child: Text(
+                                playerName,
+                                style: TextStyle(
                                   color: Colors.white70,
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 14.0),
+                                ),
+                              ),
                             ),
                             Text(
                               "950",
@@ -177,6 +202,7 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
                                 fontSize: 18.0,
                               ),
                             ),
+                            // _bottomWidget(context, theme),
                           ],
                         ),
                       ),
@@ -185,22 +211,83 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
                   ],
                 ),
               ),
-              Positioned(
-                left: -50,
-                child: Container(
-                  width: 100,
-                  height: 60,
-                  padding:
-                      widget.seat.isMe ? EdgeInsets.zero : EdgeInsets.all(5),
-                  child:
-                      Center(child: _buildHoleCardView(context, Container())),
-                ),
-              ),
+              leftAlign
+                  ? Positioned(
+                      left: cardsPos,
+                      child: Container(
+                        width: 100,
+                        height: 60,
+                        padding: widget.seat.isMe
+                            ? EdgeInsets.zero
+                            : EdgeInsets.all(5),
+                        child: Center(
+                            child: _buildHoleCardView(context, Container())),
+                      ),
+                    )
+                  : Positioned(
+                      right: cardsPos,
+                      child: Container(
+                        width: 100,
+                        height: 60,
+                        padding: widget.seat.isMe
+                            ? EdgeInsets.zero
+                            : EdgeInsets.all(5),
+                        child: Center(
+                            child: _buildHoleCardView(context, Container())),
+                      ),
+                    ),
             ],
           ),
         );
       },
     );
+  }
+
+  Widget _bottomWidget(BuildContext context, AppTheme theme) {
+    if (widget.seat.player == null) {
+      return const SizedBox.shrink();
+    }
+
+    if (widget.seat.player.inBreak &&
+        widget.seat.player.breakTimeExpAt != null &&
+        !widget.seat.player.isMe) {
+      return GamePlayScreenUtilMethods.breakBuyIntimer(
+        context,
+        widget.seat,
+      );
+    }
+
+    if (widget.seat.player.action.action != HandActions.ALLIN &&
+        widget.seat.player.stack == 0 &&
+        widget.seat.player.buyInTimeExpAt != null &&
+        !widget.seat.player.isMe) {
+      return GamePlayScreenUtilMethods.breakBuyIntimer(context, widget.seat);
+    } else {
+      if (widget.seat.player != null) {
+        return Container(
+          height: double.infinity,
+          child: _buildPlayerStack(context, theme),
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    }
+  }
+
+  Widget _buildPlayerStack(BuildContext context, AppTheme theme) {
+    Widget _buildStackTextWidget(double stack) => FittedBox(
+          fit: BoxFit.fitHeight,
+          child: NamePlateStackText(stack),
+        );
+
+    if (widget.seat.player.reloadAnimation == true)
+      return StackReloadAnimatingWidget(
+        seat: widget.seat,
+        stackReloadState: widget.seat.player.stackReloadState,
+        stackTextBuilder: _buildStackTextWidget,
+      );
+
+    return _buildStackTextWidget(widget.seat.player.stack);
   }
 
   Widget _buildHoleCardView(BuildContext context, Widget rankText) {

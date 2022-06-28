@@ -12,12 +12,13 @@ class OvalTableView extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final tableWidth = MediaQuery.of(context).size.width * tableWidthFactor;
+    final tableHeight = MediaQuery.of(context).size.height * 0.5; //testing
     final gameState = GameState.getState(context);
 
     return Container(
       key: gameState.gameUIState.tableKey,
-      width: tableWidth,
-      height: tableWidth * 0.6,
+      width: tableHeight / 0.5,
+      height: tableHeight,
       child: Stack(
         children: [
           ClipOval(

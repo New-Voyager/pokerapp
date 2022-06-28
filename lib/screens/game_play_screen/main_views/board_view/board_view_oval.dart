@@ -77,7 +77,7 @@ class _BoardViewOvalState extends State<BoardViewOval> {
           ),
 
           Positioned(
-            bottom: NamePlateWidgetParent.namePlateSize.height,
+            // bottom: NamePlateWidgetParent.namePlateSize.height,
             child: DebugBorderWidget(
               color: Color.fromARGB(255, 203, 193, 105),
               child: OvalTableView(
