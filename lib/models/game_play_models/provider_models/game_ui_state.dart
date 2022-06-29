@@ -456,6 +456,8 @@ class GameUIState {
       return playerOnTableRectRelativeBoard;
     }
 
+    log('Recalculating players on table rect');
+
     final box = this.boardKey.currentContext.findRenderObject() as RenderBox;
     final screenSize = Screen.size;
     Offset topLeft = box.globalToLocal(Offset(tableRect.left, tableRect.top));

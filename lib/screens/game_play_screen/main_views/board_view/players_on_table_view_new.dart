@@ -470,7 +470,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   @override
   Widget build(BuildContext context) {
     Rect rect = widget.gameState.gameUIState.getPlayersOnTableRect();
-    log('PlayersOnTableViewNew Rect: ${rect}');
+    log('Build: PlayersOnTableViewNew');
+    //log('PlayersOnTableViewNew Rect: ${rect}');
     Provider.of<SeatsOnTableState>(context, listen: true);
     // this calculates the table size after drawing the table image
     widget.gameState.gameUIState.calculateTableSizePostFrame();

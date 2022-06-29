@@ -318,6 +318,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     bool openSeat = widget.seat.isOpen;
     bool isMe = widget.seat.isMe;
     bool showdown = gameState.showdown;
+    log('Build: SeatView: ${widget.seat.seatPos}');
 
     // if open seat, just show open seat widget
     if (openSeat) {

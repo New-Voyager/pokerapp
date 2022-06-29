@@ -33,6 +33,7 @@ class Screen {
   static bool initialized = false;
   final Size _size;
   final double _devicePixelRatio;
+  static double _diagonalInches;
   Screen(this._size, this._devicePixelRatio);
 
   static Screen _screen;
@@ -91,7 +92,13 @@ class Screen {
 
   static double get widthInches => inches.width;
   static double get heightInches => inches.height;
-  static double get diagonalInches => diagonal / _ppi;
+  static double get diagonalInches {
+    if (_diagonalInches != null) {
+      return _diagonalInches;
+    }
+    _diagonalInches = diagonal / _ppi;
+    return _diagonalInches;
+  }
 }
 
 class DeviceInfo {
