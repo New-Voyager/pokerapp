@@ -122,7 +122,7 @@ class AppConstants {
   );
 
   static const Duration chipAnimationDuration = const Duration(
-    milliseconds: 300,
+    milliseconds: 250,
   );
 
   static const Duration seatChangeAnimationDuration = const Duration(
