@@ -46,7 +46,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   OverlayEntry _betWidgetoverlayEntry;
   GlobalKey _betButtonKey = GlobalKey();
-  Offset _betBtnPosition;
+  //Offset _betBtnPosition;
   BetWidgetNew _betWidget;
 
   void _betOrRaise(double val) {
@@ -277,15 +277,15 @@ class _FooterActionViewState extends State<FooterActionView> {
                 : theme.supportingColor);
     Color btnColor = theme.accentColor;
     if (text.toLowerCase().contains("fold")) {
-      btnColor = Colors.red.shade400;
+      btnColor = Colors.blueGrey;
     } else if (text.toLowerCase().contains("call")) {
       btnColor = Colors.green.shade600;
     } else if (text.toLowerCase().contains("bet")) {
-      btnColor = Colors.yellow.shade700;
+      btnColor = Color.fromARGB(255, 188, 162, 59);
     } else if (text.toLowerCase().contains("check")) {
       btnColor = Colors.green.shade700;
     } else if (text.toLowerCase().contains("raise")) {
-      btnColor = Colors.green.shade700;
+      btnColor = Colors.red.shade700;
     } else if (text.toLowerCase().contains("dummy")) {
       return Container(
         height: 32.ph,
@@ -625,32 +625,51 @@ class _FooterActionViewState extends State<FooterActionView> {
         /* on tapping on RAISE this button should highlight and show further options */
         case RAISE:
           raise = true;
-          if (!betWidgetShown) {
-            actionWidget = _buildRoundButton(
-              isSelected: _showOptions,
-              text: action.actionName,
-              onTap: () => setState(() {
-                _showOptions = !_showOptions;
-                betWidgetShown = true;
-                widget.isBetWidgetVisible?.call(_showOptions);
-              }),
-              theme: theme,
-            );
-          } else {
-            // closeButton = true;
-            actionWidget = _buildRoundButton(
-              isSelected: _showOptions,
-              text: "dummy",
-              onTap: () {
+          actionWidget = _buildRoundButton(
+            key: _betButtonKey,
+            isSelected: _showOptions,
+            text: action.actionName,
+            onTap: () {
+              if (!betWidgetShown) {
                 setState(() {
                   _showOptions = !_showOptions;
                   betWidgetShown = true;
                   widget.isBetWidgetVisible?.call(_showOptions);
                 });
-              },
-              theme: theme,
-            );
-          }
+
+                _buildBetWidget();
+              } else {
+                _betWidget.bet();
+              }
+            },
+            theme: theme,
+          );
+          // if (!betWidgetShown) {
+          //   actionWidget = _buildRoundButton(
+          //     isSelected: _showOptions,
+          //     text: action.actionName,
+          //     onTap: () => setState(() {
+          //       _showOptions = !_showOptions;
+          //       betWidgetShown = true;
+          //       widget.isBetWidgetVisible?.call(_showOptions);
+          //     }),
+          //     theme: theme,
+          //   );
+          // } else {
+          //   // closeButton = true;
+          //   actionWidget = _buildRoundButton(
+          //     isSelected: _showOptions,
+          //     text: "dummy",
+          //     onTap: () {
+          //       setState(() {
+          //         _showOptions = !_showOptions;
+          //         betWidgetShown = true;
+          //         widget.isBetWidgetVisible?.call(_showOptions);
+          //       });
+          //     },
+          //     theme: theme,
+          //   );
+          // }
           break;
       }
       actionButtons.add(actionWidget);
@@ -749,7 +768,15 @@ class _FooterActionViewState extends State<FooterActionView> {
     final boardAttributes = context.read<BoardAttributesObject>();
     final gameState = GameState.getState(context);
     final me = gameState.me;
-
+    double bottom = 0;
+    final height = Screen.height;
+    final width = Screen.width;
+    if (gameState.gameUIState.betBtnPos != null) {
+      bottom = MediaQuery.of(context).size.height -
+          gameState.gameUIState.betBtnPos.dy;
+    } else {
+      bottom = Screen.height - 20.ph;
+    }
     _betWidget = BetWidgetNew(
       gameState: gameState,
       seat: gameState.mySeat,
@@ -776,9 +803,13 @@ class _FooterActionViewState extends State<FooterActionView> {
             child: Stack(
               children: [
                 Positioned(
+<<<<<<< HEAD
                   bottom: (_betBtnPosition != null)
                       ? MediaQuery.of(context).size.height - _betBtnPosition.dy
                       : MediaQuery.of(context).size.height,
+=======
+                  bottom: bottom,
+>>>>>>> master
                   child: Provider<GameState>(
                     create: (_) => gameState,
                     builder: (context, _) {
@@ -823,12 +854,16 @@ class _FooterActionViewState extends State<FooterActionView> {
   @override
   void initState() {
     super.initState();
+    initializeBetPos();
+  }
 
+  void initializeBetPos() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       while (true) {
         final betButton =
             _betButtonKey.currentContext.findRenderObject() as RenderBox;
         if (betButton.size.shortestSide != 0.0) {
+<<<<<<< HEAD
           // tableGlobalTopLeft = box.localToGlobal(Offset.zero);
           // tableSizeVn.value = box.size;
           // tableRect = Rect.fromLTWH(
@@ -841,6 +876,12 @@ class _FooterActionViewState extends State<FooterActionView> {
           _betBtnPosition = betButton.localToGlobal(Offset.zero);
           log("box size ${_betBtnPosition.dx}, ${_betBtnPosition.dy}");
           setState(() {});
+=======
+          final gameState = GameState.getState(context);
+          gameState.gameUIState.betBtnPos =
+              betButton.localToGlobal(Offset.zero);
+          log("box size ${gameState.gameUIState.betBtnPos.dx}, ${gameState.gameUIState.betBtnPos.dy}");
+>>>>>>> master
           break;
         }
         await Future.delayed(const Duration(milliseconds: 10));
@@ -859,6 +900,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     final boardAttributes = context.read<BoardAttributesObject>();
     final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
+    initializeBetPos();
     final me = gameState.me;
     return IntrinsicHeight(
       child: Container(

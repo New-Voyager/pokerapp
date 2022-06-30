@@ -76,9 +76,10 @@ class GifCacheService {
     }
 
     /* finally put the list of gif to hive box */
+    var gifList = gifs.map<String>((result) => result.toJson()).toList();
     await cacheBox.put(
       _getKey(query),
-      gifs.map<String>((result) => result.toJson()).toList(),
+      gifList,
     );
   }
 

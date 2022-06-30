@@ -37,6 +37,9 @@ class HeaderView extends StatelessWidget {
   }
 
   Widget _buildMainContent() {
+    if (!gameState.boardAttributes.isOrientationHorizontal) {
+      return SizedBox.shrink();
+    }
     return Consumer<HandInfoState>(
       builder: (_, his, __) {
         String titleText = "";
@@ -173,7 +176,7 @@ class HeaderView extends StatelessWidget {
                 BackArrowWidget(),
 
                 // center title
-                // Expanded(child: _buildMainContent()),
+                Expanded(child: _buildMainContent()),
 
                 // game menu
                 Consumer<HandInfoState>(

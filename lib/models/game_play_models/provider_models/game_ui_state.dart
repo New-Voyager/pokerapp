@@ -36,6 +36,10 @@ class GameUIState {
   Size get playerOnTableSize => _playerOnTableSize;
   double tableWidthFactor = 1.0;
   Map<SeatPos, Offset> seatPosToOffsetMap = {};
+  Map<SeatPos, Offset> seatPosCenterMap = {};
+  Map<SeatPos, Offset> chipPotViewPos = Map<SeatPos, Offset>();
+  Offset betBtnPos;
+
   Map<int, Rect> cardEyes = Map<int, Rect>();
   double chipAmountScale = 1.0;
 
@@ -413,6 +417,8 @@ class GameUIState {
     int cardsLength,
     bool isCardVisible,
   ) {
+    double adjust = 0;
+
     if (cardsLength == 2) {
       cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 3.8;
       if (Screen.isLargeScreen) {
@@ -478,10 +484,20 @@ class GameUIState {
         }
       }
     }
+    if (cardsLength == 2) {
+      adjust = 30;
+    } else if (cardsLength == 4) {
+      adjust = 20;
+    } else if (cardsLength == 5) {
+      adjust = 30;
+    } else if (cardsLength == 6) {
+      adjust = 0;
+    }
 
-    var cardWidth = gameState.gameUIState.holeCardsViewSize.width -
-        (cardsDisplacement * cardsLength);
+    var cardWidth = (gameState.gameUIState.holeCardsViewSize.width - adjust) -
+        (cardsDisplacement * (cardsLength - 1));
 
+    //cardSize = Size(cardWidth, cardWidth * 38 / 30);
     cardSize = Size(cardWidth, cardWidth * 38 / 30);
   }
 
@@ -508,6 +524,8 @@ class GameUIState {
     if (!force && playerOnTableRectRelativeBoard != null) {
       return playerOnTableRectRelativeBoard;
     }
+
+    log('Recalculating players on table rect');
 
     final box = this.boardKey.currentContext.findRenderObject() as RenderBox;
     final screenSize = Screen.size;

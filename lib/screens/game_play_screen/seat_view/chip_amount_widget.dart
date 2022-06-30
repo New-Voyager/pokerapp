@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as log;
 
 import 'package:after_layout/after_layout.dart';
 import 'package:bordered_text/bordered_text.dart';
@@ -211,12 +212,14 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
   final int seatPos;
   final Widget child;
   final bool reverse;
+  final bool bet;
 
   ChipAmountAnimatingWidget({
     Key key,
     this.seatPos,
     this.child,
     this.reverse,
+    this.bet,
   }) : super(key: key);
 
   @override
@@ -227,6 +230,13 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
 
     Offset end = appState.getPosForSeat(seat);
     Offset begin = seat.betWidgetPos;
+
+    if (this.bet ?? false) {
+      end = begin;
+      begin = Offset(0, 0);
+      log.log(
+          'ChipAnimation: seatPos: ${seat.seatPos} BET begin: $begin end: $end');
+    }
 
     bool isWinningAnimation = reverse ?? false;
 
@@ -287,7 +297,7 @@ class NewChipAnimation extends StatelessWidget {
       ),
       duration: Duration(milliseconds: duration),
       builder: (_, Offset offset, child) => AnimatedOpacity(
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 300),
         opacity: offset.dy == end.dy ? 0.0 : 1.0,
         child: Transform.translate(
           offset: offset,

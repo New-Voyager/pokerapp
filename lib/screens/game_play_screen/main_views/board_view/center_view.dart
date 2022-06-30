@@ -219,6 +219,8 @@ class _CenterViewState extends State<CenterView> with WidgetsBindingObserver {
       vnTableStatus,
       vnShowCardShuffling,
       builder: (_, gameStatus, tableStatus, showCardsShuffling, __) {
+        log('Build: BoardView');
+
         List<Widget> children = [];
         if (showCardsShuffling) {
           bool showBombAnimation = (gameState?.handInfo?.bombPot) ?? false;

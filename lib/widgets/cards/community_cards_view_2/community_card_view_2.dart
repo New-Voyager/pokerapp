@@ -17,6 +17,7 @@ class _CardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final position = cardState.position;
 
+    developer.log('Build: _CardWidget');
     return AnimatedPositioned(
       duration: AppConstants.communityCardAnimationDuration,
       left: position.dx,
@@ -38,6 +39,9 @@ class CommunityCardView2 extends StatelessWidget {
         communityCardState.initializeCards(
           Size(constraints.maxWidth, constraints.maxHeight),
         );
+
+        developer.log('Build: CommunityCardView2');
+
         return AnimatedBuilder(
           animation: communityCardState,
           builder: (_, __) {

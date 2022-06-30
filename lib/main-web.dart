@@ -134,6 +134,7 @@ class _MyWebAppState extends State<MyWebApp> {
 
     //this.nats = Nats(context);
     final style = getAppStyle('default');
+    appState.debugMode = true;
     return MultiProvider(
         /* PUT INDEPENDENT PROVIDERS HERE */
         providers: [

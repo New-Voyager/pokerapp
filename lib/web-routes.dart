@@ -27,6 +27,8 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_sta
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournament_details.dart';
+import 'package:pokerapp/screens/game_screens/tournament/tournaments.dart';
 import 'package:pokerapp/screens/main_screens/main_screen.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/system_announcements.dart';
 import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
@@ -51,6 +53,8 @@ class WebRoutes {
   static const String initial = '/';
 // Restore account
   static const String restore_account = "/restore_account";
+
+  static const String tournaments = "/tournaments";
 
   // RegistrationScreen
   static const String registration = "/signup";
@@ -157,6 +161,8 @@ class WebRoutes {
   // gamescreen holecard view.
   static const String attributions = "/attributions";
 
+  static const String tournamentDetails = "/tournament-details";
+
   static const String home = "/home";
   static String launchGameCode = '';
 
@@ -173,6 +179,10 @@ class WebRoutes {
         gameCodeFromUrl = launchGameCode;
       }
       log("GameCode: $gameCodeFromUrl");
+    }
+    if (settings.arguments != null) {
+      Map<String, dynamic> args = settings.arguments;
+      gameCodeFromUrl = args['gameCode'];
     }
     log("Got Webroute: ${settings.name}");
 
@@ -584,6 +594,21 @@ class WebRoutes {
             title: "Attributions",
             text: appInfo.attributions,
           ),
+        );
+
+      case tournaments:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: TournamentsScreen(),
+        );
+        break;
+
+      case tournamentDetails:
+        var args = settings.arguments as Map<String, dynamic>;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow:
+              TournamentsDetailsScreen(tournamentId: args['tournamentId']),
         );
 
       default:

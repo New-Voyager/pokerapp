@@ -46,7 +46,7 @@ class ButtonWidget extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              text.toUpperCase(),
+              text, //.toUpperCase(),
               style: TextStyle(
                 color: theme.supportingColor,
                 fontSize: 18.0,

@@ -261,8 +261,15 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
 
         // set message
         chatHolder.chatMessageHolder.value = latestMessage;
-
+        log('New chat message. Seat: ${seat.seatPos}');
         final overlayState = Overlay.of(context);
+        // chatHolder.overlayEntry = OverlayEntry(
+        //   builder: (_) => Positioned(
+        //     left: chatHolder.offset.dx,
+        //     top: chatHolder.offset.dy,
+        //     child: Container(width: 100, height: 100, color: Colors.white),
+        //   ),
+        // );
         overlayState.insert(chatHolder.overlayEntry);
 
         chatHolder.timer = Timer(const Duration(seconds: 4), () {
@@ -385,13 +392,16 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         builder: (_) => Positioned(
           left: overlayOffset.dx,
           top: overlayOffset.dy,
-          child: playerChatBubble,
+          child:
+              //Container(width: 100, height: 100, color: Colors.red),
+              playerChatBubble,
         ),
       );
 
       final chatBubbleHolder = ChatBubbleHolder(
         chatMessageHolder: chatMessageHolder,
         overlayEntry: overlayEntry,
+        offset: Offset(overlayOffset.dx, overlayOffset.dy),
         seatPos: seat.seatPos,
       );
 
@@ -460,7 +470,8 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
   @override
   Widget build(BuildContext context) {
     Rect rect = widget.gameState.gameUIState.getPlayersOnTableRect();
-    log('PlayersOnTableViewNew Rect: ${rect}');
+    log('Build: PlayersOnTableViewNew');
+    //log('PlayersOnTableViewNew Rect: ${rect}');
     Provider.of<SeatsOnTableState>(context, listen: true);
     // this calculates the table size after drawing the table image
     widget.gameState.gameUIState.calculateTableSizePostFrame();

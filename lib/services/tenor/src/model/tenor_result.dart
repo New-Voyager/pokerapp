@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:pokerapp/services/tenor/src/model/tenor_gif.dart';
 
 class TenorResult extends Equatable {
@@ -16,6 +17,7 @@ class TenorResult extends Equatable {
   String cache;
   TenorGif media;
   String previewUrl;
+  Size size;
 
   TenorResult(
       {this.hasCaption = false,
@@ -28,7 +30,8 @@ class TenorResult extends Equatable {
       this.itemurl,
       this.media,
       this.cache,
-      this.previewUrl});
+      this.previewUrl,
+      this.size});
 
   Map<String, dynamic> toMap() {
     return {
@@ -43,6 +46,7 @@ class TenorResult extends Equatable {
       'media': media?.toMap(),
       'cache': cache,
       'previewUrl': previewUrl,
+      'size': {'width': size.width, 'height': size.height},
     };
   }
 
@@ -65,9 +69,25 @@ class TenorResult extends Equatable {
         map['media_formats']["tinygif"] != null) {
       previewUrl = map['media_formats']["tinygif"]["url"];
     }
+    Size size;
+    if (map['media_formats'] != null &&
+        map['media_formats']["tinygif"] != null) {
+      int width = map['media_formats']["tinygif"]["dims"][0];
+      int height = map['media_formats']["tinygif"]["dims"][0];
+      size = Size(width.toDouble(), height.toDouble());
+    }
     if (map['media'] != null && map['media']["tinygif"] != null) {
       previewUrl = map['media']["tinygif"]["url"];
     }
+
+    if (map['size'] != null) {
+      size = Size(map['size']['width'], map['size']['height']);
+    }
+
+    if (map['previewUrl'] != null) {
+      previewUrl = map['previewUrl'];
+    }
+
     return TenorResult(
       hasCaption: map['hascaption'] ?? false,
       hasaudio: map['hasaudio'] ?? false,
@@ -80,6 +100,7 @@ class TenorResult extends Equatable {
       itemurl: map['itemurl'],
       media: TenorGif.fromMap(media),
       cache: map['cache'],
+      size: size,
     );
   }
 

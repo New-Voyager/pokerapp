@@ -11,6 +11,7 @@ import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 
 class NewHandHandler {
@@ -262,33 +263,85 @@ class NewHandHandler {
         if (newHand.playersInSeats[seatNo].inhand) {
           seat.player.action.setAnte(newHand.ante);
           pot += newHand.ante;
+          seat.player.action.animateAction = false;
+          seat.player.action.animateBet = true;
+          seat.player.action.anteBet = true;
         }
       }
-      await Future.delayed(Duration(milliseconds: 500));
+      for (final seatNo in newHand.playersInSeats.keys) {
+        if (newHand.playersInSeats[seatNo].inhand) {
+          final seat = gameState.getSeat(seatNo);
+          seat.notify();
+        }
+      }
+      // play the bet sound effect
+      AudioService.playBet(mute: gameState.playerLocalConfig.mute);
 
+      await Future.delayed(Duration(milliseconds: 300));
+      for (final seatNo in newHand.playersInSeats.keys) {
+        if (newHand.playersInSeats[seatNo].inhand) {
+          final seat = gameState.getSeat(seatNo);
+          seat.player.action.animateAction = false;
+          seat.player.action.animateBet = false;
+          seat.player.action.anteBet = true;
+          seat.notify();
+        }
+      }
+      await Future.delayed(Duration(milliseconds: 300));
+      log('ChipAnimation: Showing ante animation');
       for (final seatNo in newHand.playersInSeats.keys) {
         final seat = gameState.getSeat(seatNo);
         if (newHand.playersInSeats[seatNo].inhand) {
+          seat.player.action.anteBet = false;
+          seat.player.action.animateBet = false;
           seat.player.action.animateAction = true;
           seat.notify();
         }
       }
-
       await Future.delayed(Duration(milliseconds: 300));
-      //tableState.notifyAll();
+      log('ChipAnimation: Showing ante animation done');
+
+      // for (final seatNo in newHand.playersInSeats.keys) {
+      //   if (newHand.playersInSeats[seatNo].inhand) {
+      //     final seat = gameState.getSeat(seatNo);
+      //     seat.notify();
+      //   }
+      // }
+
+      //await Future.delayed(Duration(milliseconds: 300));
+      tableState.notifyAll();
 
       if (gameState.uiClosing) return;
     }
 
     if (!newHand.bombPot) {
       final sbSeat = gameState.getSeat(newHand.sbPos);
-      sbSeat.player.action.sb = true;
-      sbSeat.player.action.amount = gameState.gameInfo.smallBlind.toDouble();
+      if (sbSeat.player.inhand) {
+        sbSeat.player.action.sb = true;
+        sbSeat.player.action.amount = gameState.gameInfo.smallBlind.toDouble();
+        sbSeat.player.action.animateAction = false;
+        sbSeat.player.action.animateBet = true;
+        sbSeat.notify();
+      }
 
       if (gameState.uiClosing) return;
       final bbSeat = gameState.getSeat(newHand.bbPos);
       bbSeat.player.action.bb = true;
       bbSeat.player.action.amount = gameState.gameInfo.bigBlind.toDouble();
+      bbSeat.player.action.animateAction = false;
+      bbSeat.player.action.animateBet = true;
+      bbSeat.notify();
+      // play the bet sound effect
+      AudioService.playBet(mute: gameState.playerLocalConfig.mute);
+      await Future.delayed(Duration(milliseconds: 300));
+      bbSeat.player.action.animateAction = false;
+      bbSeat.player.action.animateBet = false;
+      if (sbSeat.player.inhand) {
+        sbSeat.player.action.animateAction = false;
+        sbSeat.player.action.animateBet = false;
+      }
+      sbSeat.notify();
+      bbSeat.notify();
     }
 
     if (gameState.uiClosing) return;

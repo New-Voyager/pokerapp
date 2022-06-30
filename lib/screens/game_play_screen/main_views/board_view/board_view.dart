@@ -55,6 +55,8 @@ class _BoardViewState extends State<BoardView> {
 
   @override
   Widget build(BuildContext context) {
+    log('Build: BoardView');
+
     bool recalc = gameState.gameUIState.init(context);
     gameState.gameUIState.calculateTableSizePostFrame(force: recalc);
     gameState.gameUIState

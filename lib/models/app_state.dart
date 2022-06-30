@@ -7,6 +7,7 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/caching/cache.dart';
+import 'package:pokerapp/utils/gif_category_model.dart';
 
 import 'app_coin.dart';
 import 'club_model.dart';
@@ -18,11 +19,12 @@ class AppState extends ChangeNotifier {
   bool newGame = false;
   bool gameEnded = false;
   bool isInGameScreen = false;
+  bool debugMode = false;
   Flavor _currentFlavor;
   PendingApprovalsState buyinApprovals = PendingApprovalsState();
   ClubsUpdateState clubUpdateState = ClubsUpdateState();
   TournamentUpdateState tournamentUpdateState = TournamentUpdateState();
-
+  List<GifCategoryModel> memeCache;
   CacheService cacheService = CacheService();
   List<IapAppCoinProduct> enabledProducts = [];
   Map<SeatPos, Offset> _chipPotViewPos = Map<SeatPos, Offset>();

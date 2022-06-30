@@ -59,7 +59,7 @@ class Tenor {
     MediaFilter mediaFilter = MediaFilter.minimal,
   }) async {
     var url =
-        'https://tenor.googleapis.com/v2/search?q=$search&key=$apiKey&client_key=$secret&limit=$limit';
+        'https://tenor.googleapis.com/v2/search?q=$search&key=AIzaSyDJuyVzy0Q-pN3LAyvfUnzAvEtDvoKlYU4&apiKey&client_key=Poker Club App&limit=$limit';
 
     // var url =
     //     'https://g.tenor.com/v1/search?key=$apiKey&locale=$language&q=$search';

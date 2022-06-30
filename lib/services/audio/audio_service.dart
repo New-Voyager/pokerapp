@@ -132,10 +132,10 @@ class AudioService {
     //if (!_audioFileCache.containsKey(soundFile)) return;
 
     try {
-      justAudioPlayer.setAudioSource(_audioStreamCache[soundFile]);
       if (PlatformUtils.isWeb) {
         justAudioPlayer.setAudioSource(_audioStreamCache[soundFile]);
       } else {
+        // justAudioPlayer.setAudioSource(_audioStreamCache[soundFile]);
         await justAudioPlayer.setAsset(soundFile);
       }
       await justAudioPlayer.play();

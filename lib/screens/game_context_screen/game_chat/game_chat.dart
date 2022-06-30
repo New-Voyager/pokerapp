@@ -108,7 +108,9 @@ class _GameChatState extends State<GameChat> {
       isScrollControlled: true,
       builder: (_) => NewGifWidget(
         gifSuggestions: AppConstants.GIF_CATEGORIES,
-        onGifSelect: (String gifUrl) => chatService.sendGiphy(gifUrl),
+        onGifSelect: (String gifUrl) {
+          chatService.sendGiphy(gifUrl);
+        },
       ),
     );
   }

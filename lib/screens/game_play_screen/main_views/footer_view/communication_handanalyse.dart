@@ -59,11 +59,11 @@ class _CommunitcationHandAnalyseViewState
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _timer = Timer.periodic(const Duration(seconds: 10), (_) {
-        if (mounted) _pollPendingApprovals();
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    // _timer = Timer.periodic(const Duration(seconds: 10), (_) {
+    //   if (mounted) _pollPendingApprovals();
+    // });
+    // });
     _appScreenText = getAppTextScreen("handAnalyseView");
 
     super.initState();
