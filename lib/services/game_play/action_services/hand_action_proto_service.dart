@@ -409,7 +409,7 @@ class HandActionProtoService {
     //debugLog(_gameState.gameCode, jsonData);
 
     String messageType = messageObject.item.messageType;
-    //log('${messageType}');
+    log('Message: [${DateTime.now().toIso8601String()}] ${messageType}');
     if (_retryMsg != null) {
       bool handled = _retryMsg.handleMsg(messageObject.item);
       // cancel retry now
