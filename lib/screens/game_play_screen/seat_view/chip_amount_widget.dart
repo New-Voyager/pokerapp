@@ -297,7 +297,7 @@ class NewChipAnimation extends StatelessWidget {
       ),
       duration: Duration(milliseconds: duration),
       builder: (_, Offset offset, child) => AnimatedOpacity(
-        duration: const Duration(milliseconds: 300),
+        duration: AppConstants.chipAnimationDuration,
         opacity: offset.dy == end.dy ? 0.0 : 1.0,
         child: Transform.translate(
           offset: offset,
@@ -311,7 +311,7 @@ class NewChipAnimation extends StatelessWidget {
     return TweenAnimationBuilder(
       curve: Curves.easeInOut,
       tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(seconds: 3, milliseconds: 500),
+      duration: AppConstants.chipAnimationDuration,
       child: BorderedText(
         strokeColor: appTheme.primaryColorWithDark(),
         strokeWidth: 6.0,
