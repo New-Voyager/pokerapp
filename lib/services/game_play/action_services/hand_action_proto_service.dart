@@ -176,7 +176,7 @@ class HandActionProtoService {
           HandMessageObject m = messages.removeAt(0);
           if (m != null) {
             try {
-              log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.message.messages[0].messageType}');
+              log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.item.messageType}');
               await handleMessage(m);
             } catch (err) {
               // ignore the error
