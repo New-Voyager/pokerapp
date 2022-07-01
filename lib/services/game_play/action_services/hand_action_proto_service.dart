@@ -367,6 +367,8 @@ class HandActionProtoService {
   }
 
   handle(Uint8List messageData, {bool encrypted = false}) async {
+    log('Socket: HandActionProtoService::handle received message. _gameState.uiClosing: ${_gameState.uiClosing}');
+
     assert(_gameState != null);
     if (_gameState.uiClosing) {
       return;
@@ -398,6 +400,7 @@ class HandActionProtoService {
       // log("\n\n");
       // log(hex);
       final message = proto.HandMessage.fromBuffer(protoData);
+      log('Socket: HandActionProtoService::handle deserialized protobuf');
       for (final item in message.messages) {
         _messages.add(HandMessageObject(message, item));
         toggleLivenessSender(item);

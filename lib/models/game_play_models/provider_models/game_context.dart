@@ -228,6 +228,7 @@ class GameContextObject extends ChangeNotifier {
       gameComService.handToPlayerChannelStream.listen(
         (Message message) {
           log('messageType: Message in hand to player channel');
+          log('Socket: Message received from stream. gameComService.active: ${gameComService.active} handActionProtoService: ${handActionProtoService}');
           if (!gameComService.active) return;
 
           if (handActionProtoService == null) return;
