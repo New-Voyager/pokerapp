@@ -116,6 +116,7 @@ class RetrySendingProtoMsg {
 class HandMessageObject {
   final proto.HandMessage message;
   final proto.HandMessageItem item;
+  bool processed = false;
   HandMessageObject(this.message, this.item);
 }
 
@@ -167,20 +168,28 @@ class HandActionProtoService {
   loop() async {
     while (!closed) {
       if (_messages.length > 0) {
-        dynamic m = _messages.removeAt(0);
-        bool done = false;
-        //String messageType = m['messageType'];
-        //debugPrint('$messageType start');
-        while (!done && !closed) {
+        // copy messages to local variable
+        List<HandMessageObject> messages = [];
+        messages.addAll(_messages);
+        _messages.clear();
+        while (messages.isNotEmpty) {
+          HandMessageObject m = messages.removeAt(0);
           if (m != null) {
-            handleMessage(m).whenComplete(() {
-              // debugPrint('$messageType end');
-              done = true;
-            });
+            try {
+              log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.message.messages[0].messageType}');
+              await handleMessage(m);
+            } catch (err) {
+              // ignore the error
+            }
           }
-          m = null;
-          await Future.delayed(Duration(milliseconds: 50));
         }
+        // bool done = false;
+        // //String messageType = m['messageType'];
+        // //debugPrint('$messageType start');
+        // while (!done && !closed) {
+        //   m = null;
+        //   await Future.delayed(Duration(milliseconds: 50));
+        // }
       }
       await Future.delayed(Duration(milliseconds: 50));
     }

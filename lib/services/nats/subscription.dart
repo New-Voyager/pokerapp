@@ -38,6 +38,7 @@ class Subscription {
   void add(Message msg) {
     log('Socket: Stream Sink Message: [${DateTime.now().toIso8601String()}] msg: ${msg.sid} subject: ${msg.subject} data: ${msg.data.toString()}');
     _controller.sink.add(msg);
+    log('Socket: Stream Sink Message: DONE [${DateTime.now().toIso8601String()}] msg: ${msg.sid} subject: ${msg.subject} data: ${msg.data.toString()}');
   }
 
   ///close the stream

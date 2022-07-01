@@ -115,6 +115,7 @@ class Client {
         _buffer.addAll(d);
         String buf = String.fromCharCodes(_buffer);
         // log('listen: $buf');
+        log('Socket: ${DateTime.now().toIso8601String()} buffer: ${_buffer.toString()}');
         while (_receiveState == ReceiveState.idle && _buffer.contains(13)) {
           _processOp();
         }
@@ -212,7 +213,10 @@ class Client {
   void _processOp() async {
     // we have got a chunk of data from previous message
     if (_receiveLine1.isNotEmpty) {
+      log('Socket: ${DateTime.now().toIso8601String()} _receiveLine1.isNotEmpty');
       _processMsg();
+    } else {
+      log('Socket: ${DateTime.now().toIso8601String()} _receiveLine1 empty');
     }
     while (true) {
       ///find endline
