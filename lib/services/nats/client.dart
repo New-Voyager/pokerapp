@@ -226,7 +226,7 @@ class Client {
 
       var line =
           String.fromCharCodes(_buffer.sublist(0, nextLineIndex)); // retest
-      log(line);
+      log('Performance: ${DateTime.now().toIso8601String()} $line');
 
       if (_buffer.length > nextLineIndex + 2) {
         _buffer.removeRange(0, nextLineIndex + 2);
@@ -262,7 +262,7 @@ class Client {
           _processErr(data);
           break;
         case 'pong':
-          log('[${DateTime.now().toString()}] PONG');
+          log('Pause: [${DateTime.now().toString()}] PONG');
           _pingCompleter.complete();
           break;
         case '+ok':
@@ -317,7 +317,7 @@ class Client {
   Future ping() {
     _pingCompleter = Completer();
     _add('ping');
-    log('[${DateTime.now().toString()}] PING');
+    log('Pause: [${DateTime.now().toString()}] PING');
     return _pingCompleter.future;
   }
 

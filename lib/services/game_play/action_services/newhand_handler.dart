@@ -13,6 +13,7 @@ import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 class NewHandHandler {
   proto.NewHand newHand;
@@ -319,21 +320,26 @@ class NewHandHandler {
       if (sbSeat.player.inhand) {
         sbSeat.player.action.sb = true;
         sbSeat.player.action.amount = gameState.gameInfo.smallBlind.toDouble();
-        sbSeat.player.action.animateAction = false;
-        sbSeat.player.action.animateBet = true;
-        sbSeat.notify();
+        if (!PlatformUtils.isWeb) {
+          sbSeat.player.action.animateAction = false;
+          sbSeat.player.action.animateBet = true;
+          sbSeat.notify();
+        }
       }
 
       if (gameState.uiClosing) return;
+
+      // play the bet sound effect
+      AudioService.playBet(mute: gameState.playerLocalConfig.mute);
       final bbSeat = gameState.getSeat(newHand.bbPos);
       bbSeat.player.action.bb = true;
       bbSeat.player.action.amount = gameState.gameInfo.bigBlind.toDouble();
-      bbSeat.player.action.animateAction = false;
-      bbSeat.player.action.animateBet = true;
-      bbSeat.notify();
-      // play the bet sound effect
-      AudioService.playBet(mute: gameState.playerLocalConfig.mute);
-      await Future.delayed(Duration(milliseconds: 300));
+      if (!PlatformUtils.isWeb) {
+        bbSeat.player.action.animateAction = false;
+        bbSeat.player.action.animateBet = true;
+        bbSeat.notify();
+        await Future.delayed(Duration(milliseconds: 250));
+      }
       bbSeat.player.action.animateAction = false;
       bbSeat.player.action.animateBet = false;
       if (sbSeat.player.inhand) {
