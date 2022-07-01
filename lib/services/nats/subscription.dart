@@ -1,5 +1,6 @@
 ///subscription model
 import 'dart:async';
+import 'dart:developer';
 
 import 'client.dart';
 import 'message.dart';
@@ -14,7 +15,7 @@ class Subscription {
 
   final Client _client;
 
-  final _controller = StreamController<Message>();
+  final _controller = StreamController<Message>(sync: true);
 
   Stream<Message> _stream;
   bool _closed = true;
@@ -35,6 +36,7 @@ class Subscription {
 
   ///sink messat to listener
   void add(Message msg) {
+    log('Performance: Message: [${DateTime.now().toIso8601String()}] msg: ${msg.sid} subject: ${msg.subject} data: ${msg.data.toString()}');
     _controller.sink.add(msg);
   }
 

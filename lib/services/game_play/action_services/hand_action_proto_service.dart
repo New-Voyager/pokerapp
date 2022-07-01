@@ -409,7 +409,11 @@ class HandActionProtoService {
     //debugLog(_gameState.gameCode, jsonData);
 
     String messageType = messageObject.item.messageType;
-    //log('${messageType}');
+    log('Performance: Message: [${DateTime.now().toIso8601String()}] ${messageType} handNum: ${messageObject.message.handNum}');
+    if (messageObject.message.handNum < _gameState.handInfo.handNum) {
+      log('Performance: ***** Invalid HandNum: [${DateTime.now().toIso8601String()}] ${messageType} handNum: ${messageObject.message.handNum} expected HandNum: ${_gameState.handInfo.handNum}');
+      return;
+    }
     if (_retryMsg != null) {
       bool handled = _retryMsg.handleMsg(messageObject.item);
       // cancel retry now

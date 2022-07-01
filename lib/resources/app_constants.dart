@@ -121,6 +121,10 @@ class AppConstants {
     milliseconds: 380,
   );
 
+  static const Duration chipAnimationDuration = const Duration(
+    milliseconds: 250,
+  );
+
   static const Duration seatChangeAnimationDuration = const Duration(
     milliseconds: 500,
   );
@@ -260,7 +264,8 @@ class AppConstants {
   static const String TOURNAMENT_ENDED = 'TOURNAMENT_ENDED';
   static const String TOURNAMENT_ENDED_WITH_WINNER =
       'TOURNAMENT_ENDED_WITH_WINNER';
-  static const String TOURNAMENT_PLAYER_MOVED_TABLE = 'TOURNAMENT_PLAYER_MOVED_TABLE';
+  static const String TOURNAMENT_PLAYER_MOVED_TABLE =
+      'TOURNAMENT_PLAYER_MOVED_TABLE';
 
   static const String DEALER_CHOICE_GAME = 'DEALER_CHOICE_GAME';
 

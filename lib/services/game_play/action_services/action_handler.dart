@@ -266,7 +266,7 @@ class PlayerActionHandler {
       // log('next action seat: $seatNo player: ${player.name}');
       // highlight next action player
       player.highlight = true;
-
+      log('NEXT_ACTION is received for Seat: ${seat.seatPos}');
       if (_gameState.uiClosing) return;
       // log('SeatView: Next action ${seat.serverSeatPos}:L${seat.localSeatPos} pos: ${seat.seatPos.toString()} player: ${seat.player?.name} highlight: ${seat.player.highlight}');
       seat.setActionTimer(_gameState.gameInfo.actionTime);
@@ -286,10 +286,7 @@ class PlayerActionHandler {
           tableState.notifyAll();
         } catch (e) {}
       }
-
-      seat.setActionTimer(_gameState.gameInfo.actionTime);
-      seat.notify();
-      //_gameState.actionTimerState.notify();
+      log('NEXT_ACTION is received for Seat: ${seat.seatPos} done');
     } finally {
       //log('Hand Message: ::handleNextAction:: END');
     }
@@ -349,14 +346,16 @@ class PlayerActionHandler {
       // Notify server we are alive while in action
       _livenessSender.start();
 
-      try {
-        if (_gameState.playerLocalConfig.vibration ?? true) {
-          if (await Vibration.hasVibrator()) {
-            Vibration.vibrate();
+      if (!PlatformUtils.isWeb) {
+        try {
+          if (_gameState.playerLocalConfig.vibration ?? true) {
+            if (await Vibration.hasVibrator()) {
+              Vibration.vibrate();
+            }
           }
+        } catch (err) {
+          // ignore
         }
-      } catch (err) {
-        // ignore
       }
 
       if (_gameState.straddleBetThisHand == true) {
@@ -487,20 +486,22 @@ class PlayerActionHandler {
     }
     final action = seat.player.action;
     action.setActionProto(playerActed.action, playerActed.amount);
-
+    log('YOUR_ACTION is received from Seat: ${seat.seatPos}');
     // play the bet-raise sound effect
     if (action.action == HandActions.BET ||
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
       AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
-      seat.player.action.animateBet = true;
-      seat.notify();
-      await Future.delayed(Duration(milliseconds: 500));
+      if (!PlatformUtils.isWeb) {
+        seat.player.action.animateBet = true;
+        seat.notify();
+        await Future.delayed(Duration(milliseconds: 200));
+      }
       seat.player.action.animateBet = false;
       seat.notify();
     } else if (action.action == HandActions.FOLD) {
       AudioService.playFold(mute: _gameState.playerLocalConfig.mute);
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 200));
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
@@ -512,12 +513,12 @@ class PlayerActionHandler {
       AudioService.playCheck(mute: _gameState.playerLocalConfig.mute);
       await Future.delayed(Duration(milliseconds: 500));
     }
-    seat.notify();
 
     final stack = playerActed.stack;
     if (stack != null) {
       seat.player.stack = stack;
     }
+    seat.notify();
     // log('NEW_HAND: handlePlayerActed player: ${seat.player.name} stack ${seat.player.stack}');
 
     if (_gameState.uiClosing) return;
@@ -527,6 +528,7 @@ class PlayerActionHandler {
     // update pot chip updates
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
+    log('YOUR_ACTION is received from Seat: ${seat.seatPos} done');
   }
 
   void extendTimerOnReconnect() {
