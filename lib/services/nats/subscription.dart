@@ -36,7 +36,7 @@ class Subscription {
 
   ///sink messat to listener
   void add(Message msg) {
-    log('Performance: Message: [${DateTime.now().toIso8601String()}] msg: ${msg.sid} subject: ${msg.subject} data: ${msg.data.toString()}');
+    log('Socket: Stream Sink Message: [${DateTime.now().toIso8601String()}] msg: ${msg.sid} subject: ${msg.subject} data: ${msg.data.toString()}');
     _controller.sink.add(msg);
   }
 

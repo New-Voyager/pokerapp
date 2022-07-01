@@ -226,7 +226,7 @@ class Client {
 
       var line =
           String.fromCharCodes(_buffer.sublist(0, nextLineIndex)); // retest
-      log('Performance: ${DateTime.now().toIso8601String()} $line');
+      log('Socket: ${DateTime.now().toIso8601String()} $line');
 
       if (_buffer.length > nextLineIndex + 2) {
         _buffer.removeRange(0, nextLineIndex + 2);
@@ -280,6 +280,7 @@ class Client {
     var s = _receiveLine1.split(' ');
     var subject = s[1];
     var sid = int.parse(s[2]);
+    log('Socket: ${DateTime.now().toIso8601String()} _processMsg subject: ${subject} sid: ${sid} s: ${s}');
     String replyTo;
     int length;
     if (s.length == 4) {
@@ -288,7 +289,9 @@ class Client {
       replyTo = s[3];
       length = int.parse(s[4]);
     }
+    log('Socket: ${DateTime.now().toIso8601String()} _processMsg subject: ${subject} sid: ${sid} _receiveState: idle');
     if (_buffer.length < length) {
+      log('Socket: ${DateTime.now().toIso8601String()} _processMsg _receiveState: idle');
       //_prevMsgHeader = _receiveLine1
       _receiveState = ReceiveState.idle;
       return;
@@ -300,8 +303,9 @@ class Client {
     } else {
       _buffer = [];
     }
-
+    log('Socket: ${DateTime.now().toIso8601String()} _processMsg subject: ${subject} sid: ${_subs[sid]} _receiveState: idle');
     if (_subs[sid] != null) {
+      log('Socket: ${DateTime.now().toIso8601String()} _processMsg subject: ${subject} subs[sid].closed?: ${_subs[sid].closed} _receiveState: idle');
       if (!_subs[sid].closed) {
         _subs[sid].add(Message(subject, sid, payload, replyTo: replyTo));
       }
