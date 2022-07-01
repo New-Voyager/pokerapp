@@ -233,6 +233,7 @@ class PlayerActionHandler {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
     // log('NextAction: handle next action handState: ${_gameState.handState.toString()}'); // reset result in progress flag
     try {
+      return;
       // stop game audio
       //AudioService.stopSound();
       var actionChange = message.actionChange;
@@ -456,6 +457,8 @@ class PlayerActionHandler {
   }
 
   Future<void> handlePlayerActed(proto.HandMessageItem message) async {
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed Start');
+
     final playerActed = message.playerActed;
     int seatNo = playerActed.seatNo;
 
@@ -463,6 +466,7 @@ class PlayerActionHandler {
     if (_actionTimer != null) {
       _actionTimer.stop();
     }
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 1');
 
     //log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
 
@@ -480,6 +484,8 @@ class PlayerActionHandler {
       _gameState.straddlePromptState.notify();
     }
     if (_gameState.uiClosing) return;
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 2');
+
     if (seat?.player?.action == null) {
       ////log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
       return;
@@ -491,7 +497,11 @@ class PlayerActionHandler {
     if (action.action == HandActions.BET ||
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
+      log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 3');
+
       AudioService.playBet(mute: _gameState.playerLocalConfig.mute);
+      log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 4');
+
       if (!PlatformUtils.isWeb) {
         seat.player.action.animateBet = true;
         seat.notify();
@@ -499,20 +509,28 @@ class PlayerActionHandler {
       }
       seat.player.action.animateBet = false;
       seat.notify();
+      log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 5');
     } else if (action.action == HandActions.FOLD) {
+      log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 6');
+
       AudioService.playFold(mute: _gameState.playerLocalConfig.mute);
       await Future.delayed(Duration(milliseconds: 200));
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
+      log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 7');
+
       if (seat.isMe) {
         // player folded
         _gameState.myState.notify();
       }
     } else if (action.action == HandActions.CHECK) {
+      log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 8');
       AudioService.playCheck(mute: _gameState.playerLocalConfig.mute);
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 200));
+      log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 9');
     }
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 10');
 
     final stack = playerActed.stack;
     if (stack != null) {
@@ -520,15 +538,19 @@ class PlayerActionHandler {
     }
     seat.notify();
     // log('NEW_HAND: handlePlayerActed player: ${seat.player.name} stack ${seat.player.stack}');
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 11');
 
     if (_gameState.uiClosing) return;
     // before showing the prompt --> turn off the highlight on other players
     _gameState.resetActionHighlight(-1);
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 12');
 
     // update pot chip updates
     _gameState.tableState.notifyAll();
     //log('Hand Message: ::handlePlayerActed:: END');
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed 13');
     log('YOUR_ACTION is received from Seat: ${seat.seatPos} done');
+    log('Socket: [${DateTime.now().toIso8601String()}] handlePlayerActed DONE');
   }
 
   void extendTimerOnReconnect() {

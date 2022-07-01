@@ -166,23 +166,36 @@ class HandActionProtoService {
   }
 
   loop() async {
+    int i = 0;
     while (!closed) {
+      if (i % 10 == 0) {
+        log('Socket: [${DateTime.now().toIso8601String()}] In loop');
+      }
+      i++;
       if (_messages.length > 0) {
+        log('Socket: [${DateTime.now().toIso8601String()}] In loop messages: ${_messages.length}');
         // copy messages to local variable
         List<HandMessageObject> messages = [];
         messages.addAll(_messages);
         _messages.clear();
         while (messages.isNotEmpty) {
+          log('Socket: [${DateTime.now().toIso8601String()}] loop: message count: ${messages.length}');
           HandMessageObject m = messages.removeAt(0);
+          toggleLivenessSender(m.item);
           if (m != null) {
             try {
               log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.item.messageType}');
-              await handleMessage(m);
+              // await handleMessage(m);
+              await Future.delayed(Duration(milliseconds: 50));
+              log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.item.messageType} processed message');
             } catch (err) {
               // ignore the error
+              log('Socket: [${DateTime.now().toIso8601String()}] loop: exception message count: ${messages.length}');
             }
           }
         }
+        log('Socket: [${DateTime.now().toIso8601String()}] In loop process next set of messages. ${_messages.length}');
+
         // bool done = false;
         // //String messageType = m['messageType'];
         // //debugPrint('$messageType start');
@@ -191,7 +204,7 @@ class HandActionProtoService {
         //   await Future.delayed(Duration(milliseconds: 50));
         // }
       }
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(Duration(milliseconds: 100));
     }
   }
 
@@ -367,7 +380,7 @@ class HandActionProtoService {
   }
 
   handle(Uint8List messageData, {bool encrypted = false}) async {
-    log('Socket: HandActionProtoService::handle received message. _gameState.uiClosing: ${_gameState.uiClosing}');
+    log('Socket: [${DateTime.now().toIso8601String()}] HandActionProtoService::handle received message. _gameState.uiClosing: ${_gameState.uiClosing}');
 
     assert(_gameState != null);
     if (_gameState.uiClosing) {
@@ -400,11 +413,11 @@ class HandActionProtoService {
       // log("\n\n");
       // log(hex);
       final message = proto.HandMessage.fromBuffer(protoData);
-      log('Socket: HandActionProtoService::handle deserialized protobuf');
+      log('Socket: [${DateTime.now().toIso8601String()}] HandActionProtoService::handle deserialized protobuf');
       for (final item in message.messages) {
         _messages.add(HandMessageObject(message, item));
-        toggleLivenessSender(item);
       }
+      log('Socket: [${DateTime.now().toIso8601String()}]  HandActionProtoService::handle added messages');
     } catch (err) {
       log('${err.toString()}');
       throw err;
