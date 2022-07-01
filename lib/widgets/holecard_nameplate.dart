@@ -14,6 +14,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.d
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/name_plate_widget_parent.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 import 'package:pokerapp/widgets/text_widgets/name_plate/name_plate_stack_text.dart';
@@ -117,7 +118,7 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
       );
     }
 
-    double cardsPos = -70;
+    double cardsPos = -NamePlateWidgetParent.namePlateSize.width / 2;
     bool leftAlign = true;
 
     if (widget.seat.seatPos == SeatPos.topLeft ||
@@ -140,15 +141,15 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
         _,
       ) {
         return Container(
-          height: 60,
-          width: 150,
+          height: NamePlateWidgetParent.namePlateSize.height,
+          width: NamePlateWidgetParent.namePlateSize.width,
           clipBehavior: Clip.none,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
               Container(
-                height: 60,
-                width: 150,
+                height: NamePlateWidgetParent.namePlateSize.height,
+                width: NamePlateWidgetParent.namePlateSize.width,
                 foregroundDecoration: BoxDecoration(
                   border: Border.all(
                     width: 2,
@@ -177,8 +178,22 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
                           : Alignment.centerRight,
                       child: Padding(
                         padding: leftAlign
-                            ? const EdgeInsets.only(left: 30.0)
-                            : const EdgeInsets.only(right: 30.0),
+                            ? widget.seat.isMe
+                                ? EdgeInsets.only(
+                                    left: NamePlateWidgetParent
+                                            .namePlateSize.width /
+                                        2.0,
+                                    right: 5.0)
+                                : EdgeInsets.only(
+                                    left: NamePlateWidgetParent
+                                            .namePlateSize.width /
+                                        2.5,
+                                    right: 5.0)
+                            : EdgeInsets.only(
+                                right:
+                                    NamePlateWidgetParent.namePlateSize.width /
+                                        2.5,
+                                left: 5.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: leftAlign
@@ -215,8 +230,8 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
                   ? Positioned(
                       left: cardsPos,
                       child: Container(
-                        width: 100,
-                        height: 60,
+                        width: NamePlateWidgetParent.namePlateSize.width,
+                        height: NamePlateWidgetParent.namePlateSize.height,
                         padding: widget.seat.isMe
                             ? EdgeInsets.zero
                             : EdgeInsets.all(5),
@@ -227,8 +242,8 @@ class _HoleCardsNameplateState extends State<HoleCardsNameplate> {
                   : Positioned(
                       right: cardsPos,
                       child: Container(
-                        width: 100,
-                        height: 60,
+                        width: NamePlateWidgetParent.namePlateSize.width,
+                        height: NamePlateWidgetParent.namePlateSize.height,
                         padding: widget.seat.isMe
                             ? EdgeInsets.zero
                             : EdgeInsets.all(5),

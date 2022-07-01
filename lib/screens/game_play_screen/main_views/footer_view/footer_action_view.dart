@@ -803,13 +803,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             child: Stack(
               children: [
                 Positioned(
-<<<<<<< HEAD
-                  bottom: (_betBtnPosition != null)
-                      ? MediaQuery.of(context).size.height - _betBtnPosition.dy
-                      : MediaQuery.of(context).size.height,
-=======
                   bottom: bottom,
->>>>>>> master
                   child: Provider<GameState>(
                     create: (_) => gameState,
                     builder: (context, _) {
@@ -863,25 +857,10 @@ class _FooterActionViewState extends State<FooterActionView> {
         final betButton =
             _betButtonKey.currentContext.findRenderObject() as RenderBox;
         if (betButton.size.shortestSide != 0.0) {
-<<<<<<< HEAD
-          // tableGlobalTopLeft = box.localToGlobal(Offset.zero);
-          // tableSizeVn.value = box.size;
-          // tableRect = Rect.fromLTWH(
-          //   tableGlobalTopLeft.dx,
-          //   tableGlobalTopLeft.dy,
-          //   box.size.width,
-          //   box.size.height,
-          // );
-          // _tableBaseHeight = tableRect.height * 0.10;
-          _betBtnPosition = betButton.localToGlobal(Offset.zero);
-          log("box size ${_betBtnPosition.dx}, ${_betBtnPosition.dy}");
-          setState(() {});
-=======
           final gameState = GameState.getState(context);
           gameState.gameUIState.betBtnPos =
               betButton.localToGlobal(Offset.zero);
           log("box size ${gameState.gameUIState.betBtnPos.dx}, ${gameState.gameUIState.betBtnPos.dy}");
->>>>>>> master
           break;
         }
         await Future.delayed(const Duration(milliseconds: 10));

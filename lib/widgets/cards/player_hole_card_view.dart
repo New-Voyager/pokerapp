@@ -125,11 +125,14 @@ class _CardEyeState extends State<CardEye> {
             : (widget.marked ? 17 : 20),
         child: DebugBorderWidget(
           color: Colors.transparent,
-          child: Icon(
-            Icons.visibility,
-            key: _key,
-            color: widget.marked ? Colors.green : Colors.grey,
-            size: widget.marked ? markedHeight : markedHeight / 1.2,
+          child: Opacity(
+            opacity: 0,
+            child: Icon(
+              Icons.visibility,
+              key: _key,
+              color: widget.marked ? Colors.green : Colors.grey,
+              size: widget.marked ? markedHeight : markedHeight / 1.2,
+            ),
           ),
         ));
   }

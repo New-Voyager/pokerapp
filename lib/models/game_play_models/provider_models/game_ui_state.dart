@@ -67,7 +67,7 @@ class GameUIState {
     if (PlatformUtils.isWeb) {
       // web is same as 7inch screen
       tableWidthFactor = 0.60 * (prevSize.height / prevSize.width);
-      double width = (prevSize.width * tableWidthFactor) / 6;
+      double width = (prevSize.width * tableWidthFactor) / 3.5;
       log('Width: $width');
       //NamePlateWidgetParent.setWidth(90);
       NamePlateWidgetParent.setWidth(width);
@@ -121,8 +121,7 @@ class GameUIState {
         seatPosToOffsetMap[SeatPos.topLeft] = Offset(left, top);
 
         // top right
-        left = (topLeftLeft + table.width + 2 * topRowAdjust) -
-            namePlateWidth * 1.82;
+        left = (topLeftLeft + table.width + topRowAdjust) - namePlateWidth;
         top = heightGap * 2;
         seatPosToOffsetMap[SeatPos.topRight] = Offset(left, top);
 
@@ -133,15 +132,13 @@ class GameUIState {
         double gap = remainingWidth / 3;
 
         double topCenter1Left =
-            seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth + gap / 1.5;
+            seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth + gap;
         top = (heightGap - namePlateHeight);
         seatPosToOffsetMap[SeatPos.topCenter1] = Offset(topCenter1Left, top);
 
         // top center 2
-        double topCenter2Left = seatPosToOffsetMap[SeatPos.topCenter1].dx +
-            namePlateWidth +
-            gap / 2 +
-            gap;
+        double topCenter2Left =
+            seatPosToOffsetMap[SeatPos.topCenter1].dx + namePlateWidth + gap;
         seatPosToOffsetMap[SeatPos.topCenter2] = Offset(topCenter2Left, top);
 
         // top center
@@ -149,7 +146,7 @@ class GameUIState {
         seatPosToOffsetMap[SeatPos.topCenter] = Offset(left, top);
 
         // bottom left
-        left = widthGap + namePlateWidth / 2;
+        left = widthGap;
         top = pot.height - namePlateHeight - heightGap;
         seatPosToOffsetMap[SeatPos.bottomLeft] = Offset(left, top);
 
@@ -159,7 +156,7 @@ class GameUIState {
         seatPosToOffsetMap[SeatPos.bottomCenter] = Offset(left, top);
 
         // bottom right
-        left = topLeftLeft + table.width - namePlateWidth * 2.25;
+        left = topLeftLeft + table.width - namePlateWidth;
         top = pot.height - namePlateHeight - heightGap;
         seatPosToOffsetMap[SeatPos.bottomRight] = Offset(left, top);
 
@@ -168,14 +165,12 @@ class GameUIState {
         gap = (remainingHeight / 3.5);
 
         // middle left
-        left = -namePlateWidth / 1.5;
-        top = seatPosToOffsetMap[SeatPos.topLeft].dy +
-            namePlateHeight +
-            gap * 1.75;
+        left = 0;
+        top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight + gap;
         seatPosToOffsetMap[SeatPos.middleLeft] = Offset(left, top);
 
         // middle right
-        left = pot.width - namePlateWidth * 1.15;
+        left = pot.width - namePlateWidth;
         seatPosToOffsetMap[SeatPos.middleRight] = Offset(left, top);
       }
     } else if (GameState.getState(boardKey.currentContext)
@@ -337,8 +332,8 @@ class GameUIState {
     bottomTop = seatPosToOffsetMap[SeatPos.bottomCenter].dy;
 
     left = seatPosToOffsetMap[SeatPos.topLeft].dx + namePlateWidth;
-    top = seatPosToOffsetMap[SeatPos.topLeft].dy + namePlateHeight;
-    bottom = seatPosToOffsetMap[SeatPos.bottomRight].dy;
+    top = seatPosToOffsetMap[SeatPos.topLeft].dy;
+    bottom = seatPosToOffsetMap[SeatPos.bottomRight].dy + namePlateHeight;
     right = seatPosToOffsetMap[SeatPos.topRight].dx;
 
     final boardBox = boardKey.currentContext.findRenderObject() as RenderBox;
@@ -379,10 +374,14 @@ class GameUIState {
       topPosOffset = namePlateHeight;
     }
 
+    if (PlatformUtils.isWeb) {
+      horizontalOffset = namePlateWidth;
+    }
+
     final rect = Rect.fromLTWH(
-      topLeft.dx - horizontalOffset,
+      topLeft.dx + horizontalOffset / 2,
       topLeft.dy - topPosOffset,
-      bottomRight.dx - topLeft.dx + horizontalOffset * 2,
+      bottomRight.dx - topLeft.dx - horizontalOffset,
       (bottomRight.dy - topLeft.dy - extraBottomGap) * verticalOffsetFactor,
     );
 
@@ -447,7 +446,7 @@ class GameUIState {
       cardsDisplacement = gameState.gameUIState.holeCardsViewSize.width / 10;
       if (Screen.isLargeScreen) {
         cardsDisplacement =
-            gameState.gameUIState.holeCardsViewSize.width * 0.12;
+            gameState.gameUIState.holeCardsViewSize.width * 0.14;
       }
     }
 
