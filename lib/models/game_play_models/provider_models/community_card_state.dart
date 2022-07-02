@@ -19,21 +19,24 @@ extension RectHelper on Rect {
 
 enum CommunityCardBoardState { SINGLE, DOUBLE, RIT }
 
-class CardState {
+class CardState extends ChangeNotifier {
   Offset position;
   Size size;
 
-  final int cardNo;
-  final GlobalKey<AppFlipCardState> flipKey;
+  int cardNo;
+  // GlobalKey<AppFlipCardState> flipKey;
   bool isFaced;
-
+  bool flip = false;
   CardState({
     @required this.position,
     @required this.size,
     @required this.cardNo,
-    @required this.flipKey,
+    // @required this.flipKey,
     this.isFaced = false,
   });
+  void notify() {
+    notifyListeners();
+  }
 }
 
 /// this class holds the card sizes & positions for different community card configurations
@@ -94,18 +97,27 @@ class CommunityCardState extends ChangeNotifier {
     return getSingleBoardCardDimens(cardId);
   }
 
+  Map<int, CardState> cardStateCache = {};
+
   CardState _getCardStateFromCardNo(
     int cNo, {
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
     int cardId = 1,
   }) {
+    // if (cardStateCache[cardId] != null) {
+    //   var cardState = cardStateCache[cardId];
+    //   cardState.cardNo = cNo;
+    //   return cardState;
+    // }
     final cardDimen = _getCardDimen(boardState, cardId);
-    return CardState(
+    final cardState = CardState(
       position: cardDimen.position,
       size: cardDimen.size,
       cardNo: cNo,
-      flipKey: GlobalKey<AppFlipCardState>(),
+      // flipKey: GlobalKey<AppFlipCardState>(),
     );
+    cardStateCache[cardId] = cardState;
+    return cardState;
   }
 
   Future<void> _delay() => Future.delayed(
@@ -141,12 +153,20 @@ class CommunityCardState extends ChangeNotifier {
     // flip the first card
     bool addWithoutAnimating = false;
     localCardStates.forEach((cs) {
-      if (cs.flipKey != null && cs.flipKey.currentState != null) {
-        log('2 CommunityCardState: current state: ${cs.flipKey.currentState}');
-        cs.flipKey.currentState.toggleCard();
-      } else {
-        addWithoutAnimating = true;
-      }
+      // if (cs.flipKey != null && cs.flipKey.currentState != null) {
+      //   log('2 CommunityCardState: current state: ${cs.flipKey.currentState}');
+      //   cs.flipKey.currentState.toggleCard();
+      // } else {
+      //   addWithoutAnimating = true;
+      // }
+      cs.flip = true;
+      cs.notify();
+      // if (cs.flipKey != null && cs.flipKey.currentState != null) {
+      //   log('2 CommunityCardState: current state: ${cs.flipKey.currentState}');
+      //   cs.flipKey.currentState.toggleCard();
+      // } else {
+      //   addWithoutAnimating = true;
+      // }
     });
     log('2 CommunityCardState: _addFlopCards: _cardStates: $_cardStates');
 
@@ -218,13 +238,17 @@ class CommunityCardState extends ChangeNotifier {
     await _delay();
 
     // flip
-    if (PlatformUtils.isWeb) {
-      if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-        addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-        return;
-      }
-    }
-    cardState.flipKey.currentState?.toggleCard();
+    // if (PlatformUtils.isWeb) {
+    //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+    //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+    //     return;
+    //   }
+    // }
+    // cardState.flipKey.currentState?.toggleCard();
+    cardState.flip = true;
+    cardState.notify();
+
+    if (PlatformUtils.isWeb) {}
   }
 
   /// single board -> 4
@@ -266,29 +290,32 @@ class CommunityCardState extends ChangeNotifier {
       boardState: boardState,
     );
     _cardStates.add(cardState);
-    if (PlatformUtils.isWeb) {
-      bool addWithoutAnimating = false;
-      if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-        addWithoutAnimating = true;
-      }
-      if (addWithoutAnimating) {
-        addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-        return;
-      }
-    }
+    // if (PlatformUtils.isWeb) {
+    //   bool addWithoutAnimating = false;
+    //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+    //     addWithoutAnimating = true;
+    //   }
+    //   if (addWithoutAnimating) {
+    //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+    //     return;
+    //   }
+    // }
 
     notifyListeners();
 
     await _delay();
 
     // flip
-    if (PlatformUtils.isWeb) {
-      if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-        addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-        return;
-      }
-    }
-    cardState.flipKey.currentState?.toggleCard();
+    cardState.flip = true;
+    cardState.notify();
+
+    // if (PlatformUtils.isWeb) {
+    //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+    //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+    //     return;
+    //   }
+    // }
+    // cardState.flipKey.currentState?.toggleCard();
   }
 
   /// single board -> 5
@@ -329,7 +356,9 @@ class CommunityCardState extends ChangeNotifier {
     await _delay();
 
     // flip
-    card1State.flipKey.currentState.toggleCard();
+    card1State.flip = true;
+    card1State.notify();
+    //card1State.flipKey.currentState.toggleCard();
     await _delayFA();
 
     // push up and change size
@@ -352,7 +381,8 @@ class CommunityCardState extends ChangeNotifier {
     await _delay();
 
     // flip
-    card2State.flipKey.currentState.toggleCard();
+    card2State.flip = true;
+    card2State.notify();
     await _delayFA();
   }
 
@@ -379,7 +409,9 @@ class CommunityCardState extends ChangeNotifier {
       await _delay();
 
       // flip
-      state.flipKey.currentState.toggleCard();
+      state.flip = true;
+      state.notify();
+      // state.flipKey.currentState.toggleCard();
 
       await _delayFA();
     }

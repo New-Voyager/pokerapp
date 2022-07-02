@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 
 enum FlipDirection {
   VERTICAL,
@@ -53,13 +54,15 @@ class AppFlipCard extends StatefulWidget {
   final BoolCallback onFlipDone;
   final Fill fill;
   final bool flipOnTouch;
+  final CardState cardState;
 
   final Alignment alignment;
 
   const AppFlipCard({
-    Key key,
+    // Key key,
     @required this.front,
     @required this.back,
+    @required this.cardState,
     this.speed = 500,
     this.onFlip,
     this.onFlipDone,
@@ -67,7 +70,8 @@ class AppFlipCard extends StatefulWidget {
     this.flipOnTouch = true,
     this.alignment = Alignment.center,
     this.fill = Fill.none,
-  }) : super(key: key);
+  });
+  // : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -86,6 +90,8 @@ class AppFlipCardState extends State<AppFlipCard>
   @override
   void initState() {
     super.initState();
+
+    widget.cardState.addListener(stateListener);
     controller = AnimationController(
         duration: Duration(milliseconds: widget.speed), vsync: this);
     _frontRotation = TweenSequence(
@@ -138,6 +144,12 @@ class AppFlipCardState extends State<AppFlipCard>
     }
   }
 
+  void stateListener() {
+    if (widget.cardState.flip) {
+      toggleCard();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final frontPositioning = widget.fill == Fill.fillFront ? _fill : _noop;
@@ -181,6 +193,7 @@ class AppFlipCardState extends State<AppFlipCard>
   @override
   void dispose() {
     controller.dispose();
+    widget.cardState.removeListener(stateListener);
     super.dispose();
   }
 }

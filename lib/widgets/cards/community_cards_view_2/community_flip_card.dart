@@ -55,7 +55,8 @@ class CommunityFlipCard extends StatelessWidget {
     );
 
     return AppFlipCard(
-      key: cardState.flipKey,
+      // key: cardState.flipKey,
+      cardState: cardState,
       speed: AppConstants.communityCardFlipAnimationDuration.inMilliseconds,
       flipOnTouch: false,
       back: cardState.isFaced ? front : back,
