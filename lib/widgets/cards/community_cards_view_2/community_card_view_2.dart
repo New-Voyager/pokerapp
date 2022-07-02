@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view_2/community_flip_card.dart';
 import 'package:pokerapp/widgets/debug_border_widget.dart';
 
@@ -18,12 +19,20 @@ class _CardWidget extends StatelessWidget {
     final position = cardState.position;
 
     developer.log('Build: _CardWidget');
-    return AnimatedPositioned(
-      duration: AppConstants.communityCardAnimationDuration,
-      left: position.dx,
-      top: position.dy,
-      child: CommunityFlipCard(cardState: cardState),
-    );
+    if (PlatformUtils.isWeb) {
+      return Positioned(
+        left: position.dx,
+        top: position.dy,
+        child: CommunityFlipCard(cardState: cardState),
+      );
+    } else {
+      return AnimatedPositioned(
+        duration: AppConstants.communityCardAnimationDuration,
+        left: position.dx,
+        top: position.dy,
+        child: CommunityFlipCard(cardState: cardState),
+      );
+    }
   }
 }
 
@@ -40,7 +49,7 @@ class CommunityCardView2 extends StatelessWidget {
           Size(constraints.maxWidth, constraints.maxHeight),
         );
 
-        developer.log('Build: CommunityCardView2');
+        developer.log('Socket: Build: CommunityCardView2');
 
         return AnimatedBuilder(
           animation: communityCardState,

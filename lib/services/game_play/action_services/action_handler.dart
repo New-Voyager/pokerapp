@@ -233,7 +233,6 @@ class PlayerActionHandler {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
     // log('NextAction: handle next action handState: ${_gameState.handState.toString()}'); // reset result in progress flag
     try {
-      return;
       // stop game audio
       //AudioService.stopSound();
       var actionChange = message.actionChange;

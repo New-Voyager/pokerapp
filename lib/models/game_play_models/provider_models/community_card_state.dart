@@ -131,37 +131,50 @@ class CommunityCardState extends ChangeNotifier {
         ),
       ),
     );
-
     _cardStates.addAll(localCardStates);
-
     notifyListeners();
 
-    await _delay();
+    // await _delay();
     log('1 CommunityCardState: _addFlopCards: _cardStates: $_cardStates');
     // flip the first card
     bool addWithoutAnimating = false;
-    localCardStates.forEach((cs) {
-      if (cs.flipKey != null && cs.flipKey.currentState != null) {
-        log('2 CommunityCardState: current state: ${cs.flipKey.currentState}');
-        cs.flipKey.currentState.toggleCard();
-      } else {
-        addWithoutAnimating = true;
-      }
-    });
-    log('2 CommunityCardState: _addFlopCards: _cardStates: $_cardStates');
+    // if (!PlatformUtils.isWeb) {
+    //   localCardStates.forEach((cs) {
+    //     if (cs.flipKey != null && cs.flipKey.currentState != null) {
+    //       log('2 CommunityCardState: current state: ${cs.flipKey.currentState}');
+    //       cs.flipKey.currentState.toggleCard();
+    //     } else {
+    //       addWithoutAnimating = true;
+    //     }
+    //   });
+    //   await _delayFA();
+    // }
 
-    await _delayFA();
-    if (PlatformUtils.isWeb && addWithoutAnimating) {
-      addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-      return;
-    }
-
-    // move the cards
     for (int i = 0; i < 3; i++) {
       final cardId = startWith + i;
       final cardDimen = _getCardDimen(boardState, cardId);
       localCardStates[i].position = cardDimen.position;
     }
+
+    if (PlatformUtils.isWeb) {
+      for (int i = 0; i < 3; i++) {
+        if (localCardStates[i].flipKey != null &&
+            localCardStates[i].flipKey.currentState != null) {
+          log('Socket: 2 CommunityCardState: togglecard');
+          localCardStates[i].flipKey.currentState.toggleCard();
+        } else {
+          addWithoutAnimating = true;
+        }
+      }
+    } else {
+      await _delay();
+    }
+
+    if (addWithoutAnimating) {
+      addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+      return;
+    }
+
     notifyListeners();
   }
 
@@ -170,7 +183,7 @@ class CommunityCardState extends ChangeNotifier {
     final List<int> board2,
   }) async {
     log('CommunityCardState: CommunityCardState::addFlopCards ${board1} board2: ${board2}');
-
+    return;
     assert(board1.length == 3, 'Board 1: Only 3 cards to be added in Flop');
     final bool isDoubleBoard = board2 != null;
     if (isDoubleBoard) {

@@ -185,8 +185,16 @@ class HandActionProtoService {
           if (m != null) {
             try {
               log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.item.messageType}');
-              // await handleMessage(m);
-              await Future.delayed(Duration(milliseconds: 50));
+              if (m.item.messageType == AppConstants.PLAYER_ACTED ||
+                  m.item.messageType == AppConstants.NEW_HAND ||
+                  m.item.messageType == AppConstants.NEXT_ACTION ||
+                  m.item.messageType == AppConstants.FLOP ||
+                  m.item.messageType == AppConstants.TURN ||
+                  m.item.messageType == AppConstants.RIVER) {
+                await handleMessage(m);
+              } else {
+                await Future.delayed(Duration(milliseconds: 50));
+              }
               log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.item.messageType} processed message');
             } catch (err) {
               // ignore the error
@@ -857,11 +865,11 @@ class HandActionProtoService {
     if (_close) return;
 
     // show the move coin to pot animation, after that update the pot
-    await _gameState.animateSeatActions();
-    await Future.delayed(Duration(milliseconds: 500));
+    // await _gameState.animateSeatActions();
+    // await Future.delayed(Duration(milliseconds: 200));
     _gameState.resetSeatActions();
-    // update the pot
 
+    // update the pot
     if (_close) return;
     List<double> pots;
     if (stage == 'flop') {
@@ -877,7 +885,7 @@ class HandActionProtoService {
     updatePot(pots, stage, _context);
 
     _gameState.handChangeState.notify();
-    _gameState.notifyAllSeats();
+    // _gameState.notifyAllSeats();
 
     Map<int, String> playerCardRanks;
     // update the community cards
@@ -948,7 +956,7 @@ class HandActionProtoService {
       playerCardRanks = message.river.playerCardRanks;
     }
 
-    await Future.delayed(Duration(seconds: 1));
+    //await Future.delayed(Duration(seconds: 1));
     // AudioService.stopSound();
 
     if (_close) return;
