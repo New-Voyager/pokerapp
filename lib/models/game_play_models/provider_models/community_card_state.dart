@@ -159,38 +159,47 @@ class CommunityCardState extends ChangeNotifier {
     int startWith = 1,
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
   }) async {
-    for (int i = 0; i < board.length; i++) {
-      singleBoard[i].cardNo = board[i];
-      singleBoard[i].hide = true;
-      singleBoard[i].notify();
+    int firstCardIndex = startWith - 1;
+    int secondCardIndex = startWith;
+    int thirdCardIndex = startWith + 1;
+    List<CardState> _board;
+    if (boardState == CommunityCardBoardState.DOUBLE) {
+      _board = doubleBoard;
+    } else {
+      _board = singleBoard;
+    }
+
+    for (int i = firstCardIndex; i < (firstCardIndex + board.length); i++) {
+      _board[i].cardNo = board[i - (firstCardIndex)];
+      _board[i].hide = true;
+      _board[i].notify();
     }
     await _delay();
     // show the 3rd card
-    singleBoard[2].slide = false;
-    singleBoard[1].slide = false;
-    singleBoard[2].hide = false;
-    singleBoard[2].useStartPos = true;
-    singleBoard[2].flip = true;
-    singleBoard[2].notify();
+    _board[thirdCardIndex].slide = false;
+    _board[secondCardIndex].slide = false;
+    _board[thirdCardIndex].hide = false;
+    _board[thirdCardIndex].useStartPos = true;
+    _board[thirdCardIndex].flip = true;
+    _board[thirdCardIndex].notify();
     await _delay();
-    singleBoard[1].useStartPos = true;
-    singleBoard[1].notify();
-    // singleBoard[1].useStartPos = true;
-    // singleBoard[1].slide = true;
-    singleBoard[2].flip = false;
-    singleBoard[1].useStartPos = false;
-    singleBoard[2].useStartPos = false;
-    singleBoard[1].slide = true;
-    singleBoard[2].slide = true;
-    for (int i = 0; i < board.length; i++) {
-      singleBoard[i].hide = false;
-      singleBoard[i].notify();
+    _board[secondCardIndex].useStartPos = true;
+    _board[secondCardIndex].notify();
+
+    _board[thirdCardIndex].flip = false;
+    _board[secondCardIndex].useStartPos = false;
+    _board[thirdCardIndex].useStartPos = false;
+    _board[secondCardIndex].slide = true;
+    _board[thirdCardIndex].slide = true;
+    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+      _board[i].hide = false;
+      _board[i].notify();
     }
     await _delay();
-    for (int i = 0; i < board.length; i++) {
-      singleBoard[i].useStartPos = false;
-      singleBoard[i].slide = false;
-      singleBoard[i].flip = false;
+    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+      _board[i].useStartPos = false;
+      _board[i].slide = false;
+      _board[i].flip = false;
     }
 
     //   singleBoard[i].hide = false;
@@ -277,7 +286,6 @@ class CommunityCardState extends ChangeNotifier {
       this.board2Cards.addAll(board2);
     }
 
-    _doubleBoard = false;
     if (isDoubleBoard) {
       _doubleBoard = true;
       _addFlopCards(
@@ -302,33 +310,48 @@ class CommunityCardState extends ChangeNotifier {
     int startWith = 4,
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
   }) async {
-    final cardState = _getCardStateFromCardNo(
-      null,
-      cardNo,
-      cardId: startWith,
-      boardState: boardState,
-    );
-    //_cardStates.add(cardState);
+    int cardIndex = startWith - 1;
+    List<CardState> _board;
 
-    notifyListeners();
+    if (boardState == CommunityCardBoardState.DOUBLE) {
+      _board = doubleBoard;
+    } else {
+      _board = singleBoard;
+    }
+    _board[cardIndex].cardNo = cardNo;
+    _board[cardIndex].hide = false;
+    _board[cardIndex].flip = true;
+    _board[cardIndex].notify();
 
     await _delay();
 
-    // flip
-    // if (PlatformUtils.isWeb) {
-    //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-    //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-    //     return;
-    //   }
-    // }
-    // cardState.flipKey.currentState?.toggleCard();
-    cardState.flip = true;
-    cardState.notify();
-    _delay().then((value) {
-      cardState.flip = false;
-    }).onError((error, stackTrace) {});
+    // final cardState = _getCardStateFromCardNo(
+    //   null,
+    //   cardNo,
+    //   cardId: startWith,
+    //   boardState: boardState,
+    // );
+    // //_cardStates.add(cardState);
 
-    if (PlatformUtils.isWeb) {}
+    // notifyListeners();
+
+    // await _delay();
+
+    // // flip
+    // // if (PlatformUtils.isWeb) {
+    // //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+    // //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+    // //     return;
+    // //   }
+    // // }
+    // // cardState.flipKey.currentState?.toggleCard();
+    // cardState.flip = true;
+    // cardState.notify();
+    // _delay().then((value) {
+    //   cardState.flip = false;
+    // }).onError((error, stackTrace) {});
+
+    // if (PlatformUtils.isWeb) {}
   }
 
   /// single board -> 4
@@ -340,7 +363,7 @@ class CommunityCardState extends ChangeNotifier {
     final bool isDoubleBoard = board2Card != null;
     board1Cards.add(board1Card);
     if (isDoubleBoard) {
-      board2Cards.add(board1Card);
+      board2Cards.add(board2Card);
       _addTurnCard(
         board1Card,
         startWith: 4,
@@ -352,10 +375,11 @@ class CommunityCardState extends ChangeNotifier {
         boardState: CommunityCardBoardState.DOUBLE,
       );
     } else {
-      singleBoard[3].cardNo = board1Card;
-      singleBoard[3].hide = false;
-      singleBoard[3].flip = true;
-      singleBoard[3].notify();
+      _addTurnCard(
+        board1Card,
+        startWith: 4,
+        boardState: CommunityCardBoardState.SINGLE,
+      );
       //await _delay();
       // _delay().then((value) {
       //   singleBoard[3].flip = false;
@@ -373,31 +397,46 @@ class CommunityCardState extends ChangeNotifier {
     int startWith = 5,
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
   }) async {
-    final cardState = _getCardStateFromCardNo(
-      null,
-      cardNo,
-      cardId: startWith,
-      boardState: boardState,
-    );
-    // _cardStates.add(cardState);
-    // if (PlatformUtils.isWeb) {
-    //   bool addWithoutAnimating = false;
-    //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-    //     addWithoutAnimating = true;
-    //   }
-    //   if (addWithoutAnimating) {
-    //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-    //     return;
-    //   }
-    // }
+    int cardIndex = startWith - 1;
+    List<CardState> _board;
+    if (boardState == CommunityCardBoardState.DOUBLE) {
+      _board = doubleBoard;
+    } else {
+      _board = singleBoard;
+    }
 
-    notifyListeners();
+    _board[cardIndex].cardNo = cardNo;
+    _board[cardIndex].hide = false;
+    _board[cardIndex].flip = true;
+    _board[cardIndex].notify();
 
     await _delay();
 
-    // flip
-    cardState.flip = true;
-    cardState.notify();
+    // final cardState = _getCardStateFromCardNo(
+    //   null,
+    //   cardNo,
+    //   cardId: startWith,
+    //   boardState: boardState,
+    // );
+    // // _cardStates.add(cardState);
+    // // if (PlatformUtils.isWeb) {
+    // //   bool addWithoutAnimating = false;
+    // //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
+    // //     addWithoutAnimating = true;
+    // //   }
+    // //   if (addWithoutAnimating) {
+    // //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
+    // //     return;
+    // //   }
+    // // }
+
+    // notifyListeners();
+
+    // await _delay();
+
+    // // flip
+    // cardState.flip = true;
+    // cardState.notify();
 
     // if (PlatformUtils.isWeb) {
     //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
@@ -430,11 +469,11 @@ class CommunityCardState extends ChangeNotifier {
         boardState: CommunityCardBoardState.DOUBLE,
       );
     } else {
-      singleBoard[4].cardNo = board1Card;
-      singleBoard[4].hide = false;
-      singleBoard[4].flip = true;
-      singleBoard[4].notify();
-      await _delay();
+      _addRiverCard(
+        board1Card,
+        startWith: 5,
+        boardState: CommunityCardBoardState.SINGLE,
+      );
 
 //      await _addRiverCard(board1Card);
     }

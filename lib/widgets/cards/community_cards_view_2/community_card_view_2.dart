@@ -101,11 +101,11 @@ class CommunityCardView2 extends StatelessWidget {
           cards.add(stateWidget);
           i++;
         }
-        // for (final state in communityCardState.doubleBoard) {
-        //   Widget stateWidget = getCard(i, state);
-        //   cards.add(stateWidget);
-        //   i++;
-        // }
+        for (final state in communityCardState.doubleBoard) {
+          Widget stateWidget = getCard(i, state);
+          cards.add(stateWidget);
+          i++;
+        }
         return Stack(alignment: Alignment.center, children: cards);
 
         return AnimatedBuilder(
