@@ -298,19 +298,15 @@ class TestService {
     final gameState = GameState.getState(_context);
     gameState.communityCardState.reset();
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 500));
 
     // just call this to add flop cards
-    gameState.communityCardState.addFlopCards(
+    await gameState.communityCardState.addFlopCards(
       board1: [1, 2, 177],
-      // board2: [17, 18, 20],
     );
-    gameState.communityCardState.addTurnCard(board1Card: 18
-        // board2: [17, 18, 20],
-        );
-    gameState.communityCardState.addRiverCard(board1Card: 20
-        // board2: [17, 18, 20],
-        );
+    await gameState.communityCardState.addTurnCard(board1Card: 18);
+    await Future.delayed(AppConstants.communityCardWaitDuration);
+    await gameState.communityCardState.addRiverCard(board1Card: 20);
   }
 
   static Future<void> addTurnCard() async {

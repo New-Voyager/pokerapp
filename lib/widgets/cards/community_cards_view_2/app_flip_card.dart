@@ -1,7 +1,9 @@
 import 'dart:math';
+import 'dart:developer' as developer;
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 enum FlipDirection {
   VERTICAL,
@@ -19,6 +21,7 @@ class AnimationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    developer.log('CommunityCard: AnimationCard build');
     return AnimatedBuilder(
       animation: animation,
       builder: (BuildContext context, Widget child) {
@@ -135,12 +138,17 @@ class AppFlipCardState extends State<AppFlipCard>
     if (widget.onFlip != null) {
       widget.onFlip();
     }
-
-    controller.duration = Duration(milliseconds: widget.speed);
-    if (isFront) {
-      controller.forward();
+    if (PlatformUtils.isWeb) {
+      setState(() {
+        isFront = true;
+      });
     } else {
-      controller.reverse();
+      controller.duration = Duration(milliseconds: widget.speed);
+      if (isFront) {
+        controller.forward();
+      } else {
+        controller.reverse();
+      }
     }
   }
 
@@ -152,6 +160,8 @@ class AppFlipCardState extends State<AppFlipCard>
 
   @override
   Widget build(BuildContext context) {
+    developer.log(
+        '[${DateTime.now().toIso8601String()}] [${widget.cardState.cardId}] CommunityCard: AppFlipCard build');
     final frontPositioning = widget.fill == Fill.fillFront ? _fill : _noop;
     final backPositioning = widget.fill == Fill.fillBack ? _fill : _noop;
 
