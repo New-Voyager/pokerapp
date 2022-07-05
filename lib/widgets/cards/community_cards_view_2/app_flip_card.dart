@@ -1,6 +1,9 @@
 import 'dart:math';
+import 'dart:developer' as developer;
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/community_card_state.dart';
+import 'package:pokerapp/utils/platform.dart';
 
 enum FlipDirection {
   VERTICAL,
@@ -18,6 +21,7 @@ class AnimationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    developer.log('CommunityCard: AnimationCard build');
     return AnimatedBuilder(
       animation: animation,
       builder: (BuildContext context, Widget child) {
@@ -53,13 +57,15 @@ class AppFlipCard extends StatefulWidget {
   final BoolCallback onFlipDone;
   final Fill fill;
   final bool flipOnTouch;
+  final CardState cardState;
 
   final Alignment alignment;
 
   const AppFlipCard({
-    Key key,
+    // Key key,
     @required this.front,
     @required this.back,
+    @required this.cardState,
     this.speed = 500,
     this.onFlip,
     this.onFlipDone,
@@ -67,7 +73,8 @@ class AppFlipCard extends StatefulWidget {
     this.flipOnTouch = true,
     this.alignment = Alignment.center,
     this.fill = Fill.none,
-  }) : super(key: key);
+  });
+  // : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -86,6 +93,8 @@ class AppFlipCardState extends State<AppFlipCard>
   @override
   void initState() {
     super.initState();
+
+    widget.cardState.addListener(stateListener);
     controller = AnimationController(
         duration: Duration(milliseconds: widget.speed), vsync: this);
     _frontRotation = TweenSequence(
@@ -129,17 +138,30 @@ class AppFlipCardState extends State<AppFlipCard>
     if (widget.onFlip != null) {
       widget.onFlip();
     }
-
-    controller.duration = Duration(milliseconds: widget.speed);
-    if (isFront) {
-      controller.forward();
+    if (PlatformUtils.isWeb) {
+      setState(() {
+        isFront = true;
+      });
     } else {
-      controller.reverse();
+      controller.duration = Duration(milliseconds: widget.speed);
+      if (isFront) {
+        controller.forward();
+      } else {
+        controller.reverse();
+      }
+    }
+  }
+
+  void stateListener() {
+    if (widget.cardState.flip) {
+      toggleCard();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    developer.log(
+        '[${DateTime.now().toIso8601String()}] [${widget.cardState.cardId}] CommunityCard: AppFlipCard build');
     final frontPositioning = widget.fill == Fill.fillFront ? _fill : _noop;
     final backPositioning = widget.fill == Fill.fillBack ? _fill : _noop;
 
@@ -181,6 +203,7 @@ class AppFlipCardState extends State<AppFlipCard>
   @override
   void dispose() {
     controller.dispose();
+    widget.cardState.removeListener(stateListener);
     super.dispose();
   }
 }
