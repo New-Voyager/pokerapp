@@ -2,9 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/utils/platform.dart';
-import 'package:pokerapp/widgets/cards/community_cards_view_2/app_flip_card.dart';
-
 import '../../../resources/app_constants.dart';
 
 const kTotalCards = 5;
@@ -71,8 +68,16 @@ class CommunityCardState extends ChangeNotifier {
   // List<CardState> get cardStates => _cardStates;
   List<CardState> singleBoard = []; // 1, 2, 3, 4, 5
   List<CardState> doubleBoard = []; // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-  List<CardState> ritBoard1 = []; // 1, 2, 3, 4, 51, 52
-  List<CardState> ritBoard2 = []; // 1, 2, 3, 41, 42, 51, 52
+  // List<CardState> ritBoard1 = []; // 1, 2, 3, 4, 51, 52
+  // List<CardState> ritBoard2 = []; // 1, 2, 3, 41, 42, 51, 52
+
+  List<CardState> ritBoardFlop = []; // 1, 2, 3
+  List<CardState> ritBoardFlop1 = []; // 4, 5
+  List<CardState> ritBoardFlop2 = []; // 6, 7
+
+  List<CardState> ritBoardTurn = []; // 1, 2, 3, 4
+  List<CardState> ritBoardTurn1 = []; // 5
+  List<CardState> ritBoardTurn2 = []; // 6
 
   final List<int> _highlightedCards = [];
   List<int> get highlightCards => _highlightedCards;
@@ -201,6 +206,56 @@ class CommunityCardState extends ChangeNotifier {
       _board[i].slide = false;
       _board[i].flip = false;
     }
+
+    //   singleBoard[i].hide = false;
+    //   singleBoard[i].flip = true;
+    //   singleBoard[i].notify();
+    // }
+  }
+
+  Future<void> addFlopCards2(
+    List<int> board, {
+    int startWith = 1,
+    List<CardState> cardState,
+  }) async {
+    int firstCardIndex = startWith - 1;
+    int secondCardIndex = startWith;
+    int thirdCardIndex = startWith + 1;
+
+    for (int i = firstCardIndex; i < (firstCardIndex + board.length); i++) {
+      cardState[i].cardNo = board[i - (firstCardIndex)];
+      cardState[i].hide = true;
+      cardState[i].notify();
+    }
+    await _delay();
+    // show the 3rd card
+    cardState[thirdCardIndex].slide = false;
+    cardState[secondCardIndex].slide = false;
+    cardState[thirdCardIndex].hide = false;
+    cardState[thirdCardIndex].useStartPos = true;
+    cardState[thirdCardIndex].flip = true;
+    cardState[thirdCardIndex].notify();
+    await _delay();
+    cardState[secondCardIndex].useStartPos = true;
+    cardState[secondCardIndex].notify();
+
+    cardState[thirdCardIndex].flip = false;
+    cardState[secondCardIndex].useStartPos = false;
+    cardState[thirdCardIndex].useStartPos = false;
+    cardState[secondCardIndex].slide = true;
+    cardState[thirdCardIndex].slide = true;
+    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+      cardState[i].hide = false;
+      cardState[i].notify();
+    }
+    await _delay();
+    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+      cardState[i].useStartPos = false;
+      cardState[i].slide = false;
+      cardState[i].flip = false;
+    }
+
+    _isFlopDone = true;
 
     //   singleBoard[i].hide = false;
     //   singleBoard[i].flip = true;
@@ -354,6 +409,21 @@ class CommunityCardState extends ChangeNotifier {
     // if (PlatformUtils.isWeb) {}
   }
 
+  Future<void> addTurnCard2(
+    int cardNo, {
+    int startWith = 4,
+    List<CardState> cardState,
+  }) async {
+    int cardIndex = startWith - 1;
+
+    cardState[cardIndex].cardNo = cardNo;
+    cardState[cardIndex].hide = false;
+    cardState[cardIndex].flip = true;
+    cardState[cardIndex].notify();
+    _isTurnDone = true;
+    await _delay();
+  }
+
   /// single board -> 4
   /// double board -> 4, 9
   void addTurnCard({
@@ -482,45 +552,100 @@ class CommunityCardState extends ChangeNotifier {
 
   /// cards -> 6, 8 (as 1, 2, 3, 4 are common) & (5, 7 are reserved for Turn case)
   Future<void> _runItTwiceAfterTurn(int c1, int c2) async {
-    final card1State = _getCardStateFromCardNo(
-      null,
-      c1,
-      cardId: 5,
-    ); // 5 -> before RIT dimen
-    //_cardStates.add(card1State);
-    notifyListeners();
-    await _delay();
+    final card1State = _getCardStateFromCardNo(null, c1,
+        cardId: 5,
+        boardState: CommunityCardBoardState.RIT); // 5 -> before RIT dimen
 
-    // flip
-    card1State.flip = true;
-    card1State.notify();
-    //card1State.flipKey.currentState.toggleCard();
+    final card2State = _getCardStateFromCardNo(null, c2,
+        cardId: 8,
+        boardState: CommunityCardBoardState.RIT); // 5 -> before RIT dimen
+
+    ritBoardTurn1[0].startPos = card1State.startPos;
+    ritBoardTurn1[0].position = card1State.position;
+    ritBoardTurn1[0].cardNo = c1;
+    ritBoardTurn1[0].hide = true;
+    ritBoardTurn1[0].notify();
+
+    ritBoardTurn2[0].startPos = card2State.startPos;
+    ritBoardTurn2[0].position = card2State.position;
+    ritBoardTurn2[0].cardNo = c2;
+    ritBoardTurn2[0].hide = true;
+    ritBoardTurn2[0].notify();
+
     await _delayFA();
 
-    // push up and change size
-    final cardDimen = getRitBoardCardDimens(6); // 6 -> RIT dimen
-    card1State.size = cardDimen.size;
-    card1State.position = cardDimen.position;
-    notifyListeners();
+    var cardDimen = _getCardDimen(CommunityCardBoardState.RIT, 7);
+    ritBoardTurn1[0].position = cardDimen.position;
+    ritBoardTurn1[0].size = cardDimen.size;
+    ritBoardTurn1[0].slide = false;
+    ritBoardTurn1[0].hide = false;
+    ritBoardTurn1[0].useStartPos = true;
+    ritBoardTurn1[0].flip = false;
+    ritBoardTurn1[0].notify();
 
-    // wait for the push
-    await _delay();
+    cardDimen = _getCardDimen(CommunityCardBoardState.RIT, 9);
+    ritBoardTurn2[0].position = cardDimen.position;
+    ritBoardTurn2[0].size = cardDimen.size;
+    ritBoardTurn2[0].slide = false;
+    ritBoardTurn2[0].hide = false;
+    ritBoardTurn2[0].useStartPos = true;
+    ritBoardTurn2[0].flip = true;
+    ritBoardTurn2[0].notify();
 
-    /// DO IT FOR THE OTHER CARD
-    final card2State = _getCardStateFromCardNo(
-      null,
-      c2,
-      cardId: 8,
-      boardState: CommunityCardBoardState.RIT,
-    ); // 8 -> second card RIT dimen
-//    _cardStates.add(card2State);
-    notifyListeners();
-    await _delay();
+    // for (int i = 0; i < cardStates2.length; i++) {
+    //   final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i + 6);
+    //   ritBoardFlop1[i].position = cardDimen.position;
 
-    // flip
-    card2State.flip = true;
-    card2State.notify();
-    await _delayFA();
+    //   ritBoardFlop1[i].size = cardDimen.size;
+
+    //   ritBoardFlop1[i].slide = false;
+    //   ritBoardFlop1[i].hide = false;
+    //   ritBoardFlop1[i].useStartPos = true;
+    //   ritBoardFlop1[i].flip = false;
+
+    //   // ritBoardFlop1[i] = state;
+    //   ritBoardFlop1[i].notify();
+    // }
+
+//     final card1State = _getCardStateFromCardNo(
+//       null,
+//       c1,
+//       cardId: 5,
+//     ); // 5 -> before RIT dimen
+//     //_cardStates.add(card1State);
+//     notifyListeners();
+//     await _delay();
+
+//     // flip
+//     card1State.flip = true;
+//     card1State.notify();
+//     //card1State.flipKey.currentState.toggleCard();
+//     await _delayFA();
+
+//     // push up and change size
+//     final cardDimen = getRitBoardCardDimens(6); // 6 -> RIT dimen
+//     card1State.size = cardDimen.size;
+//     card1State.position = cardDimen.position;
+//     notifyListeners();
+
+//     // wait for the push
+//     await _delay();
+
+//     /// DO IT FOR THE OTHER CARD
+//     final card2State = _getCardStateFromCardNo(
+//       null,
+//       c2,
+//       cardId: 8,
+//       boardState: CommunityCardBoardState.RIT,
+//     ); // 8 -> second card RIT dimen
+// //    _cardStates.add(card2State);
+//     notifyListeners();
+//     await _delay();
+
+//     // flip
+//     card2State.flip = true;
+//     card2State.notify();
+//     await _delayFA();
   }
 
   Future<List<CardState>> _displayTwoConsecutiveCards({
@@ -529,7 +654,7 @@ class CommunityCardState extends ChangeNotifier {
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
   }) async {
     int cardId = cardIdStartsWith;
-    final List<CardState> cardStates = [];
+    final List<CardState> _cardStates = [];
 
     for (final cNo in cards) {
       final state = _getCardStateFromCardNo(
@@ -538,7 +663,7 @@ class CommunityCardState extends ChangeNotifier {
         cardId: cardId,
         boardState: boardState,
       );
-      cardStates.add(state);
+      _cardStates.add(state);
       cardId++;
 
       //_cardStates.add(state);
@@ -548,13 +673,13 @@ class CommunityCardState extends ChangeNotifier {
 
       // flip
       state.flip = true;
-      state.notify();
+      // state.notify();
       // state.flipKey.currentState.toggleCard();
 
       await _delayFA();
     }
 
-    return cardStates;
+    return _cardStates;
   }
 
   /// cards -> 5, 6 | 7, 8 (as 1, 2, 3 are common) & (4 is reserved for RIT after Turn case)
@@ -577,22 +702,119 @@ class CommunityCardState extends ChangeNotifier {
       cardIdStartsWith: 4,
     );
 
-    // push the cards | 4, 5 of SINGLE changes to 5, 6 of RIT
-    int cardId = 5;
-    cardStates.forEach((cardState) {
-      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, cardId);
-      cardState.position = cardDimen.position;
-      cardState.size = cardDimen.size;
-      cardId++;
-    });
-    notifyListeners();
+    int cardId = 4;
 
-    // add the other two cards
-    await _displayTwoConsecutiveCards(
+    for (int i = 0; i < 2; i++) {
+      ritBoardFlop1[i].startPos = cardStates[i].startPos;
+      ritBoardFlop1[i].position = cardStates[i].position;
+      ritBoardFlop1[i].cardNo = board1Cards[i];
+      ritBoardFlop1[i].hide = true;
+      ritBoardFlop1[i].notify();
+    }
+
+    for (int i = 0; i < cardStates.length; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i + 4);
+      ritBoardFlop1[i].position = cardDimen.position;
+
+      ritBoardFlop1[i].size = cardDimen.size;
+
+      ritBoardFlop1[i].slide = false;
+      ritBoardFlop1[i].hide = false;
+      ritBoardFlop1[i].useStartPos = true;
+      ritBoardFlop1[i].flip = true;
+
+      // ritBoardFlop1[i] = state;
+      ritBoardFlop1[i].notify();
+
+      cardId++;
+    }
+
+    await _delay();
+
+    /// As we are STILL single board - show cards 4 & 5
+    var cardStates2 = await _displayTwoConsecutiveCards(
+      cards: board1Cards,
+      cardIdStartsWith: 4,
+    );
+
+    for (int i = 0; i < 2; i++) {
+      ritBoardFlop1[i].startPos = cardStates2[i].startPos;
+      ritBoardFlop1[i].position = cardStates2[i].position;
+      ritBoardFlop1[i].cardNo = board1Cards[i];
+      ritBoardFlop1[i].hide = true;
+      ritBoardFlop1[i].notify();
+    }
+
+    for (int i = 0; i < cardStates2.length; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i + 6);
+      ritBoardFlop1[i].position = cardDimen.position;
+
+      ritBoardFlop1[i].size = cardDimen.size;
+
+      ritBoardFlop1[i].slide = false;
+      ritBoardFlop1[i].hide = false;
+      ritBoardFlop1[i].useStartPos = true;
+      ritBoardFlop1[i].flip = false;
+
+      // ritBoardFlop1[i] = state;
+      ritBoardFlop1[i].notify();
+
+      cardId++;
+    }
+
+    await _delay();
+
+    /// As we are STILL single board - show cards 4 & 5
+    var cardStates3 = await _displayTwoConsecutiveCards(
       cards: board2Cards,
-      cardIdStartsWith: 7,
+      cardIdStartsWith: 6,
       boardState: CommunityCardBoardState.RIT,
     );
+
+    for (int i = 0; i < 2; i++) {
+      ritBoardFlop2[i].startPos = cardStates3[i].startPos;
+      ritBoardFlop2[i].position = cardStates3[i].position;
+      ritBoardFlop2[i].cardNo = board2Cards[i];
+      ritBoardFlop2[i].hide = true;
+      ritBoardFlop2[i].notify();
+    }
+
+    for (int i = 0; i < cardStates3.length; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i + 8);
+      ritBoardFlop2[i].position = cardDimen.position;
+
+      ritBoardFlop2[i].size = cardDimen.size;
+
+      ritBoardFlop2[i].slide = false;
+      ritBoardFlop2[i].hide = false;
+      ritBoardFlop2[i].useStartPos = true;
+      ritBoardFlop2[i].flip = true;
+
+      ritBoardFlop2[i].notify();
+
+      cardId++;
+    }
+
+    // notifyListeners();
+
+    // push the cards | 4, 5 of SINGLE changes to 5, 6 of RIT
+    // int cardId = 5;
+    // cardStates.forEach((cardState) {
+    //   final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, cardId);
+    //   cardState.position = cardDimen.position;
+    //   cardState.size = cardDimen.size;
+    //   ritBoard1.add(cardState);
+    //   // _board[cardIndex].notify();
+    //   cardId++;
+    // });
+    // notifyListeners();
+
+    // // add the other two cards
+    // await _displayTwoConsecutiveCards(
+    //   cards: board2Cards,
+    //   cardIdStartsWith: 7,
+    //   boardState: CommunityCardBoardState.RIT,
+    // );
   }
 
   /// call this function only if we were running Single Board game up till now, then shifted to Run It Twice
@@ -610,18 +832,21 @@ class CommunityCardState extends ChangeNotifier {
       'Both the boards must contain 5 cards',
     );
 
+    // need to add two cards for each board
+    // final board1Cards = board1.sublist(0, 3);
+    // final board2Cards = board2.sublist(0, 3);
+
+    // await Future.delayed(const Duration(milliseconds: 500));
+
     if (_isTurnDone) {
       // need to add last set of cards
       final board1LastCard = board1.last;
       final board2LastCard = board2.last;
 
+      await _delayFA();
       await _runItTwiceAfterTurn(board1LastCard, board2LastCard);
     } else if (_isFlopDone) {
-      // need to add two cards for each board
-      final board1Cards = board1.sublist(3);
-      final board2Cards = board2.sublist(3);
-
-      await _runItTwiceAfterFlop(board1Cards, board2Cards);
+      await _runItTwiceAfterFlop(board1.sublist(3), board2.sublist(3));
     } else {
       throw AssertionError(
         'Invalid State: If you want to add double board cards, use the addFlopCards method',
@@ -832,9 +1057,29 @@ class CommunityCardState extends ChangeNotifier {
       state.notify();
     }
 
-    // for (final state in ritBoard) {
-    //   state.reset();
-    // }
+    for (final state in ritBoardFlop) {
+      state.reset();
+    }
+
+    for (final state in ritBoardFlop1) {
+      state.reset();
+    }
+
+    for (final state in ritBoardFlop2) {
+      state.reset();
+    }
+
+    for (final state in ritBoardTurn) {
+      state.reset();
+    }
+
+    for (final state in ritBoardTurn1) {
+      state.reset();
+    }
+
+    for (final state in ritBoardTurn2) {
+      state.reset();
+    }
     //notifyListeners();
   }
 
@@ -850,12 +1095,12 @@ class CommunityCardState extends ChangeNotifier {
   Rect getRitBoardCardDimens(int no) => _ritCardDimens[no];
 
   void _initDimenForRitBoard(Size size) {
-    /// common cards -> 1, 2, 3, 4
-    for (int i = 1; i <= 4; i++) {
+    /// common cards -> 1, 2, 3, 4, 5
+    for (int i = 1; i <= 5; i++) {
       _ritCardDimens[i] = _singleBoardCardDimens[i];
     }
 
-    /// uncommon cards -> 5, 6, 7, 8
+    /// uncommon cards -> 6, 7, 8, 9
     final singleBoard4 = _singleBoardCardDimens[4];
     final singleBoard5 = _singleBoardCardDimens[5];
 
@@ -864,13 +1109,13 @@ class CommunityCardState extends ChangeNotifier {
     final bottomOffset = size.height / 2;
 
     /// 5, 6 -> top two
-    _ritCardDimens[5] = Rect.fromLTWH(
+    _ritCardDimens[6] = Rect.fromLTWH(
       singleBoard4.left,
       topOffset,
       singleBoard4.width,
       newHeight,
     );
-    _ritCardDimens[6] = Rect.fromLTWH(
+    _ritCardDimens[7] = Rect.fromLTWH(
       singleBoard5.left,
       topOffset,
       singleBoard5.width,
@@ -878,13 +1123,13 @@ class CommunityCardState extends ChangeNotifier {
     );
 
     /// 7, 8 -> bottom two
-    _ritCardDimens[7] = Rect.fromLTWH(
+    _ritCardDimens[8] = Rect.fromLTWH(
       singleBoard4.left,
       bottomOffset,
       singleBoard4.width,
       newHeight,
     );
-    _ritCardDimens[8] = Rect.fromLTWH(
+    _ritCardDimens[9] = Rect.fromLTWH(
       singleBoard5.left,
       bottomOffset,
       singleBoard5.width,
@@ -1022,6 +1267,112 @@ class CommunityCardState extends ChangeNotifier {
         cardNo: 0,
       );
       doubleBoard.add(cardState);
+    }
+
+    // ritBoardFlop 1, 2, 3
+    for (int i = 1; i < 4; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i);
+      Offset offset = null;
+
+      if (i > 1) {
+        offset = singleBoard[0].position;
+      }
+
+      final cardState = CardState(
+        startPos: offset,
+        position: cardDimen.position,
+        cardId: i,
+        size: cardDimen.size,
+        cardNo: 0,
+      );
+      ritBoardFlop.add(cardState);
+    }
+
+    // ritBoardFlop1 4, 5
+    for (int i = 4; i < 6; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i);
+      Offset offset = null;
+
+      offset = ritBoardFlop[2].position;
+
+      final cardState = CardState(
+        startPos: offset,
+        position: cardDimen.position,
+        cardId: i,
+        size: cardDimen.size,
+        cardNo: 0,
+      );
+      ritBoardFlop1.add(cardState);
+    }
+
+    // ritBoardFlop2 6, 7
+    for (int i = 6; i < 8; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i);
+      Offset offset = null;
+
+      offset = ritBoardFlop1[0].position;
+
+      final cardState = CardState(
+        startPos: offset,
+        position: cardDimen.position,
+        cardId: i,
+        size: cardDimen.size,
+        cardNo: 0,
+      );
+      ritBoardFlop2.add(cardState);
+    }
+
+    // ritBoardTurn 1, 2, 3, 4
+    for (int i = 1; i < 5; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i);
+      Offset offset = null;
+
+      if (i > 1) {
+        offset = singleBoard[0].position;
+      }
+
+      final cardState = CardState(
+        startPos: offset,
+        position: cardDimen.position,
+        cardId: i,
+        size: cardDimen.size,
+        cardNo: 0,
+      );
+      ritBoardTurn.add(cardState);
+    }
+
+    // ritBoardTurn1 5
+    for (int i = 5; i < 6; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i);
+      Offset offset = null;
+
+      offset = ritBoardFlop[2].position;
+
+      final cardState = CardState(
+        startPos: offset,
+        position: cardDimen.position,
+        cardId: i,
+        size: cardDimen.size,
+        cardNo: 0,
+      );
+      ritBoardTurn1.add(cardState);
+    }
+
+    // ritBoardTurn2 6
+    for (int i = 6; i < 7; i++) {
+      final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i);
+      Offset offset = null;
+
+      offset = ritBoardFlop[2].position;
+
+      final cardState = CardState(
+        startPos: offset,
+        position: cardDimen.position,
+        cardId: i,
+        size: cardDimen.size,
+        cardNo: 0,
+      );
+      ritBoardTurn2.add(cardState);
     }
 
     // RIT twice

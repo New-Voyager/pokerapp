@@ -106,6 +106,43 @@ class CommunityCardView2 extends StatelessWidget {
           cards.add(stateWidget);
           i++;
         }
+
+        for (final state in communityCardState.ritBoardFlop) {
+          Widget stateWidget = getCard(i, state);
+          cards.add(stateWidget);
+          i++;
+        }
+
+        for (final state in communityCardState.ritBoardFlop1) {
+          Widget stateWidget = getCard(i, state);
+          cards.add(stateWidget);
+          i++;
+        }
+
+        for (final state in communityCardState.ritBoardFlop2) {
+          Widget stateWidget = getCard(i, state);
+          cards.add(stateWidget);
+          i++;
+        }
+
+        for (final state in communityCardState.ritBoardTurn) {
+          Widget stateWidget = getCard(i, state);
+          cards.add(stateWidget);
+          i++;
+        }
+
+        for (final state in communityCardState.ritBoardTurn1) {
+          Widget stateWidget = getCard(i, state);
+          cards.add(stateWidget);
+          i++;
+        }
+
+        for (final state in communityCardState.ritBoardTurn2) {
+          Widget stateWidget = getCard(i, state);
+          cards.add(stateWidget);
+          i++;
+        }
+
         return Stack(alignment: Alignment.center, children: cards);
 
         return AnimatedBuilder(
