@@ -152,30 +152,30 @@ class GamePlayScreenUtilMethods {
         //     TestService.addRiverCard();
         //   },
         // ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Run It Twice, after Flop',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () {
-        //     TestService.addRunItTwiceAfterFlop();
-        //   },
-        // ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Run It Twice, after Turn',
-        //   labelBackgroundColor: Colors.black,
-        //   onTap: () {
-        //     TestService.addRunItTwiceAfterTurn();
-        //   },
-        // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Run It Twice, after Flop',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.addRunItTwiceAfterFlop();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Run It Twice, after Turn',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.addRunItTwiceAfterTurn();
+          },
+        ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,

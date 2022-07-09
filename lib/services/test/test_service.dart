@@ -298,19 +298,18 @@ class TestService {
     final gameState = GameState.getState(_context);
     gameState.communityCardState.reset();
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 500));
 
     // just call this to add flop cards
-    gameState.communityCardState.addFlopCards(
-      board1: [1, 2, 177],
-      // board2: [17, 18, 20],
+    await gameState.communityCardState.addFlopCards(
+      board1: [1, 2, 161],
+      board2: [1, 2, 177],
     );
-    gameState.communityCardState.addTurnCard(board1Card: 18
-        // board2: [17, 18, 20],
-        );
-    gameState.communityCardState.addRiverCard(board1Card: 20
-        // board2: [17, 18, 20],
-        );
+    await gameState.communityCardState
+        .addTurnCard(board1Card: 18, board2Card: 120);
+    await Future.delayed(AppConstants.communityCardWaitDuration);
+    await gameState.communityCardState
+        .addRiverCard(board1Card: 20, board2Card: 130);
   }
 
   static Future<void> addTurnCard() async {
@@ -356,11 +355,13 @@ class TestService {
     await Future.delayed(const Duration(milliseconds: 500));
     final board1Cards = [33, 34, 36, 68, 72];
     final board2Cards = [33, 34, 36, 100, 104];
+
     // add flop cards -> just add 3 cards from board 1
-    await gameState.communityCardState.addFlopCards(
-      board1: board1Cards.sublist(0, 3),
-    );
-    await Future.delayed(const Duration(milliseconds: 500));
+
+    await gameState.communityCardState.addFlopCards2(board1Cards.sublist(0, 3),
+        cardState: gameState.communityCardState.ritBoardFlop);
+
+    // await Future.delayed(const Duration(seconds: 1));
 
     /// THE REAL TEST BEGINS HERE
 
@@ -376,18 +377,27 @@ class TestService {
 
     /// SETUP FOR THE TEST
     gameState.communityCardState.reset();
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 500));
     final board1Cards = [33, 34, 36, 68, 72];
     final board2Cards = [33, 34, 36, 100, 104];
     // add flop cards -> just add 3 cards from board 1
-    await gameState.communityCardState.addFlopCards(
-      board1: board1Cards.sublist(0, 3),
+    // await gameState.communityCardState.addFlopCards(
+    //   board1: board1Cards.sublist(0, 3),
+    // );
+
+    await gameState.communityCardState.addFlopCards2(board1Cards.sublist(0, 4),
+        cardState: gameState.communityCardState.ritBoardTurn);
+
+    // await Future.delayed(const Duration(milliseconds: 500));
+    // await gameState.communityCardState.addTurnCard(
+    //   board1Card: board1Cards[3],
+    // );
+    await gameState.communityCardState.addTurnCard2(
+      board1Cards[4],
+      startWith: 1,
+      cardState: gameState.communityCardState.ritBoardTurn1,
     );
-    await Future.delayed(const Duration(milliseconds: 500));
-    await gameState.communityCardState.addTurnCard(
-      board1Card: board1Cards[3],
-    );
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 500));
 
     /// THE REAL TEST BEGINS HERE
 

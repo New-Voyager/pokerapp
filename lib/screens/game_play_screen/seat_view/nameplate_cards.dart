@@ -13,7 +13,6 @@ class PlayerCardsWidget extends StatelessWidget {
   final Seat seat;
   final Alignment alignment;
   final bool showdown;
-  final int noCards;
   final BoardAttributesObject boardAttributes;
   final GameState gameState;
 
@@ -22,7 +21,6 @@ class PlayerCardsWidget extends StatelessWidget {
     this.gameState,
     this.seat,
     this.alignment,
-    this.noCards,
     this.showdown,
   );
 
@@ -33,9 +31,10 @@ class PlayerCardsWidget extends StatelessWidget {
     // }
 
     double shiftMultiplier = 1.0;
-    if (this.noCards == 5) shiftMultiplier = 1.7;
-    if (this.noCards == 4) shiftMultiplier = 1.45;
-    if (this.noCards == 3) shiftMultiplier = 1.25;
+    int noCards = gameState.handInfo.noCards;
+    if (noCards == 5) shiftMultiplier = 1.7;
+    if (noCards == 4) shiftMultiplier = 1.45;
+    if (noCards == 3) shiftMultiplier = 1.25;
     // log('PlayerCardsWidget: building ${seat.serverSeatPos}');
     double xOffset;
     if (showdown)
@@ -68,11 +67,11 @@ class PlayerCardsWidget extends StatelessWidget {
     } else {
       double xoffset = 0.90;
       double scale = 0.80;
-      if (this.noCards == 5) {
+      if (noCards == 5) {
         scale = 0.75;
         xoffset = 0.55;
       }
-      if (this.noCards == 4) {
+      if (noCards == 4) {
         scale = 0.75;
         xoffset = 0.5;
       }
@@ -86,7 +85,7 @@ class PlayerCardsWidget extends StatelessWidget {
       }
 
       //log('Hole cards');
-      // log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards');
+      log('PlayerCardsWidget: [${seat.serverSeatPos}] Hidden cards xOffset: $xOffset noCards: ${noCards}');
       Widget plateHoleCards = Transform.translate(
         offset: Offset(
           // xOffset * xoffset,
@@ -95,7 +94,7 @@ class PlayerCardsWidget extends StatelessWidget {
         ),
         child: Transform.scale(
           scale: scale / 1.2,
-          child: HiddenCardView(noOfCards: this.noCards),
+          child: HiddenCardView(noOfCards: noCards),
         ),
       );
 

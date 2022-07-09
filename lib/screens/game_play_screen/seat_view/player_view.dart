@@ -548,7 +548,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                 gameState,
                 widget.seat,
                 this.widget.cardsAlignment,
-                widget.seat.player?.noOfCardsVisible,
                 showdown,
               ),
               // player action text
