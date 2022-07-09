@@ -127,7 +127,6 @@ class AudioService {
   }
 
   static Future<void> playSound(String soundFile, {bool mute = false}) async {
-    return;
     if (!play) return;
     if (mute ?? false) return;
     //if (!_audioFileCache.containsKey(soundFile)) return;
