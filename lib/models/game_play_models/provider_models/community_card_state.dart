@@ -850,6 +850,44 @@ class CommunityCardState extends ChangeNotifier {
     } else {
       log('RIT: show first board');
       log('RIT: show second board');
+
+      final board1Cards = board1.sublist(0, 3);
+      final board2Cards = board2.sublist(0, 3);
+
+      _doubleBoard = true;
+      _addFlopCards(
+        board1Cards,
+        startWith: 1,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+
+      await _delayFA();
+
+      await _addTurnCard(board1[3],
+          startWith: 4, boardState: CommunityCardBoardState.DOUBLE);
+
+      await _delayFA();
+
+      await _addRiverCard(board1[4],
+          startWith: 5, boardState: CommunityCardBoardState.DOUBLE);
+
+      await _delayFA();
+
+      await _addFlopCards(
+        board2Cards,
+        startWith: 6,
+        boardState: CommunityCardBoardState.DOUBLE,
+      );
+
+      await _delayFA();
+
+      await _addTurnCard(board2[3],
+          startWith: 9, boardState: CommunityCardBoardState.DOUBLE);
+      await _delayFA();
+
+      await _addRiverCard(board2[4],
+          startWith: 10, boardState: CommunityCardBoardState.DOUBLE);
+
       // preflop
       // show first board with flop/turn/river
       // show second board with flop/turn/river
