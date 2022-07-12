@@ -848,9 +848,14 @@ class CommunityCardState extends ChangeNotifier {
     } else if (_isFlopDone) {
       await _runItTwiceAfterFlop(board1.sublist(3), board2.sublist(3));
     } else {
-      throw AssertionError(
-        'Invalid State: If you want to add double board cards, use the addFlopCards method',
-      );
+      log('RIT: show first board');
+      log('RIT: show second board');
+      // preflop
+      // show first board with flop/turn/river
+      // show second board with flop/turn/river
+      // throw AssertionError(
+      //   'Invalid State: If you want to add double board cards, use the addFlopCards method',
+      // );
     }
   }
 

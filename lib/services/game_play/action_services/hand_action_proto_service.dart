@@ -402,6 +402,7 @@ class HandActionProtoService {
       final message = proto.HandMessage.fromBuffer(protoData);
       log('Socket: HandActionProtoService::handle deserialized protobuf');
       for (final item in message.messages) {
+        log('HoleCard: message type: ${item.messageType}');
         _messages.add(HandMessageObject(message, item));
         toggleLivenessSender(item);
       }
@@ -415,14 +416,18 @@ class HandActionProtoService {
     // if the service is closed, don't process incoming messages
     if (closed) return;
     if (_close || _gameState.uiClosing) return;
-
+    log('HoleCard: message type here: ${messageObject.item.messageType} ');
     //log(messageObject.item.writeToJson());
     //debugLog(_gameState.gameCode, messageObject.item.writeToJson());
     //debugLog(_gameState.gameCode, jsonData);
 
     String messageType = messageObject.item.messageType;
+    if (messageType == AppConstants.DEAL) {
+      log('HoleCard: Deal is here');
+    }
     log('Performance: Message: [${DateTime.now().toIso8601String()}] ${messageType} handNum: ${messageObject.message.handNum}');
-    if (messageObject.message.handNum < _gameState.handInfo.handNum) {
+    if (messageObject.message.handNum != 0 &&
+        messageObject.message.handNum < _gameState.handInfo.handNum) {
       log('Performance: ***** Invalid HandNum: [${DateTime.now().toIso8601String()}] ${messageType} handNum: ${messageObject.message.handNum} expected HandNum: ${_gameState.handInfo.handNum}');
       return;
     }
@@ -442,6 +447,9 @@ class HandActionProtoService {
 
     // log('Hand Message: ::handleMessage:: START messageType: $messageType');
     final message = messageObject.item;
+    if (messageType == AppConstants.DEAL) {
+      log('HoleCard: Deal is here');
+    }
     try {
       // delegate further actions to sub services as per messageType
       switch (messageType) {

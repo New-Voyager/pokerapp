@@ -67,8 +67,8 @@ class GameUIState {
     if (PlatformUtils.isWeb) {
       // web is same as 7inch screen
       tableWidthFactor = 0.60 * (prevSize.height / prevSize.width);
-      double width = (prevSize.width * tableWidthFactor) / 6;
-      log('Width: $width');
+      double width = (prevSize.width * tableWidthFactor) / 4;
+      log('GameUI: Nameplate width: $width');
       //NamePlateWidgetParent.setWidth(90);
       NamePlateWidgetParent.setWidth(width);
       chipAmountScale = 0.70;

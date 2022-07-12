@@ -500,7 +500,6 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     log('CenterView: rebuilding pot updates/rank view');
     final theme = AppTheme.getTheme(context);
-
     Widget potUpdatesView = FittedBox(
       fit: BoxFit.fitHeight,
       child: ValueListenableBuilder2<double, String>(
@@ -508,6 +507,9 @@ class _PotUpdatesOrRankWidget extends StatelessWidget {
         vnRankStr,
         builder: (_, potChipsUpdates, rank, __) {
           if (gameState.handState == HandState.RESULT) {
+            if (vnRankStr.value == null || vnRankStr.value.isEmpty) {
+              return Container(width: 1, height: 1, color: Colors.transparent);
+            }
             return RankWidget(theme, vnRankStr);
           }
 

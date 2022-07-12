@@ -52,6 +52,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   void _betOrRaise(double val) {
     _showOptions = false;
     _betWidgetoverlayEntry.remove();
+    _betWidgetoverlayEntry = null;
     setState(() {});
     betAmount = val;
     if (bet) {
@@ -795,6 +796,7 @@ class _FooterActionViewState extends State<FooterActionView> {
           child: GestureDetector(
             onTap: () {
               _betWidgetoverlayEntry.remove();
+              _betWidgetoverlayEntry = null;
               appService.appSettings.showBetTip = false;
               setState(() {
                 betWidgetShown = false;
@@ -826,6 +828,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     bool isCentsGame,
   ) async {
     _betWidgetoverlayEntry.remove();
+    _betWidgetoverlayEntry = null;
 
     final gameState = GameState.getState(context);
 
@@ -854,14 +857,16 @@ class _FooterActionViewState extends State<FooterActionView> {
   void initializeBetPos() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       while (true) {
-        final betButton =
-            _betButtonKey.currentContext.findRenderObject() as RenderBox;
-        if (betButton.size.shortestSide != 0.0) {
-          final gameState = GameState.getState(context);
-          gameState.gameUIState.betBtnPos =
-              betButton.localToGlobal(Offset.zero);
-          log("box size ${gameState.gameUIState.betBtnPos.dx}, ${gameState.gameUIState.betBtnPos.dy}");
-          break;
+        if (_betButtonKey.currentContext != null) {
+          final betButton =
+              _betButtonKey.currentContext.findRenderObject() as RenderBox;
+          if (betButton.size.shortestSide != 0.0) {
+            final gameState = GameState.getState(context);
+            gameState.gameUIState.betBtnPos =
+                betButton.localToGlobal(Offset.zero);
+            log("box size ${gameState.gameUIState.betBtnPos.dx}, ${gameState.gameUIState.betBtnPos.dy}");
+            break;
+          }
         }
         await Future.delayed(const Duration(milliseconds: 10));
       }
@@ -870,7 +875,11 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   @override
   void dispose() {
-    if (_betWidgetoverlayEntry.mounted) _betWidgetoverlayEntry.remove();
+    if (_betWidgetoverlayEntry != null) {
+      if (_betWidgetoverlayEntry.mounted) {
+        _betWidgetoverlayEntry.remove();
+      }
+    }
     super.dispose();
   }
 

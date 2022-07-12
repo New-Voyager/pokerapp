@@ -175,7 +175,7 @@ class _HoleCardsViewAndFooterActionViewState
                       child: Consumer4<StraddlePromptState, HoleCardsState,
                           MyState, MarkedCards>(
                         builder: (_, __, ___, ____, markedCards, _____) {
-                          // log('Holecard view: rebuild');
+                          log('Holecard view: rebuild');
                           // return Container();
                           return _buildHoleCardView(context, rankText);
                         },
@@ -327,7 +327,7 @@ class _HoleCardsViewAndFooterActionViewState
     final theme = AppTheme.getTheme(context);
     final playerCards = gameState.getHoleCards();
     final boardAttributes = gameState.getBoardAttributes(context);
-    // log('Holecards: rebuilding. Hole cards: ${playerCards}');
+    log('Holecard: rebuilding. Hole cards: ${playerCards}');
     bool playerFolded = false;
     if (widget.playerModel != null) {
       playerFolded = widget.playerModel.playerFolded;
