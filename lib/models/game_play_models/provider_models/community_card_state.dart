@@ -64,12 +64,8 @@ class CommunityCardState extends ChangeNotifier {
   bool hide = true;
 
   bool _doubleBoard = false;
-  // final List<CardState> _cardStates = [];
-  // List<CardState> get cardStates => _cardStates;
   List<CardState> singleBoard = []; // 1, 2, 3, 4, 5
   List<CardState> doubleBoard = []; // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-  // List<CardState> ritBoard1 = []; // 1, 2, 3, 4, 51, 52
-  // List<CardState> ritBoard2 = []; // 1, 2, 3, 41, 42, 51, 52
 
   List<CardState> ritBoardFlop = []; // 1, 2, 3
   List<CardState> ritBoardFlop1 = []; // 4, 5
@@ -133,11 +129,6 @@ class CommunityCardState extends ChangeNotifier {
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
     int cardId = 1,
   }) {
-    // if (cardStateCache[cardId] != null) {
-    //   var cardState = cardStateCache[cardId];
-    //   cardState.cardNo = cNo;
-    //   return cardState;
-    // }
     final cardDimen = _getCardDimen(boardState, cardId);
     final cardState = CardState(
       startPos: startPos,
@@ -145,7 +136,6 @@ class CommunityCardState extends ChangeNotifier {
       cardId: cardId,
       size: cardDimen.size,
       cardNo: cNo,
-      // flipKey: GlobalKey<AppFlipCardState>(),
     );
     cardStateCache[cardId] = cardState;
     return cardState;
@@ -163,6 +153,7 @@ class CommunityCardState extends ChangeNotifier {
     List<int> board, {
     int startWith = 1,
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+    bool animate = true,
   }) async {
     int firstCardIndex = startWith - 1;
     int secondCardIndex = startWith;
@@ -176,153 +167,88 @@ class CommunityCardState extends ChangeNotifier {
 
     for (int i = firstCardIndex; i < (firstCardIndex + board.length); i++) {
       _board[i].cardNo = board[i - (firstCardIndex)];
-      _board[i].hide = true;
+      if (animate) {
+        _board[i].hide = true;
+      } else {
+        // show the card
+        _board[i].hide = false;
+      }
       _board[i].notify();
     }
-    await _delay();
-    // show the 3rd card
-    _board[thirdCardIndex].slide = false;
-    _board[secondCardIndex].slide = false;
-    _board[thirdCardIndex].hide = false;
-    _board[thirdCardIndex].useStartPos = true;
-    _board[thirdCardIndex].flip = true;
-    _board[thirdCardIndex].notify();
-    await _delay();
-    _board[secondCardIndex].useStartPos = true;
-    _board[secondCardIndex].notify();
+    if (animate) {
+      await _delay();
+      // show the 3rd card
+      _board[thirdCardIndex].slide = false;
+      _board[secondCardIndex].slide = false;
+      _board[thirdCardIndex].hide = false;
+      _board[thirdCardIndex].useStartPos = true;
+      _board[thirdCardIndex].flip = true;
+      _board[thirdCardIndex].notify();
+      await _delay();
+      _board[secondCardIndex].useStartPos = true;
+      _board[secondCardIndex].notify();
 
-    _board[thirdCardIndex].flip = false;
-    _board[secondCardIndex].useStartPos = false;
-    _board[thirdCardIndex].useStartPos = false;
-    _board[secondCardIndex].slide = true;
-    _board[thirdCardIndex].slide = true;
-    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
-      _board[i].hide = false;
-      _board[i].notify();
+      _board[thirdCardIndex].flip = false;
+      _board[secondCardIndex].useStartPos = false;
+      _board[thirdCardIndex].useStartPos = false;
+      _board[secondCardIndex].slide = true;
+      _board[thirdCardIndex].slide = true;
+      for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+        _board[i].hide = false;
+        _board[i].notify();
+      }
+      await _delay();
+      for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+        _board[i].useStartPos = false;
+        _board[i].slide = false;
+        _board[i].flip = false;
+      }
     }
-    await _delay();
-    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
-      _board[i].useStartPos = false;
-      _board[i].slide = false;
-      _board[i].flip = false;
-    }
-
-    //   singleBoard[i].hide = false;
-    //   singleBoard[i].flip = true;
-    //   singleBoard[i].notify();
-    // }
   }
 
-  Future<void> addFlopCards2(
-    List<int> board, {
-    int startWith = 1,
-    List<CardState> cardState,
-  }) async {
-    int firstCardIndex = startWith - 1;
-    int secondCardIndex = startWith;
-    int thirdCardIndex = startWith + 1;
-
-    for (int i = firstCardIndex; i < (firstCardIndex + board.length); i++) {
-      cardState[i].cardNo = board[i - (firstCardIndex)];
-      cardState[i].hide = true;
-      cardState[i].notify();
-    }
-    await _delay();
-    // show the 3rd card
-    cardState[thirdCardIndex].slide = false;
-    cardState[secondCardIndex].slide = false;
-    cardState[thirdCardIndex].hide = false;
-    cardState[thirdCardIndex].useStartPos = true;
-    cardState[thirdCardIndex].flip = true;
-    cardState[thirdCardIndex].notify();
-    await _delay();
-    cardState[secondCardIndex].useStartPos = true;
-    cardState[secondCardIndex].notify();
-
-    cardState[thirdCardIndex].flip = false;
-    cardState[secondCardIndex].useStartPos = false;
-    cardState[thirdCardIndex].useStartPos = false;
-    cardState[secondCardIndex].slide = true;
-    cardState[thirdCardIndex].slide = true;
-    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
-      cardState[i].hide = false;
-      cardState[i].notify();
-    }
-    await _delay();
-    for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
-      cardState[i].useStartPos = false;
-      cardState[i].slide = false;
-      cardState[i].flip = false;
-    }
-
-    _isFlopDone = true;
-
-    //   singleBoard[i].hide = false;
-    //   singleBoard[i].flip = true;
-    //   singleBoard[i].notify();
-    // }
-  }
-
-  // Future<void> _addFlopCards2(
+  // Future<void> addFlopCards2(
   //   List<int> board, {
   //   int startWith = 1,
-  //   CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+  //   List<CardState> cardState,
   // }) async {
-  //   // first add last card and flip it
-  //   List<CardState> localCardStates = [];
-  //   //board = [board[0]];
-  //   localCardStates.add(_getCardStateFromCardNo(
-  //     Offset(0, 0),
-  //     board[2],
-  //     boardState: boardState,
-  //     cardId: startWith,
-  //   ));
-  //   localCardStates[0].flip = true;
+  //   int firstCardIndex = startWith - 1;
+  //   int secondCardIndex = startWith;
+  //   int thirdCardIndex = startWith + 1;
 
-  //   //_cardStates.addAll(localCardStates);
-  //   // notifyListeners();
-  //   // then add other cards
+  //   for (int i = firstCardIndex; i < (firstCardIndex + board.length); i++) {
+  //     cardState[i].cardNo = board[i - (firstCardIndex)];
+  //     cardState[i].hide = true;
+  //     cardState[i].notify();
+  //   }
   //   await _delay();
+  //   // show the 3rd card
+  //   cardState[thirdCardIndex].slide = false;
+  //   cardState[secondCardIndex].slide = false;
+  //   cardState[thirdCardIndex].hide = false;
+  //   cardState[thirdCardIndex].useStartPos = true;
+  //   cardState[thirdCardIndex].flip = true;
+  //   cardState[thirdCardIndex].notify();
+  //   await _delay();
+  //   cardState[secondCardIndex].useStartPos = true;
+  //   cardState[secondCardIndex].notify();
 
-  //   localCardStates = [];
-  //   //board = [board[0]];
-  //   localCardStates.addAll(
-  //     board.map(
-  //       (cNo) => _getCardStateFromCardNo(
-  //         cNo,
-  //         boardState: boardState,
-  //         cardId: startWith,
-  //       ),
-  //     ),
-  //   );
-
-  //   // _cardStates.addAll(localCardStates);
-
-  //   notifyListeners();
-
-  //   //await _delay();
-  //   //log('1 CommunityCardState: _addFlopCards: _cardStates: $_cardStates');
-  //   // flip the first card
-  //   bool addWithoutAnimating = false;
-  //   //localCardStates[2].flip = true;
-  //   localCardStates.forEach((cs) {
-  //     cs.notify();
-  //   });
-  //   // log('2 CommunityCardState: _addFlopCards: _cardStates: $_cardStates');
-
-  //   await _delayFA();
-  //   if (PlatformUtils.isWeb && addWithoutAnimating) {
-  //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-  //     return;
+  //   cardState[thirdCardIndex].flip = false;
+  //   cardState[secondCardIndex].useStartPos = false;
+  //   cardState[thirdCardIndex].useStartPos = false;
+  //   cardState[secondCardIndex].slide = true;
+  //   cardState[thirdCardIndex].slide = true;
+  //   for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+  //     cardState[i].hide = false;
+  //     cardState[i].notify();
+  //   }
+  //   await _delay();
+  //   for (int i = firstCardIndex; i < firstCardIndex + board.length; i++) {
+  //     cardState[i].useStartPos = false;
+  //     cardState[i].slide = false;
+  //     cardState[i].flip = false;
   //   }
 
-  //   // move the cards
-  //   for (int i = 0; i < 3; i++) {
-  //     final cardId = startWith + i;
-  //     final cardDimen = _getCardDimen(boardState, cardId);
-  //     localCardStates[i].position = cardDimen.position;
-  //   }
-  //   notifyListeners();
+  //   _isFlopDone = true;
   // }
 
   Future<void> addFlopCards({
@@ -364,6 +290,7 @@ class CommunityCardState extends ChangeNotifier {
     int cardNo, {
     int startWith = 4,
     CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+    bool animate = true,
   }) async {
     int cardIndex = startWith - 1;
     List<CardState> _board;
@@ -375,54 +302,26 @@ class CommunityCardState extends ChangeNotifier {
     }
     _board[cardIndex].cardNo = cardNo;
     _board[cardIndex].hide = false;
-    _board[cardIndex].flip = true;
+    _board[cardIndex].flip = animate;
     _board[cardIndex].notify();
 
     await _delay();
-
-    // final cardState = _getCardStateFromCardNo(
-    //   null,
-    //   cardNo,
-    //   cardId: startWith,
-    //   boardState: boardState,
-    // );
-    // //_cardStates.add(cardState);
-
-    // notifyListeners();
-
-    // await _delay();
-
-    // // flip
-    // // if (PlatformUtils.isWeb) {
-    // //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-    // //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-    // //     return;
-    // //   }
-    // // }
-    // // cardState.flipKey.currentState?.toggleCard();
-    // cardState.flip = true;
-    // cardState.notify();
-    // _delay().then((value) {
-    //   cardState.flip = false;
-    // }).onError((error, stackTrace) {});
-
-    // if (PlatformUtils.isWeb) {}
   }
 
-  Future<void> addTurnCard2(
-    int cardNo, {
-    int startWith = 4,
-    List<CardState> cardState,
-  }) async {
-    int cardIndex = startWith - 1;
+  // Future<void> addTurnCard2(
+  //   int cardNo, {
+  //   int startWith = 4,
+  //   List<CardState> cardState,
+  // }) async {
+  //   int cardIndex = startWith - 1;
 
-    cardState[cardIndex].cardNo = cardNo;
-    cardState[cardIndex].hide = false;
-    cardState[cardIndex].flip = true;
-    cardState[cardIndex].notify();
-    _isTurnDone = true;
-    await _delay();
-  }
+  //   cardState[cardIndex].cardNo = cardNo;
+  //   cardState[cardIndex].hide = false;
+  //   cardState[cardIndex].flip = true;
+  //   cardState[cardIndex].notify();
+  //   _isTurnDone = true;
+  //   await _delay();
+  // }
 
   /// single board -> 4
   /// double board -> 4, 9
@@ -462,11 +361,10 @@ class CommunityCardState extends ChangeNotifier {
     _isTurnDone = true;
   }
 
-  Future<void> _addRiverCard(
-    int cardNo, {
-    int startWith = 5,
-    CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
-  }) async {
+  Future<void> _addRiverCard(int cardNo,
+      {int startWith = 5,
+      CommunityCardBoardState boardState = CommunityCardBoardState.SINGLE,
+      bool animate = true}) async {
     int cardIndex = startWith - 1;
     List<CardState> _board;
     if (boardState == CommunityCardBoardState.DOUBLE) {
@@ -477,44 +375,10 @@ class CommunityCardState extends ChangeNotifier {
 
     _board[cardIndex].cardNo = cardNo;
     _board[cardIndex].hide = false;
-    _board[cardIndex].flip = true;
+    _board[cardIndex].flip = animate;
     _board[cardIndex].notify();
 
     await _delay();
-
-    // final cardState = _getCardStateFromCardNo(
-    //   null,
-    //   cardNo,
-    //   cardId: startWith,
-    //   boardState: boardState,
-    // );
-    // // _cardStates.add(cardState);
-    // // if (PlatformUtils.isWeb) {
-    // //   bool addWithoutAnimating = false;
-    // //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-    // //     addWithoutAnimating = true;
-    // //   }
-    // //   if (addWithoutAnimating) {
-    // //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-    // //     return;
-    // //   }
-    // // }
-
-    // notifyListeners();
-
-    // await _delay();
-
-    // // flip
-    // cardState.flip = true;
-    // cardState.notify();
-
-    // if (PlatformUtils.isWeb) {
-    //   if (cardState.flipKey != null && cardState.flipKey.currentState == null) {
-    //     addBoardCardsWithoutAnimating(board1: board1Cards, board2: board2Cards);
-    //     return;
-    //   }
-    // }
-    // cardState.flipKey.currentState?.toggleCard();
   }
 
   /// single board -> 5
@@ -544,8 +408,6 @@ class CommunityCardState extends ChangeNotifier {
         startWith: 5,
         boardState: CommunityCardBoardState.SINGLE,
       );
-
-//      await _addRiverCard(board1Card);
     }
     log('CommunityCardState: CommunityCardState::addRiverCard ${board1Cards} board2: ${board2Cards}');
   }
@@ -591,61 +453,6 @@ class CommunityCardState extends ChangeNotifier {
     ritBoardTurn2[0].useStartPos = true;
     ritBoardTurn2[0].flip = true;
     ritBoardTurn2[0].notify();
-
-    // for (int i = 0; i < cardStates2.length; i++) {
-    //   final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, i + 6);
-    //   ritBoardFlop1[i].position = cardDimen.position;
-
-    //   ritBoardFlop1[i].size = cardDimen.size;
-
-    //   ritBoardFlop1[i].slide = false;
-    //   ritBoardFlop1[i].hide = false;
-    //   ritBoardFlop1[i].useStartPos = true;
-    //   ritBoardFlop1[i].flip = false;
-
-    //   // ritBoardFlop1[i] = state;
-    //   ritBoardFlop1[i].notify();
-    // }
-
-//     final card1State = _getCardStateFromCardNo(
-//       null,
-//       c1,
-//       cardId: 5,
-//     ); // 5 -> before RIT dimen
-//     //_cardStates.add(card1State);
-//     notifyListeners();
-//     await _delay();
-
-//     // flip
-//     card1State.flip = true;
-//     card1State.notify();
-//     //card1State.flipKey.currentState.toggleCard();
-//     await _delayFA();
-
-//     // push up and change size
-//     final cardDimen = getRitBoardCardDimens(6); // 6 -> RIT dimen
-//     card1State.size = cardDimen.size;
-//     card1State.position = cardDimen.position;
-//     notifyListeners();
-
-//     // wait for the push
-//     await _delay();
-
-//     /// DO IT FOR THE OTHER CARD
-//     final card2State = _getCardStateFromCardNo(
-//       null,
-//       c2,
-//       cardId: 8,
-//       boardState: CommunityCardBoardState.RIT,
-//     ); // 8 -> second card RIT dimen
-// //    _cardStates.add(card2State);
-//     notifyListeners();
-//     await _delay();
-
-//     // flip
-//     card2State.flip = true;
-//     card2State.notify();
-//     await _delayFA();
   }
 
   Future<List<CardState>> _displayTwoConsecutiveCards({
@@ -666,16 +473,12 @@ class CommunityCardState extends ChangeNotifier {
       _cardStates.add(state);
       cardId++;
 
-      //_cardStates.add(state);
       notifyListeners();
 
       await _delay();
 
       // flip
       state.flip = true;
-      // state.notify();
-      // state.flipKey.currentState.toggleCard();
-
       await _delayFA();
     }
 
@@ -794,27 +597,6 @@ class CommunityCardState extends ChangeNotifier {
 
       cardId++;
     }
-
-    // notifyListeners();
-
-    // push the cards | 4, 5 of SINGLE changes to 5, 6 of RIT
-    // int cardId = 5;
-    // cardStates.forEach((cardState) {
-    //   final cardDimen = _getCardDimen(CommunityCardBoardState.RIT, cardId);
-    //   cardState.position = cardDimen.position;
-    //   cardState.size = cardDimen.size;
-    //   ritBoard1.add(cardState);
-    //   // _board[cardIndex].notify();
-    //   cardId++;
-    // });
-    // notifyListeners();
-
-    // // add the other two cards
-    // await _displayTwoConsecutiveCards(
-    //   cards: board2Cards,
-    //   cardIdStartsWith: 7,
-    //   boardState: CommunityCardBoardState.RIT,
-    // );
   }
 
   /// call this function only if we were running Single Board game up till now, then shifted to Run It Twice
@@ -832,12 +614,6 @@ class CommunityCardState extends ChangeNotifier {
       'Both the boards must contain 5 cards',
     );
 
-    // need to add two cards for each board
-    // final board1Cards = board1.sublist(0, 3);
-    // final board2Cards = board2.sublist(0, 3);
-
-    // await Future.delayed(const Duration(milliseconds: 500));
-
     if (_isTurnDone) {
       // need to add last set of cards
       final board1LastCard = board1.last;
@@ -848,9 +624,6 @@ class CommunityCardState extends ChangeNotifier {
     } else if (_isFlopDone) {
       await _runItTwiceAfterFlop(board1.sublist(3), board2.sublist(3));
     } else {
-      log('RIT: show first board');
-      log('RIT: show second board');
-
       final board1Cards = board1.sublist(0, 3);
       final board2Cards = board2.sublist(0, 3);
 
@@ -887,18 +660,120 @@ class CommunityCardState extends ChangeNotifier {
 
       await _addRiverCard(board2[4],
           startWith: 10, boardState: CommunityCardBoardState.DOUBLE);
-
-      // preflop
-      // show first board with flop/turn/river
-      // show second board with flop/turn/river
-      // throw AssertionError(
-      //   'Invalid State: If you want to add double board cards, use the addFlopCards method',
-      // );
     }
   }
 
   /// add cards in between game - via query current hand
   void addBoardCardsWithoutAnimating({
+    @required final List<int> board1,
+    final List<int> board2,
+  }) async {
+    log('CommunityCardState: addBoardCardsWithoutAnimating');
+    bool isDoubleBoard = false;
+    final int n = board1.length;
+    bool isFlopRunItTwice = false;
+    bool isTurnRunItTwice = false;
+    if (board2 != null && board2.length > 0) {
+      isDoubleBoard = true;
+      isFlopRunItTwice = (n >= 3 && board2[2] == board1[2]);
+      isTurnRunItTwice = (n >= 4 && board2[3] == board1[3]);
+    }
+
+    _isFlopDone = false;
+    _isTurnDone = false;
+    _isRiverDone = false;
+
+    log('CommunityCardState: addBoardCardsWithoutAnimating ${board1} board2: ${board2}');
+    // FLOP
+    if (n >= 3) {
+      _isFlopDone = true;
+      if (isDoubleBoard) {
+        if (isFlopRunItTwice) {
+          // run it twice (after flop)
+        } else {
+          // double board
+          _addFlopCards(board1.sublist(0, 3),
+              startWith: 1,
+              boardState: CommunityCardBoardState.DOUBLE,
+              animate: false);
+          _addFlopCards(board2.sublist(0, 3),
+              startWith: 6,
+              boardState: CommunityCardBoardState.DOUBLE,
+              animate: false);
+        }
+      } else {
+        // show flop (1, 2, 3)
+        log('Single board show flop');
+        _addFlopCards(board1.sublist(0, 3), animate: false);
+      }
+    }
+
+    // // TURN
+    if (n >= 4) {
+      _isTurnDone = true;
+      if (isDoubleBoard) {
+        if (isTurnRunItTwice) {
+          // Turn card is same for both board
+          final cardNo = board1[3];
+        } else if (isFlopRunItTwice) {
+          final card1No = board1[3];
+          final card2No = board2[3];
+        } else {
+          // double board
+          final card1No = board1[3];
+          final card2No = board2[3];
+          _addTurnCard(card1No,
+              startWith: 4,
+              boardState: CommunityCardBoardState.DOUBLE,
+              animate: false);
+          _addTurnCard(card2No,
+              startWith: 9,
+              boardState: CommunityCardBoardState.DOUBLE,
+              animate: false);
+        }
+      } else {
+        final cardNo = board1[3];
+        // single board (4)
+        _addTurnCard(cardNo, animate: false);
+      }
+    }
+
+    // RIVER
+    if (n == 5) {
+      if (isDoubleBoard) {
+        if (isFlopRunItTwice) {
+          final card1No = board1[4];
+          final card2No = board2[4];
+          // run it twice after turn
+        } else {
+          final card1No = board1[4];
+          final card2No = board2[4];
+          // double board
+          _addRiverCard(card1No,
+              startWith: 5,
+              boardState: CommunityCardBoardState.DOUBLE,
+              animate: false);
+          _addRiverCard(card2No,
+              startWith: 10,
+              boardState: CommunityCardBoardState.DOUBLE,
+              animate: false);
+        }
+      } else {
+        final cardNo = board1[4];
+        // single board
+        _addRiverCard(cardNo, animate: false);
+      }
+    }
+
+    // for (final cardState in cardStates) {
+    //   cardState.isFaced = true;
+    // }
+
+    // notifyListeners();
+  }
+
+  /// add cards in between game - via query current hand
+  void addBoardCardsWithoutAnimatingOld({
     @required final List<int> board1,
     final List<int> board2,
   }) async {
