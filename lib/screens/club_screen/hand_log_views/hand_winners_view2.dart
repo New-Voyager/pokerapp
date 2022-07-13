@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -140,18 +142,29 @@ class PotWinnersView extends StatelessWidget {
             needToShowEmptyCards: !showDown,
             maxCards: this.handResult.noCards,
           );
+    var boardCards = board.cards;
+    if (!showDown) {
+      // show only the cards that were seen
+      if (this.handResult.wonAt() == GameStages.PREFLOP) {
+        boardCards = [];
+      } else if (this.handResult.wonAt() == GameStages.FLOP) {
+        boardCards = board.cards.sublist(0, 3);
+      } else if (this.handResult.wonAt() == GameStages.TURN) {
+        boardCards = board.cards.sublist(0, 4);
+      }
+    }
 
     Widget boardView = showDown
         ? StackCardView01(
-            totalCards: board.cards,
+            totalCards: boardCards,
             show: true,
             needToShowEmptyCards: !showDown,
             cardsToHighlight: boardCardsToHighLight,
           )
         : StackCardView00(
-            cards: board.cards,
+            cards: boardCards,
             show: true,
-            needToShowEmptyCards: !showDown,
+            needToShowEmptyCards: true,
           );
     if (!multipleBoards) {
       boardView = Column(

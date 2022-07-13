@@ -49,32 +49,32 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
         },
       ),
     );
-    children.add(
-      MenuListTile(
-        svgIconPath: 'assets/images/customize.svg',
-        title: 'Customize',
-        onPressed: () async {
-          Navigator.of(context).pop();
-          CustomizationAsset currentSelection = CustomizationAsset(
-              appService.appSettings.tableAsset,
-              appService.appSettings.backdropAsset,
-              appService.appSettings.cardBackAsset);
+    // children.add(
+    //   MenuListTile(
+    //     svgIconPath: 'assets/images/customize.svg',
+    //     title: 'Customize',
+    //     onPressed: () async {
+    //       Navigator.of(context).pop();
+    //       CustomizationAsset currentSelection = CustomizationAsset(
+    //           appService.appSettings.tableAsset,
+    //           appService.appSettings.backdropAsset,
+    //           appService.appSettings.cardBackAsset);
 
-          final changedSelection = await GameScreenCustomizationDialog.show(
-              context,
-              currentSelection: currentSelection);
-          if (changedSelection != null) {
-            appService.appSettings.tableAsset = changedSelection.table;
-            appService.appSettings.backdropAsset = changedSelection.backdrop;
-            appService.appSettings.cardBackAsset = changedSelection.cardBack;
-            await appService.appSettings.loadCardBack();
-            widget.gameState.redrawFooter();
-            widget.gameState.redrawBoard();
-            widget.gameState.getBackdropSectionState().notify();
-          }
-        },
-      ),
-    );
+    //       final changedSelection = await GameScreenCustomizationDialog.show(
+    //           context,
+    //           currentSelection: currentSelection);
+    //       if (changedSelection != null) {
+    //         appService.appSettings.tableAsset = changedSelection.table;
+    //         appService.appSettings.backdropAsset = changedSelection.backdrop;
+    //         appService.appSettings.cardBackAsset = changedSelection.cardBack;
+    //         await appService.appSettings.loadCardBack();
+    //         widget.gameState.redrawFooter();
+    //         widget.gameState.redrawBoard();
+    //         widget.gameState.getBackdropSectionState().notify();
+    //       }
+    //     },
+    //   ),
+    // );
     children.add(
       MenuListTile(
         // svgIconPath: 'assets/images/customize.svg',
