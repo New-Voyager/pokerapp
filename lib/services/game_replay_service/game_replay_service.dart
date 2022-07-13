@@ -2,10 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/utils/platform.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class GameReplayService {
   final HandResultData data;
@@ -284,6 +287,9 @@ class GameReplayService {
       replayMode: true,
     );
 
+    // initialize board attributes
+    gameState.boardAttributes = getBoardAttributes();
+
     final player = gameState.getPlayerById(playerID);
     if (player != null && currPlayerCards.isNotEmpty) {
       player.cards = currPlayerCards;
@@ -294,5 +300,19 @@ class GameReplayService {
       gameState: gameState,
       actions: actions,
     );
+  }
+
+  BoardAttributesObject getBoardAttributes() {
+    BoardOrientation orientation = BoardOrientation.horizontal;
+    if (PlatformUtils.isWeb) {
+      orientation = BoardOrientation.horizontal;
+    }
+    if (Screen.initialized) {
+      return BoardAttributesObject(
+        screenSize: Screen.diagonalInches,
+        orientation: orientation,
+      );
+    }
+    return null;
   }
 }

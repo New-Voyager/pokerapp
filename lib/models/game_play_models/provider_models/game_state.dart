@@ -987,6 +987,9 @@ class GameState {
     if (this.boardAttributes != null) {
       return boardAttributes;
     }
+    if (context == null) {
+      context = mainScreenContext;
+    }
     return Provider.of<BoardAttributesObject>(context, listen: listen);
   }
 

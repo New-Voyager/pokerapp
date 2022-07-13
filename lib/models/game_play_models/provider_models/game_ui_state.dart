@@ -303,9 +303,9 @@ class GameUIState {
     double horizontalOffset = 0;
     double verticalOffsetFactor = 1;
     double topPosOffset = 0;
-    if (!GameState.getState(boardKey.currentContext)
-        .boardAttributes
-        .isOrientationHorizontal) {
+    final boardAttributes =
+        GameState.getState(boardKey.currentContext).getBoardAttributes(null);
+    if (!boardAttributes.isOrientationHorizontal) {
       horizontalOffset = namePlateWidth / 8;
       verticalOffsetFactor = 1.5;
       topPosOffset = namePlateHeight;
