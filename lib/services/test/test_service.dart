@@ -303,13 +303,11 @@ class TestService {
     // just call this to add flop cards
     await gameState.communityCardState.addFlopCards(
       board1: [1, 2, 161],
-      board2: [1, 2, 177],
+      //board2: [1, 2, 177],
     );
-    await gameState.communityCardState
-        .addTurnCard(board1Card: 18, board2Card: 120);
+    await gameState.communityCardState.addTurnCard(board1Card: 18);
     await Future.delayed(AppConstants.communityCardWaitDuration);
-    await gameState.communityCardState
-        .addRiverCard(board1Card: 20, board2Card: 130);
+    await gameState.communityCardState.addRiverCard(board1Card: 20);
   }
 
   static Future<void> addTurnCard() async {

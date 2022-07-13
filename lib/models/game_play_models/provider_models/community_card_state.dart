@@ -5,7 +5,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import '../../../resources/app_constants.dart';
 
 const kTotalCards = 5;
-const kGap = 4.0;
+const kGap = 2.0;
 const kDoubleBoardWidthFactor = 0.10;
 const kSingleBoardHeightFactor = 0.66;
 const kSpecialBoardHeightFactor = 0.50;

@@ -366,6 +366,7 @@ class ResultHandlerV2 {
         low: low,
       );
     }
+    log('Result: pause time: ${result.pauseTimeSecs}');
     await Future.delayed(Duration(milliseconds: result.pauseTimeSecs));
   }
 

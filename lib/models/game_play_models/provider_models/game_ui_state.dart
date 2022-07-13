@@ -61,7 +61,7 @@ class GameUIState {
       prevSize = currentSize;
     }
 
-    NamePlateWidgetParent.setWidth(90);
+    NamePlateWidgetParent.setWidth(160);
     tableWidthFactor = 0.90;
 
     if (PlatformUtils.isWeb) {
@@ -74,7 +74,8 @@ class GameUIState {
       chipAmountScale = 0.70;
     } else {
       if (Screen.diagonalInches < 7) {
-        double width = (Screen.width - 40) / 4.2;
+        double width = (Screen.width) / 4.2;
+        width = 105;
         NamePlateWidgetParent.setWidth(width);
         tableWidthFactor = 1.0;
         chipAmountScale = 0.90;
@@ -253,7 +254,7 @@ class GameUIState {
     if (Screen.isLargeScreen) {
       return 0.90;
     }
-    return 0.90;
+    return 1.0;
   }
 
   void calculateCenterViewRect({bool force = false}) {

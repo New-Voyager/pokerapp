@@ -368,7 +368,7 @@ class NamePlateWidget extends StatelessWidget {
 
   Widget _buildPlayerStack(BuildContext context, AppTheme theme) {
     Widget _buildStackTextWidget(double stack) => FittedBox(
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.scaleDown,
           child: NamePlateStackText(stack),
         );
 
