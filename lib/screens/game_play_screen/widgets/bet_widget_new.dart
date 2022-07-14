@@ -859,9 +859,9 @@ class BetWidgetNew extends StatelessWidget {
     final preflop = bettingOptions.preFlop;
     final postflop = bettingOptions.postFlop;
     final raise = bettingOptions.raise;
-
+    var handState = gameState.handState;
     if (!action.raiseAvailable) {
-      if (gameState.handState == HandState.PREFLOP) {
+      if (handState == HandState.PREFLOP) {
         for (int i = 0; i < preflop.length; i++) {
           final amount = preflop[i].toDouble() * gameState.handInfo.bigBlind;
           if (amount > gameState.handInfo.bigBlind &&
@@ -873,6 +873,7 @@ class BetWidgetNew extends StatelessWidget {
               theme: theme,
               isKeyboard: false,
               text: '${preflop[i]}BB',
+              amount: amount,
             ));
           }
         }
@@ -892,6 +893,7 @@ class BetWidgetNew extends StatelessWidget {
               theme: theme,
               isKeyboard: false,
               text: '${postflop[i]}%',
+              amount: amount,
             ));
           }
         }
@@ -909,6 +911,7 @@ class BetWidgetNew extends StatelessWidget {
             theme: theme,
             isKeyboard: false,
             text: '${raise[i]}X',
+            amount: amount,
           ));
         }
       }
@@ -922,6 +925,7 @@ class BetWidgetNew extends StatelessWidget {
         theme: theme,
         isKeyboard: false,
         text: 'POT',
+        amount: action.ploPotAmount,
       ));
     }
 
@@ -933,53 +937,24 @@ class BetWidgetNew extends StatelessWidget {
         theme: theme,
         isKeyboard: false,
         text: 'ALL-IN',
+        amount: action.allInAmount,
       ));
     }
 
-    return Container(
-      height: 26.ph,
+    Widget options = Container(
+      height: 35.ph,
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return buttons[index];
-          if (index == 0) {
-            // show keyboard
-            return BetAmountButton(
-              onTap: () async {
-                double min = action.minRaiseAmount.toDouble();
-                double max = action.maxRaiseAmount.toDouble();
-
-                final double res = await NumericKeyboard2.show(
-                  context,
-                  title: 'Enter your bet',
-                  min: min,
-                  max: max,
-                );
-
-                if (res != null) vnValue.value = res;
-              },
-              theme: theme,
-              isKeyboard: true,
-              text: '',
-            );
-          }
-
-          final option = action.options[index - 1];
-
-          return BetAmountButton(
-            onTap: () {
-              vnValue.value = option.amount.toDouble();
-            },
-            theme: theme,
-            text: action.options[index - 1].text,
-            //option: action.options[index - 1],
-          );
         },
         itemCount: buttons.length, //action.options.length + 1,
       ),
     );
+
+    return options;
   }
 
   Widget betAmountList2(ValueNotifier<double> vnValue, AppTheme theme) {

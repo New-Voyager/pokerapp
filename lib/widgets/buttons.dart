@@ -6,6 +6,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/color_generator.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 import 'blinking_widget.dart';
 
@@ -857,11 +858,13 @@ class BetAmountButton extends StatelessWidget {
   final String text;
   final Function onTap;
   final bool isKeyboard;
+  final double amount;
   const BetAmountButton(
       {Key key,
       @required this.theme,
       this.text = '',
       this.isKeyboard = false,
+      this.amount = null,
       @required this.onTap})
       : super(key: key);
 
@@ -869,7 +872,43 @@ class BetAmountButton extends StatelessWidget {
     TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
         .copyWith(color: theme.supportingColor);
     // Color btnColor = theme.primaryColorWithLight(0.25);
-    Color btnColor = Color(0xFF134848);
+    Color btnColor = Color.fromARGB(255, 42, 76, 61);
+    Widget amountWidget;
+    if (amount != null) {
+      amountWidget = Column(
+        children: [
+          Text(
+            text.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: btnTextStyle.copyWith(
+              fontSize: 9.dp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 2),
+          Text(
+            DataFormatter.chipsFormat(amount),
+            textAlign: TextAlign.center,
+            style: btnTextStyle.copyWith(
+              fontSize: 7.dp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      );
+    } else {
+      amountWidget = Text(
+        text.toUpperCase(),
+        textAlign: TextAlign.center,
+        style: btnTextStyle.copyWith(
+          fontSize: 10.dp,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      );
+    }
     final button = Container(
       // duration: AppConstants.fastAnimationDuration,
       // curve: Curves.bounceInOut,
@@ -906,15 +945,7 @@ class BetAmountButton extends StatelessWidget {
                   Icons.keyboard,
                   color: Colors.white,
                 )
-              : Text(
-                  text.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: btnTextStyle.copyWith(
-                    fontSize: 10.dp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
+              : amountWidget,
         ),
       ),
     );

@@ -390,7 +390,7 @@ class PlayerViewDivider extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: theme.accentColor,
+        color: Color.fromARGB(255, 119, 118, 118), //theme.accentColor,
         borderRadius: BorderRadius.circular(5),
       ),
       height: 1,
