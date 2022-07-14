@@ -484,6 +484,7 @@ class BetWidgetNew extends StatelessWidget {
   }
 
   ValueNotifier<double> valueNotifierVal;
+  ValueNotifier<double> betValueVisibilityVal;
 
   @override
   Widget build(BuildContext context) {
@@ -540,8 +541,8 @@ class BetWidgetNew extends StatelessWidget {
                         children: [
                           Container(
                             margin: EdgeInsets.only(
-                                // bottom: 30.0,
-                                ),
+                              bottom: 15.0,
+                            ),
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: AssetImage(
@@ -594,7 +595,17 @@ class BetWidgetNew extends StatelessWidget {
                               ],
                             ),
                           ),
-                          betAmountList(context, valueNotifierVal, appTheme),
+                          Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                  color: darken(
+                                      Color.fromARGB(255, 44, 56, 85), 0.15),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: betAmountList(
+                                  context, valueNotifierVal, appTheme)),
                         ],
                       ),
                     ),
@@ -636,14 +647,42 @@ class BetWidgetNew extends StatelessWidget {
                                         alignment: Alignment.center,
                                         children: [
                                           Center(
-                                            child: Text(
-                                              DataFormatter.chipsFormat(
-                                                  betAmount),
-                                              style: TextStyle(
-                                                fontSize: 8.dp,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.yellowAccent,
-                                              ),
+                                            child: ListenableProvider<
+                                                ValueNotifier<double>>(
+                                              create: (_) =>
+                                                  ValueNotifier<double>(1),
+                                              builder:
+                                                  (BuildContext context1, _) {
+                                                betValueVisibilityVal =
+                                                    context1.read<
+                                                        ValueNotifier<
+                                                            double>>();
+                                                return ValueListenableBuilder<
+                                                    double>(
+                                                  valueListenable:
+                                                      betValueVisibilityVal,
+                                                  builder: (_,
+                                                          double
+                                                              betAmountOpacity,
+                                                          __) =>
+                                                      AnimatedOpacity(
+                                                    opacity: betAmountOpacity,
+                                                    duration: const Duration(
+                                                        milliseconds: 400),
+                                                    child: Text(
+                                                      DataFormatter.chipsFormat(
+                                                          betAmount),
+                                                      style: TextStyle(
+                                                        fontSize: 12.dp,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Colors.yellowAccent,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ],
@@ -868,7 +907,11 @@ class BetWidgetNew extends StatelessWidget {
               amount <= action.maxRaiseAmount) {
             buttons.add(BetAmountButton(
               onTap: () {
-                vnValue.value = amount;
+                betValueVisibilityVal.value = 0;
+                Future.delayed(Duration(milliseconds: 400), () {
+                  vnValue.value = amount;
+                  betValueVisibilityVal.value = 1;
+                });
               },
               theme: theme,
               isKeyboard: false,

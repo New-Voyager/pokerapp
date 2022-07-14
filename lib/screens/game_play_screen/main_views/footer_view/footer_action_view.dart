@@ -51,7 +51,9 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   void _betOrRaise(double val) {
     _showOptions = false;
-    _betWidgetoverlayEntry.remove();
+    if (_betWidgetoverlayEntry != null) {
+      _betWidgetoverlayEntry.remove();
+    }
     _betWidgetoverlayEntry = null;
     setState(() {});
     betAmount = val;

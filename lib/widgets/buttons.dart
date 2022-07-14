@@ -872,7 +872,7 @@ class BetAmountButton extends StatelessWidget {
     TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
         .copyWith(color: theme.supportingColor);
     // Color btnColor = theme.primaryColorWithLight(0.25);
-    Color btnColor = Color.fromARGB(255, 42, 76, 61);
+    Color btnColor = Color.fromARGB(255, 73, 77, 97);
     Widget amountWidget;
     if (amount != null) {
       amountWidget = Column(
@@ -922,15 +922,16 @@ class BetAmountButton extends StatelessWidget {
         //color: btnColor,
         shape: BoxShape.rectangle,
         // border: Border.all(
-        //   color: btnColor,
+        //   color: darken(btnColor, 0.1),
         //   width: 2.0,
         // ),
         borderRadius: BorderRadius.circular(4),
         gradient: LinearGradient(
           colors: [
-            lighten(btnColor, 0.1),
             btnColor,
             lighten(btnColor, 0.1),
+            btnColor
+            // lighten(btnColor, 0.1),
           ],
           begin: Alignment.centerLeft,
           stops: [0.0, 0.5, 1],
