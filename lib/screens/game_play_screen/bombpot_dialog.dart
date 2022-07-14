@@ -10,11 +10,19 @@ import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/child_widgets.dart';
-import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
-import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/texts.dart';
+
+/*
+  Game          Max Players     Double Board
+  Holdem          9                 Yes
+  PLO             9                 Yes
+  Hi-Lo           9                 No
+  5 Card PLO      9                 No
+  5 Card PLO      8                 Yes
+  5 Card Hi Lo    9                 No
+*/
 
 /* this dialog handles the timer, as well as the messages sent to the server, when on tapped / on dismissed */
 class BombPotDialog {
@@ -36,10 +44,22 @@ class BombPotDialog {
     gameSelected.add(false);
     gameSelected.add(false);
     gameSelected.add(false);
-
+    int currentNoPlayers = gameState.playersInSeatsCount;
     int bombPotBet = 5;
     bool doubleBoardBombPot = true;
     int selectedGameType = 1; // PLO
+
+    bool doubleBoardAllowed(String gameType) {
+      if (gameType == '5 Card PLO') {
+        if (currentNoPlayers >= 9) {
+          return false;
+        }
+      }
+      if (gameType == 'Hi-Lo' || gameType == '5 Card Hi-Lo') {
+        return false;
+      }
+      return true;
+    }
 
     final bool ret = await showDialog(
         barrierDismissible: false,
@@ -80,6 +100,9 @@ class BombPotDialog {
               "5 Card PLO",
               "5 Card Hi-Lo",
             ];
+            ValueNotifier<String> gameTypeVal =
+                ValueNotifier<String>(gameTypes[selectedGameType]);
+
             return AlertDialog(
               backgroundColor: Colors.transparent,
               contentPadding: EdgeInsets.zero,
@@ -123,30 +146,33 @@ class BombPotDialog {
                             },
                           )
                         ]),
-                    SizedBox(height: 8.ph),
-                    SwitchWidget2(
-                      value: doubleBoardBombPot,
-                      label: 'Double Board',
-                      onChange: (bool value) {
-                        doubleBoardBombPot = value;
-                      },
-                    ),
+
                     SizedBox(height: 8.ph),
                     RadioToggleButtonsWidget<String>(
                         values: gameTypes,
                         onSelect: (value) {
                           selectedGameType = value;
+                          gameTypeVal.value = gameTypes[selectedGameType];
                         },
                         defaultValue: selectedGameType),
-
-                    // GameTypeSelectionWidget(listOfGameTypes: [
-                    //   GameType.HOLDEM,
-                    //   GameType.PLO,
-                    //   GameType.PLO_HILO,
-                    //   GameType.FIVE_CARD_PLO,
-                    //   GameType.FIVE_CARD_PLO_HILO,
-                    // ], theme: theme, onSelect: () {}),
-
+                    SizedBox(height: 8.ph),
+                    ValueListenableBuilder<String>(
+                        valueListenable: gameTypeVal,
+                        builder: (_, selectedGameType, __) {
+                          bool showDoubleBoard =
+                              doubleBoardAllowed(selectedGameType);
+                          if (!showDoubleBoard) {
+                            doubleBoardBombPot = false;
+                            return SizedBox.shrink();
+                          }
+                          return SwitchWidget2(
+                            value: doubleBoardBombPot,
+                            label: 'Double Board',
+                            onChange: (bool value) {
+                              doubleBoardBombPot = value;
+                            },
+                          );
+                        }),
                     SizedBox(height: 10.ph),
 
                     /* yes / no button */

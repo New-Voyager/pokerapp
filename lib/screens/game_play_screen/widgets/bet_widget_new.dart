@@ -141,7 +141,9 @@ class BetWidgetNew extends StatelessWidget {
                 max: max,
                 decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
 
-            if (res != null) valueNotifierVal.value = res;
+            if (res != null) {
+              valueNotifierVal.value = res;
+            }
           },
         ),
       ),
@@ -160,154 +162,6 @@ class BetWidgetNew extends StatelessWidget {
       cardObjects.add(card);
     }
     return cardObjects.reversed.toList();
-  }
-
-  // TODO: MAKE THIS CLASS A GENERAL ONE SOMEWHERE OUTSIDE IN UTILS
-  // WE CAN REUSE THIS CLASS FOR OTHER PLACES AS WELL
-  Widget _betWidget({Widget child, AppTheme theme}) {
-    final userSettingsBox = HiveDatasource.getInstance.getBox(
-      BoxType.USER_SETTINGS_BOX,
-    );
-
-    final betTooltipCountKey = 'bet_tooltip_count';
-
-    int betTooltipCount =
-        userSettingsBox.get(betTooltipCountKey, defaultValue: 0) as int;
-
-    // NUMBER OF TIMES WE WANT TO SHOW THE HINT WIDGET
-
-    // if (betTooltipCount >= 3) {
-    //   // we dont need to show BET tooltip anymore
-    //   return child;
-    // }
-
-    // else
-    // increment the tool tip count
-    userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
-
-    return Stack(
-      alignment: Alignment.topCenter,
-      clipBehavior: Clip.none,
-      children: [
-        // swipe up arrow
-        Transform.translate(
-          offset: Offset(0, 85.ph),
-          child: JumpingTextWidget(text: 'Tap to bet'),
-        ),
-
-        // main child
-        child,
-      ],
-    );
-  }
-
-  bool _showTip() {
-    try {
-      final userSettingsBox = HiveDatasource.getInstance.getBox(
-        BoxType.USER_SETTINGS_BOX,
-      );
-      final betTooltipCountKey = 'bet_tooltip_count';
-      int betTooltipCount =
-          userSettingsBox.get(betTooltipCountKey, defaultValue: 0) as int;
-
-      // NUMBER OF TIMES WE WANT TO SHOW THE HINT WIDGET
-      bool showTip = true;
-      if (betTooltipCount >= 3) {
-        // we dont need to show BET tooltip anymore
-        showTip = false;
-      } else {
-        // else
-        // increment the tool tip count
-        userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
-      }
-      return showTip;
-    } catch (err) {}
-    return false;
-  }
-
-  Widget _buildKeyboardButton(
-      BuildContext context, AppTheme theme, ValueNotifier<double> vnValue) {
-    final gameState = GameState.getState(context);
-    return _buildBetAmountChild(
-      onTap: () async {
-        double min = action.minRaiseAmount.toDouble();
-        double max = action.maxRaiseAmount.toDouble();
-
-        final double res = await NumericKeyboard2.show(context,
-            title:
-                'Enter your bet/raise amount (${DataFormatter.chipsFormat(action.minRaiseAmount)} - ${DataFormatter.chipsFormat(action.maxRaiseAmount)})',
-            min: min,
-            max: max,
-            decimalAllowed: gameState.gameInfo.chipUnit == ChipUnit.CENT);
-
-        if (res != null) vnValue.value = res;
-      },
-      theme: theme,
-      isKeyboard: true,
-    );
-  }
-
-  Widget _buildBetButton(BuildContext context, final bool isLargerDisplay,
-      vnBetAmount, AppTheme theme) {
-    log('_buildBetButton $vnBetAmount');
-    final vnOffsetValue = ValueNotifier<double>(.0);
-
-    final colorizeColors = [
-      Colors.green,
-      Colors.green[400],
-      Colors.green[200],
-      Colors.green[100],
-    ];
-
-    final colorizeTextStyle = TextStyle(
-      fontSize: 12.0.dp,
-      fontWeight: FontWeight.bold,
-    );
-    final gameState = GameState.getState(context);
-    final boardAttributes = gameState.getBoardAttributes(context);
-    final imageBytes = gameState.assets.getBetImage();
-    Widget betImage;
-    final double s = 32.pw;
-
-    double height = s * boardAttributes.betImageScale;
-
-    betImage = Image.memory(
-      imageBytes,
-      height: s,
-      width: s,
-    );
-
-    Widget betChipImage = Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        // bet coin
-        Transform.scale(
-          scale: boardAttributes.betImageScale,
-          child: betImage,
-        ),
-        // bet text
-        Text('BET', style: TextStyle(fontSize: 12.dp)),
-        // _showTip()
-        //     ? Transform.translate(
-        //         offset: Offset(100.pw, 0.ph),
-        //         child: JumpingTextWidget(text: 'Tap\nto\nbet', jumpHeight: 5))
-        //     : Container(),
-      ],
-    );
-    final Widget betChipWidget = GestureDetector(
-      onTap: () {
-        log('BET: tap detected');
-        appService.appSettings.showBetTip = false;
-        onSubmitCallBack?.call(vnBetAmount.value);
-      },
-      child: Container(
-        height: height,
-        width: s * boardAttributes.betImageScale,
-        child: betChipImage,
-      ),
-    );
-    return betChipWidget;
   }
 
   ValueNotifier<double> valueNotifierVal;
