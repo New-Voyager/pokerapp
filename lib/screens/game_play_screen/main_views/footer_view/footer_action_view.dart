@@ -51,7 +51,9 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   void _betOrRaise(double val) {
     _showOptions = false;
-    _betWidgetoverlayEntry.remove();
+    if (_betWidgetoverlayEntry != null) {
+      _betWidgetoverlayEntry.remove();
+    }
     _betWidgetoverlayEntry = null;
     setState(() {});
     betAmount = val;
@@ -645,32 +647,6 @@ class _FooterActionViewState extends State<FooterActionView> {
             },
             theme: theme,
           );
-          // if (!betWidgetShown) {
-          //   actionWidget = _buildRoundButton(
-          //     isSelected: _showOptions,
-          //     text: action.actionName,
-          //     onTap: () => setState(() {
-          //       _showOptions = !_showOptions;
-          //       betWidgetShown = true;
-          //       widget.isBetWidgetVisible?.call(_showOptions);
-          //     }),
-          //     theme: theme,
-          //   );
-          // } else {
-          //   // closeButton = true;
-          //   actionWidget = _buildRoundButton(
-          //     isSelected: _showOptions,
-          //     text: "dummy",
-          //     onTap: () {
-          //       setState(() {
-          //         _showOptions = !_showOptions;
-          //         betWidgetShown = true;
-          //         widget.isBetWidgetVisible?.call(_showOptions);
-          //       });
-          //     },
-          //     theme: theme,
-          //   );
-          // }
           break;
       }
       actionButtons.add(actionWidget);
@@ -689,50 +665,9 @@ class _FooterActionViewState extends State<FooterActionView> {
       ));
     }
 
-    // log('BetAction: actionButtons.length ${actionButtons.length}');
-
-    /*  if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
-      actionButtons.add(_buildRoundButton(
-        text: allin.actionName + '\n' + allin.actionValue.toString(),
-        onTap: () => _allIn(
-          amount: allin.actionValue,
-          context: context,
-        ),
-      ));
-    } */
-
     if (closeButton) {
       actionButtons = [];
-      // actionButtons.add(Align(
-      //     alignment: Alignment.bottomRight,
-      //     child: CircleImageButton(
-      //       theme: theme,
-      //       icon: Icons.close,
-      //       onTap: () {
-      //         setState(() {
-      //           _showOptions = !_showOptions;
-      //           betWidgetShown = false;
-      //           widget.isBetWidgetVisible?.call(_showOptions);
-      //         });
-      //       },
-      //     )));
     }
-
-// Consumer<ActionState>(builder: (_, __, ___) {
-//                   // show time widget if the player is acting
-//                   final gameState = GameState.getState(context);
-//                   if (gameState.actionState.show) {
-//                     return DebugBorderWidget(child: TimeBankWidget(gameState));
-//                   } else {
-//                     return Container();
-//                   }
-//                 });
-
-// final gameState = GameState.getState(context);
-
-//   actionButtons.add(
-// TimeBankWidget(gameState),
-//   );
 
     return Stack(
       clipBehavior: Clip.none,
@@ -765,19 +700,65 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
+  void showBetWidget({bool show = true}) {
+    if (show) {
+      final gameState = GameState.getState(context);
+
+      double bottom = 0;
+      final height = Screen.height;
+      final width = Screen.width;
+      if (gameState.gameUIState.betBtnPos != null) {
+        bottom = MediaQuery.of(context).size.height -
+            gameState.gameUIState.betBtnPos.dy;
+      } else {
+        bottom = Screen.height - 20.ph;
+      }
+
+      _betWidgetoverlayEntry = OverlayEntry(
+        builder: (BuildContext context) {
+          return Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                _betWidgetoverlayEntry.remove();
+                _betWidgetoverlayEntry = null;
+                appService.appSettings.showBetTip = false;
+                setState(() {
+                  betWidgetShown = false;
+                });
+              },
+              child: Stack(
+                children: [
+                  Positioned(
+                    bottom: bottom,
+                    child: Provider<GameState>(
+                      create: (_) => gameState,
+                      builder: (context, _) {
+                        return _betWidget;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
+      Overlay.of(context).insert(_betWidgetoverlayEntry);
+      betWidgetShown = true;
+    } else {
+      if (_betWidgetoverlayEntry != null) {
+        _betWidgetoverlayEntry.remove();
+        _betWidgetoverlayEntry = null;
+      }
+      betWidgetShown = false;
+    }
+  }
+
   void _buildBetWidget({double initValue}) {
     final boardAttributes = context.read<BoardAttributesObject>();
     final gameState = GameState.getState(context);
     final me = gameState.me;
-    double bottom = 0;
-    final height = Screen.height;
-    final width = Screen.width;
-    if (gameState.gameUIState.betBtnPos != null) {
-      bottom = MediaQuery.of(context).size.height -
-          gameState.gameUIState.betBtnPos.dy;
-    } else {
-      bottom = Screen.height - 20.ph;
-    }
     _betWidget = BetWidgetNew(
       gameState: gameState,
       seat: gameState.mySeat,
@@ -789,49 +770,15 @@ class _FooterActionViewState extends State<FooterActionView> {
       initialValue: initValue,
       boardAttributesObject: boardAttributes,
     );
-
-    _betWidgetoverlayEntry = OverlayEntry(
-      builder: (BuildContext context) {
-        return Positioned.fill(
-          child: GestureDetector(
-            onTap: () {
-              _betWidgetoverlayEntry.remove();
-              _betWidgetoverlayEntry = null;
-              appService.appSettings.showBetTip = false;
-              setState(() {
-                betWidgetShown = false;
-              });
-            },
-            child: Stack(
-              children: [
-                Positioned(
-                  bottom: bottom,
-                  child: Provider<GameState>(
-                    create: (_) => gameState,
-                    builder: (context, _) {
-                      return _betWidget;
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    Overlay.of(context).insert(_betWidgetoverlayEntry);
+    showBetWidget();
   }
 
   void onBetKeyboardEntry(
     double currentValue,
     bool isCentsGame,
   ) async {
-    _betWidgetoverlayEntry.remove();
-    _betWidgetoverlayEntry = null;
-
     final gameState = GameState.getState(context);
-
+    showBetWidget(show: false);
     double min = gameState.actionState.action.minRaiseAmount.toDouble();
     double max = gameState.actionState.action.maxRaiseAmount.toDouble();
 
@@ -844,8 +791,11 @@ class _FooterActionViewState extends State<FooterActionView> {
       decimalAllowed: isCentsGame,
     );
 
-    if (res != null) _buildBetWidget(initValue: res);
-    ;
+    if (res != null) {
+      _buildBetWidget(initValue: res);
+    } else {
+      _buildBetWidget(initValue: currentValue);
+    }
   }
 
   @override

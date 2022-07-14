@@ -1,7 +1,5 @@
 import 'dart:developer';
 import 'dart:math' as math;
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -14,7 +12,6 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/new_bet_slider.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/help_text.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/jumping_text_widget.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -23,9 +20,7 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/color_generator.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/slider_widget.dart';
 import 'package:provider/provider.dart';
 
 class BetWidgetNew extends StatelessWidget {
@@ -313,177 +308,10 @@ class BetWidgetNew extends StatelessWidget {
       ),
     );
     return betChipWidget;
-
-    final bool isBetByTapActive = true;
-    //gameState.playerLocalConfig.tapOrSwipeBetAction;
-
-    final Widget betWidget = _betWidget(
-      child: IntrinsicWidth(
-        child: Container(
-          height: 2 * s,
-          child: AnimatedBuilder(
-            animation: vnOffsetValue,
-            builder: (_, __) {
-              return Align(
-                alignment: Alignment(.5, 1 - vnOffsetValue.value * 2),
-                child: betChipWidget,
-              );
-            },
-          ),
-        ),
-      ),
-      theme: theme,
-    );
-    List<Widget> betButtons = [];
-    bool showKeyboard = true;
-    if (showKeyboard) {
-      betButtons.add(Positioned(
-          top: -20,
-          left: 30,
-          child: _buildKeyboardButton(context, theme, vnBetAmount)));
-    }
-
-    // show all-in or pot button on the left
-    for (final option in action.options) {
-      if (option.text == 'All-In' || option.text == 'Pot') {
-        betButtons.add(
-          Positioned(
-            top: 40,
-            left: 30,
-            child: _buildBetAmountChild(
-              onTap: () {
-                vnBetAmount.value = option.amount.toDouble();
-              },
-              theme: theme,
-              option: option,
-            ),
-          ),
-        );
-        break;
-      }
-    }
-
-    // other buttons go on the right
-    double top = -20;
-    double right = 40;
-    for (final option in action.options) {
-      if (option.text == 'All-In' || option.text == 'Pot') {
-        // skip handled
-      } else {
-        betButtons.add(
-          Positioned(
-            top: top,
-            right: right,
-            child: _buildBetAmountChild(
-              onTap: () {
-                vnBetAmount.value = option.amount.toDouble();
-              },
-              theme: theme,
-              option: option,
-            ),
-          ),
-        );
-        top += 40;
-      }
-    }
-    final Widget widgetWithBetAmounts = Container(
-        width: Screen.width * 3 / 4,
-        height: 80,
-        child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              betChipWidget,
-              ...betButtons,
-            ]));
-
-    final Widget mainWidget = betChipWidget;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        /* drag bet button */
-        isBetByTapActive
-            // if confirm by tap is active, show a bouncing widget
-            ? mainWidget
-            : GestureDetector(
-                // confirm bet ON SLIDE UP TILL THE TOP
-                onVerticalDragEnd: (_) {
-                  // if we reach 1.0 and leave the chip, CONFIRM BET
-                  if (vnOffsetValue.value == 1.0) {
-                    return onSubmitCallBack?.call(vnBetAmount.value);
-                  }
-
-                  // ELSE on drag release bounce back to start
-                  vnOffsetValue.value = 0.0;
-                },
-                onVerticalDragUpdate: (details) {
-                  if (isBetByTapActive) return;
-                  vnOffsetValue.value =
-                      (vnOffsetValue.value - details.delta.dy / s)
-                          .clamp(.0, 1.0);
-                },
-                child: mainWidget,
-              ),
-      ],
-    );
-  }
-
-  Widget _buildBetSeekBar(double width, AppTheme theme, GameState gameState) {
-    return Container(
-      width: width,
-      // child: SliderTheme(
-      //   data: SliderThemeData(
-      //     thumbColor: appTheme.accentColor,
-      //     activeTrackColor: appTheme.secondaryColor,
-      //     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12),
-      //     inactiveTrackColor: appTheme.secondaryColor.withOpacity(
-      //       0.5,
-      //     ),
-      //     trackHeight: 10.0,
-      //   ),
-      //   child: Consumer<ValueNotifier<double>>(
-      //     builder: (_, vnBetAmount, __) {
-      //       final min = action.minRaiseAmount.toDouble();
-      //       final max = action.maxRaiseAmount.toDouble();
-      //       return Slider(
-      //         min: min,
-      //         max: max,
-      //         value: vnBetAmount.value,
-      //         onChanged: (newBetAmount) {
-      //           if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
-      //             vnBetAmount.value = newBetAmount.round().toDouble();
-      //           } else {
-      //             vnBetAmount.value = newBetAmount;
-      //           }
-      //         },
-      //       );
-      //     },
-      //   ),
-      // ),
-
-      child: Consumer<ValueNotifier<double>>(
-        builder: (_, vnBetAmount, __) {
-          final min = action.minRaiseAmount.toDouble();
-          final max = action.maxRaiseAmount.toDouble();
-
-          return CustomSlider(
-            max: max,
-            min: min,
-            values: [vnBetAmount.value],
-            onChanged: (handlerIndex, newBetAmount, upperValue) {
-              if (gameState.gameInfo.chipUnit == ChipUnit.DOLLAR) {
-                vnBetAmount.value = newBetAmount.round().toDouble();
-              } else {
-                vnBetAmount.value = newBetAmount;
-              }
-            },
-          );
-        },
-      ),
-    );
   }
 
   ValueNotifier<double> valueNotifierVal;
+  ValueNotifier<double> betValueVisibilityVal;
 
   @override
   Widget build(BuildContext context) {
@@ -540,8 +368,8 @@ class BetWidgetNew extends StatelessWidget {
                         children: [
                           Container(
                             margin: EdgeInsets.only(
-                                // bottom: 30.0,
-                                ),
+                              bottom: 15.0,
+                            ),
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: AssetImage(
@@ -594,7 +422,17 @@ class BetWidgetNew extends StatelessWidget {
                               ],
                             ),
                           ),
-                          betAmountList(context, valueNotifierVal, appTheme),
+                          Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                  color: darken(
+                                      Color.fromARGB(255, 44, 56, 85), 0.15),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: betAmountList(
+                                  context, valueNotifierVal, appTheme)),
                         ],
                       ),
                     ),
@@ -636,14 +474,42 @@ class BetWidgetNew extends StatelessWidget {
                                         alignment: Alignment.center,
                                         children: [
                                           Center(
-                                            child: Text(
-                                              DataFormatter.chipsFormat(
-                                                  betAmount),
-                                              style: TextStyle(
-                                                fontSize: 8.dp,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.yellowAccent,
-                                              ),
+                                            child: ListenableProvider<
+                                                ValueNotifier<double>>(
+                                              create: (_) =>
+                                                  ValueNotifier<double>(1),
+                                              builder:
+                                                  (BuildContext context1, _) {
+                                                betValueVisibilityVal =
+                                                    context1.read<
+                                                        ValueNotifier<
+                                                            double>>();
+                                                return ValueListenableBuilder<
+                                                    double>(
+                                                  valueListenable:
+                                                      betValueVisibilityVal,
+                                                  builder: (_,
+                                                          double
+                                                              betAmountOpacity,
+                                                          __) =>
+                                                      AnimatedOpacity(
+                                                    opacity: betAmountOpacity,
+                                                    duration: const Duration(
+                                                        milliseconds: 200),
+                                                    child: Text(
+                                                      DataFormatter.chipsFormat(
+                                                          betAmount),
+                                                      style: TextStyle(
+                                                        fontSize: 12.dp,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Colors.yellowAccent,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
                                         ],
@@ -868,7 +734,11 @@ class BetWidgetNew extends StatelessWidget {
               amount <= action.maxRaiseAmount) {
             buttons.add(BetAmountButton(
               onTap: () {
-                vnValue.value = amount;
+                betValueVisibilityVal.value = 0;
+                Future.delayed(Duration(milliseconds: 200), () {
+                  vnValue.value = amount;
+                  betValueVisibilityVal.value = 1;
+                });
               },
               theme: theme,
               isKeyboard: false,
@@ -888,7 +758,11 @@ class BetWidgetNew extends StatelessWidget {
               amount <= action.maxRaiseAmount) {
             buttons.add(BetAmountButton(
               onTap: () {
-                vnValue.value = amount;
+                betValueVisibilityVal.value = 0;
+                Future.delayed(Duration(milliseconds: 200), () {
+                  vnValue.value = amount;
+                  betValueVisibilityVal.value = 1;
+                });
               },
               theme: theme,
               isKeyboard: false,
@@ -906,7 +780,11 @@ class BetWidgetNew extends StatelessWidget {
             amount <= action.maxRaiseAmount) {
           buttons.add(BetAmountButton(
             onTap: () {
-              vnValue.value = amount;
+              betValueVisibilityVal.value = 0;
+              Future.delayed(Duration(milliseconds: 200), () {
+                vnValue.value = amount;
+                betValueVisibilityVal.value = 1;
+              });
             },
             theme: theme,
             isKeyboard: false,
@@ -920,7 +798,11 @@ class BetWidgetNew extends StatelessWidget {
     if (action.ploPotAmount != 0) {
       buttons.add(BetAmountButton(
         onTap: () {
-          vnValue.value = action.ploPotAmount;
+          betValueVisibilityVal.value = 0;
+          Future.delayed(Duration(milliseconds: 200), () {
+            vnValue.value = action.ploPotAmount;
+            betValueVisibilityVal.value = 1;
+          });
         },
         theme: theme,
         isKeyboard: false,
@@ -932,7 +814,11 @@ class BetWidgetNew extends StatelessWidget {
     if (action.allInAmount != 0) {
       buttons.add(BetAmountButton(
         onTap: () {
-          vnValue.value = action.allInAmount;
+          betValueVisibilityVal.value = 0;
+          Future.delayed(Duration(milliseconds: 200), () {
+            vnValue.value = action.allInAmount;
+            betValueVisibilityVal.value = 1;
+          });
         },
         theme: theme,
         isKeyboard: false,
