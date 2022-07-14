@@ -886,7 +886,7 @@ class BetAmountButton extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 2),
+          //SizedBox(height: 2),
           Text(
             DataFormatter.chipsFormat(amount),
             textAlign: TextAlign.center,
