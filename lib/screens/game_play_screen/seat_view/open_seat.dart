@@ -130,7 +130,9 @@ class _OpenSeatState extends State<OpenSeat> {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     // log('SeatChange: OpenSeat build  ${widget.seat.serverSeatPos} ${widget.seatChangeInProgress} hostSeatChange: ${gameState.hostSeatChangeInProgress}');
-
+    if (gameState.isTournament) {
+      return SizedBox.shrink();
+    }
     final theme = AppTheme.getTheme(context);
 
     return Consumer<SeatChangeNotifier>(builder: (_, scn, __) {
