@@ -8,7 +8,9 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/poker_dialog_box.dart';
 import 'package:pokerapp/widgets/text_widgets/header/header_game_code_text.dart';
 import 'package:pokerapp/widgets/text_widgets/header/header_title_text.dart';
 import 'package:provider/provider.dart';
@@ -173,7 +175,33 @@ class HeaderView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // back button
-                BackArrowWidget(),
+                BackArrowWidget(
+                  onBackHandle: () {
+                    if (gameState.isPlaying) {
+                      PokerDialogBox.show(
+                        context,
+                        message: "Are you leaving the game?",
+                        buttonOneText: "Yes",
+                        buttonOneAction: () {
+                          GameService.leaveGame(gameState.gameCode);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        buttonTwoText: "Cancel",
+                        buttonTwoAction: () {
+                          Navigator.pop(context);
+                        },
+                        buttonThreeText: "Will be Back",
+                        buttonThreeAction: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                      );
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
 
                 // center title
                 Expanded(child: _buildMainContent()),
