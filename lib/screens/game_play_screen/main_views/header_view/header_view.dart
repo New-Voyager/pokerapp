@@ -177,7 +177,8 @@ class HeaderView extends StatelessWidget {
                 // back button
                 BackArrowWidget(
                   onBackHandle: () {
-                    if (gameState.isPlaying) {
+                    if (gameState.tableState.tableStatus != 'ENDED' &&
+                        gameState.isPlaying) {
                       PokerDialogBox.show(
                         context,
                         message: "Are you leaving the game?",
