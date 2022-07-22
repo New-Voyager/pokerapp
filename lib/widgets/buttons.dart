@@ -1,8 +1,10 @@
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/ui/styles.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/color_generator.dart';
@@ -202,6 +204,76 @@ class RoundRectButton2 extends StatelessWidget {
   }
 }
 
+class ThemedButton extends StatelessWidget {
+  ThemedButton({
+    this.text,
+    @required this.onTap,
+    @required this.style,
+    this.focusNode,
+    this.split = false,
+    this.icon,
+  });
+
+  final String text;
+  final ThemedButtonStyle style;
+  final Function onTap;
+  final bool split;
+  final Icon icon;
+  final FocusNode focusNode;
+
+  Widget build(BuildContext context) {
+    return InkWell(
+      focusNode: focusNode,
+      onTap: () {
+        this.onTap();
+      },
+      borderRadius: BorderRadius.circular(20.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4.pw),
+            // border: Border.all(
+            //     color: theme.roundedButtonBorderColor ??
+            //         theme.roundedButtonBackgroundColor,
+            //     width: 1.pw),
+            // color: theme.roundedButtonBackgroundColor,
+            gradient: style.borderGradient),
+        padding: EdgeInsets.all(2),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 14.pw,
+            vertical: 3.ph,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.pw),
+            gradient: style.gradient,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Visibility(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: icon,
+                ),
+                visible: icon != null,
+              ),
+              text == null
+                  ? const SizedBox.shrink()
+                  : Text(
+                      split
+                          ? text?.replaceFirst(" ", "\n") ?? 'Text'
+                          : text ?? 'Text',
+                      textAlign: TextAlign.center,
+                      style: style.textStyle,
+                    )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CircleImageButton extends StatelessWidget {
   CircleImageButton({
     @required this.onTap,
@@ -318,6 +390,89 @@ class CircleImageButton extends StatelessWidget {
         onTap: () {
           this.onTap();
         });
+  }
+}
+
+class ThemedCircleImageButton extends StatelessWidget {
+  ThemedCircleImageButton({
+    @required this.onTap,
+    @required this.style,
+    this.focusNode,
+    this.height,
+    this.width,
+    this.imageHeight,
+    this.imageWidth,
+    this.asset,
+    this.svgAsset,
+    this.icon,
+    this.caption,
+    this.captionTextStyle,
+    this.disabled = false,
+    this.split = false,
+    this.adaptive = true,
+  });
+  final FocusNode focusNode;
+  final bool adaptive;
+  final String svgAsset;
+  final String asset;
+  final IconData icon;
+  final String caption;
+  final TextStyle captionTextStyle;
+  final ThemedButtonStyle style;
+  final Function onTap;
+  final bool disabled;
+  final bool split;
+  final double height;
+  final double width;
+  final double imageHeight;
+  final double imageWidth;
+
+  Widget build(BuildContext context) {
+    Color buttonColor = style.iconColor;
+
+    Widget image = Container();
+    if (asset != null) {
+      image = ColorFiltered(
+        child: Image.asset(asset),
+        colorFilter: ColorFilter.mode(buttonColor, BlendMode.srcATop),
+      );
+    } else if (svgAsset != null) {
+      image = SvgPicture.asset(
+        svgAsset,
+        width: imageWidth ?? 18,
+        height: imageHeight ?? 18,
+        color: buttonColor,
+      );
+    } else if (icon != null) {
+      image = DecoratedIcon(
+        icon,
+        size: imageWidth ?? 18,
+        color: buttonColor,
+        shadows: [
+          BoxShadow(
+            blurRadius: 10.0,
+            color: Colors.black38,
+          ),
+        ],
+      );
+    }
+
+    return InkWell(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: () {
+        this.onTap();
+      },
+      child: OutlineGradient(
+        child: SizedBox(width: 32, height: 32, child: Center(child: image)),
+        gradient: style.borderGradient,
+        backgroundGradient: style.gradient,
+        strokeWidth: 3,
+        backgroundColor: Colors.black,
+        padding: EdgeInsets.zero,
+        radius: Radius.circular(24),
+      ),
+    );
   }
 }
 
@@ -712,6 +867,74 @@ class IconAndTitleWidget extends StatelessWidget {
   }
 }
 
+class OutlineGradient extends StatelessWidget {
+  final Widget child;
+  final double strokeWidth;
+  final Radius radius;
+  final Corners corners;
+  final Gradient gradient;
+  final EdgeInsets padding;
+  final Color backgroundColor;
+  final Gradient backgroundGradient;
+
+  OutlineGradient({
+    Key key,
+    @required this.child,
+    @required this.strokeWidth,
+    @required this.gradient,
+    this.corners,
+    this.radius,
+    this.padding = const EdgeInsets.all(8),
+    this.backgroundColor = Colors.transparent,
+    this.backgroundGradient,
+  })  : assert(strokeWidth > 0),
+        assert(padding.isNonNegative),
+        assert(radius == null || corners == null,
+            'Cannot provide both a radius and corners.'),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final BorderRadius br = corners != null
+        ? _fromCorners(corners, strokeWidth)
+        : _fromRadius(radius ?? Radius.zero, strokeWidth);
+    return Material(
+      color: backgroundColor,
+      borderRadius: br,
+      child: CustomPaint(
+        foregroundPainter: _Painter(gradient, radius, strokeWidth, corners),
+        child: Padding(
+            padding: padding,
+            child: Container(
+                decoration: BoxDecoration(
+                  gradient: backgroundGradient,
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.all(radius),
+                ),
+                child: child)),
+      ),
+    );
+  }
+
+  static BorderRadius _fromCorners(Corners corners, double strokeWidth) {
+    return BorderRadius.only(
+      topLeft: Radius.elliptical(
+          corners.topLeft.x + strokeWidth, corners.topLeft.y + strokeWidth),
+      topRight: Radius.elliptical(
+          corners.topRight.x + strokeWidth, corners.topRight.y + strokeWidth),
+      bottomLeft: Radius.elliptical(corners.bottomLeft.x + strokeWidth,
+          corners.bottomLeft.y + strokeWidth),
+      bottomRight: Radius.elliptical(corners.bottomRight.x + strokeWidth,
+          corners.bottomRight.y + strokeWidth),
+    );
+  }
+
+  static BorderRadius _fromRadius(Radius radius, double strokeWidth) {
+    return BorderRadius.all(
+        Radius.elliptical(radius.x + strokeWidth, radius.y + strokeWidth));
+  }
+}
+
 class OutlineGradientButton extends StatelessWidget {
   final Widget child;
   final double strokeWidth;
@@ -720,6 +943,7 @@ class OutlineGradientButton extends StatelessWidget {
   final Gradient gradient;
   final EdgeInsets padding;
   final Color backgroundColor;
+  final Gradient backgroundGradient;
   final double elevation;
   final bool inkWell;
   final GestureTapCallback onTap;
@@ -740,6 +964,7 @@ class OutlineGradientButton extends StatelessWidget {
     this.radius,
     this.padding = const EdgeInsets.all(8),
     this.backgroundColor = Colors.transparent,
+    this.backgroundGradient,
     this.elevation = 0,
     this.inkWell = false,
     this.onTap,
@@ -781,8 +1006,16 @@ class OutlineGradientButton extends StatelessWidget {
         onHover: onHover,
         onFocusChange: onFocusChange,
         child: CustomPaint(
-          painter: _Painter(gradient, radius, strokeWidth, corners),
-          child: Padding(padding: padding, child: child),
+          foregroundPainter: _Painter(gradient, radius, strokeWidth, corners),
+          child: Padding(
+              padding: padding,
+              child: Container(
+                  decoration: BoxDecoration(
+                    gradient: backgroundGradient,
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.all(radius),
+                  ),
+                  child: child)),
         ),
       ),
     );

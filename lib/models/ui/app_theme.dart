@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
+import 'package:pokerapp/models/ui/styles.dart';
 import 'package:provider/provider.dart';
 
 class AppTheme extends ChangeNotifier {
@@ -19,6 +20,9 @@ class AppTheme extends ChangeNotifier {
   get navBgColor => _themeData.style.navBgColor;
 
   get navFabColor => _themeData.style.navFabColor;
+
+  GoldButtonStyle goldButton = GoldButtonStyle();
+  GreenButtonStyle greenButton = GreenButtonStyle();
 
   // function to update the theme data
   void updateThemeData(AppThemeData themeData) {

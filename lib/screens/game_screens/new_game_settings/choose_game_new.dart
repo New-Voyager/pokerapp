@@ -83,12 +83,12 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                 Row(
                   children: [
                     AppDimensionsNew.getHorizontalSpace(8),
-                    CircleImageButton(
+                    ThemedCircleImageButton(
                       onTap: () {
                         _handleLoadGameClick(context, theme);
                       },
                       icon: Icons.open_in_browser_rounded,
-                      theme: theme,
+                      style: theme.goldButton,
                     ),
                     /* HEADING */
                     Expanded(
@@ -96,10 +96,10 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         heading: _appScreenText['gameSettings'],
                       ),
                     ),
-                    CircleImageButton(
+                    ThemedCircleImageButton(
                       onTap: () => Navigator.of(context).pop(),
                       icon: Icons.close,
-                      theme: theme,
+                      style: theme.greenButton,
                     ),
                     AppDimensionsNew.getHorizontalSpace(8),
                   ],

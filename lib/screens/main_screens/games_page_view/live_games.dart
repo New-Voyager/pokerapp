@@ -546,12 +546,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   //   theme: appTheme,
                   //   focusNode: focusNodes[0],
                   // ),
-                  RoundRectButton(
+                  ThemedButton(
                     onTap: () async {
                       await hostGame();
                     },
                     text: 'Host', //_appScreenText["host"],
-                    theme: appTheme,
+                    style: appTheme.greenButton,
                     focusNode: focusNodes[0],
                   ),
                   Expanded(
@@ -573,11 +573,11 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   //         child: BugsFeaturesWidget(),
                   //       );
                   //     }),
-                  RoundRectButton(
+                  ThemedButton(
                     onTap: () async {
                       await joinGame(appTheme);
                     },
-                    theme: appTheme,
+                    style: appTheme.goldButton,
                     text: 'Join', //_appScreenText['join'],
                     focusNode: focusNodes[1],
                   ),
@@ -587,7 +587,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             //secondRow,
             Align(
                 alignment: Alignment.centerRight,
-                child: RoundRectButton(
+                child: ThemedButton(
                   onTap: () async {
                     Alerts.showDailog(
                       context: context,
@@ -595,7 +595,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                     );
                   },
                   text: 'Feedback', //_appScreenText["host"],
-                  theme: appTheme,
+                  style: appTheme.goldButton,
                 )),
             secondRow,
             // Align(
@@ -830,12 +830,12 @@ class LiveGamesHelpText extends StatelessWidget {
         ],
       ),
       SizedBox(height: 20),
-      RoundRectButton(
+      ThemedButton(
         onTap: () async {
           startDemoGame(context);
         },
         text: 'Try It!', //_appScreenText["host"],
-        theme: appTheme,
+        style: appTheme.goldButton,
       ),
       SizedBox(height: 20),
     ]);
