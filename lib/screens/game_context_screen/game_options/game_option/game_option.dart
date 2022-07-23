@@ -78,7 +78,7 @@ class _GameOptionState extends State<GameOption> {
     Navigator.of(context).pop();
 
     if (widget.gameState.isGameRunning) {
-      GameService.leaveGame(this.gameCode);
+      GameService.leaveGame(this.gameCode, false);
 
       Alerts.showNotification(
         titleText: _appScreenText['game'],
@@ -86,7 +86,7 @@ class _GameOptionState extends State<GameOption> {
         subTitleText: _appScreenText['youWillStandupAfterThisHand'],
       );
     } else {
-      await GameService.leaveGame(this.gameCode);
+      await GameService.leaveGame(this.gameCode, false);
       widget.gameState.refresh();
     }
   }

@@ -184,7 +184,7 @@ class HeaderView extends StatelessWidget {
                         message: "Are you leaving the game?",
                         buttonOneText: "Yes",
                         buttonOneAction: () {
-                          GameService.leaveGame(gameState.gameCode);
+                          GameService.leaveGame(gameState.gameCode, true);
                           Navigator.pop(context);
                           Navigator.pop(context);
                         },
