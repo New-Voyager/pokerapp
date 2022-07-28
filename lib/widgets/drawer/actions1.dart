@@ -21,7 +21,7 @@ class Actions1Widget extends StatelessWidget {
 
   void onStandup() async {
     if (gameState.isGameRunning) {
-      GameService.leaveGame(gameState.gameCode);
+      GameService.leaveGame(gameState.gameCode, false);
 
       Alerts.showNotification(
         titleText: 'Leave',
@@ -30,7 +30,7 @@ class Actions1Widget extends StatelessWidget {
             'You will standup after this hand', //_appScreenText['youWillStandupAfterThisHand'],
       );
     } else {
-      await GameService.leaveGame(gameState.gameCode);
+      await GameService.leaveGame(gameState.gameCode, false);
       gameState.refresh();
     }
   }

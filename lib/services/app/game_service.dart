@@ -369,8 +369,8 @@ class GameService {
     """;
 
   static String leaveGameQuery = """
-    mutation (\$gameCode: String!) {
-      confirmed: leaveGame(gameCode: \$gameCode)
+    mutation (\$gameCode: String!, \$immediately: Boolean) {
+      confirmed: leaveGame(gameCode: \$gameCode, immediately: \$immediately)
     }
     """;
 
@@ -1189,11 +1189,12 @@ class GameService {
   }
 
   /* this method ends the game */
-  static Future<String> leaveGame(String gameCode) async {
+  static Future<String> leaveGame(String gameCode, bool immediately) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
+      "immediately": immediately,
     };
     QueryResult result = await _client.mutate(
       MutationOptions(document: gql(leaveGameQuery), variables: variables),
