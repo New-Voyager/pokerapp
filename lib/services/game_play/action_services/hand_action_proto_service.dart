@@ -176,7 +176,7 @@ class HandActionProtoService {
           HandMessageObject m = messages.removeAt(0);
           if (m != null) {
             try {
-              log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.item.messageType}');
+              // log('Socket: [${DateTime.now().toIso8601String()}] loop: ${m.message.handNum} ${m.item.messageType}');
               await handleMessage(m);
             } catch (err) {
               // ignore the error
@@ -367,7 +367,7 @@ class HandActionProtoService {
   }
 
   handle(Uint8List messageData, {bool encrypted = false}) async {
-    log('Socket: HandActionProtoService::handle received message. _gameState.uiClosing: ${_gameState.uiClosing}');
+    // log('Socket: HandActionProtoService::handle received message. _gameState.uiClosing: ${_gameState.uiClosing}');
 
     assert(_gameState != null);
     if (_gameState.uiClosing) {
@@ -400,7 +400,7 @@ class HandActionProtoService {
       // log("\n\n");
       // log(hex);
       final message = proto.HandMessage.fromBuffer(protoData);
-      log('Socket: HandActionProtoService::handle deserialized protobuf');
+      // log('Socket: HandActionProtoService::handle deserialized protobuf');
       for (final item in message.messages) {
         log('HoleCard: message type: ${item.messageType}');
         _messages.add(HandMessageObject(message, item));

@@ -392,6 +392,8 @@ class NotificationHandler {
         handleCreditUpdate(json);
       } else if (type == 'GAME_STATUS_CHANGE') {
         handleGameStatusChange(json);
+      } else if (type == 'YOUR_TURN') {
+        handleYourTurn(json);
       }
     }
   }
@@ -411,7 +413,8 @@ class NotificationHandler {
         type == 'CLUB_ANNOUNCEMENT' ||
         type == 'HOST_TO_MEMBER' ||
         type == 'MEMBER_TO_HOST' ||
-        type == 'CREDIT_UPDATE')) {
+        type == 'CREDIT_UPDATE' ||
+        type == 'YOUR_TURN')) {
       return;
     }
     String body = '';
@@ -485,6 +488,8 @@ class NotificationHandler {
       body = json['clubName'] + ' host: ' + json['text'];
     } else if (type == 'MEMBER_TO_HOST') {
       body = json['clubName'] + ' ${json['sender']}: ' + json['text'];
+    } else if (type == 'YOUR_TURN') {
+      body = 'Game: ${json["gameCode"]} It is your turn';
     }
     if (body.length == 0) {
       return;
@@ -694,6 +699,14 @@ class NotificationHandler {
     Alerts.showNotification(
         titleText: 'Announcement',
         subTitleText: json['shortText'],
+        duration: Duration(seconds: 5));
+  }
+
+  // handle messages when app is running foreground
+  Future<void> handleYourTurn(Map<String, dynamic> json) async {
+    Alerts.showNotification(
+        titleText: json['gameCode'],
+        subTitleText: 'It is your turn',
         duration: Duration(seconds: 5));
   }
 }

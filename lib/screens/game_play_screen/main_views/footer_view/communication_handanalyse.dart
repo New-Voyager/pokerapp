@@ -193,6 +193,11 @@ class _CommunitcationHandAnalyseViewState
   }
 
   List<Widget> getMenuItems(AppTheme theme) {
+    bool showResult = widget.gameState.gameSettings.showResult;
+    if (widget.gameState.isHost()) {
+      showResult = true;
+    }
+
     return [
       Row(
         mainAxisSize: MainAxisSize.min,
@@ -329,7 +334,7 @@ class _CommunitcationHandAnalyseViewState
         ],
       ),
 
-      widget.gameState.gameSettings.showResult ?? false
+      showResult ?? false
           ?
           // result table
           Row(
