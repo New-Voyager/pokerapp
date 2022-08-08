@@ -11,7 +11,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
-import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/widgets/new_live_games_item.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';

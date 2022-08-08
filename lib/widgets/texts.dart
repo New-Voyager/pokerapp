@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/gradient_text.dart';
 import 'package:pokerapp/utils/platform.dart';
 
 class WrapText extends StatelessWidget {
@@ -75,27 +76,57 @@ class HeadingWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 5.0.pw,
-        vertical: 20.0.ph,
+        vertical: 0.0.ph,
       ),
-      child: Text(
+      child: GradientText(
         heading.toUpperCase(),
-        textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 12.0.dp,
+            fontSize: 20.0.dp,
             color: theme.supportingColor,
             fontWeight: FontWeight.w900,
             shadows: [
-              Shadow(
-                color: theme.secondaryColor,
-                blurRadius: 40.0.pw,
-              ),
-              Shadow(
-                color: theme.secondaryColorWithDark(),
-                blurRadius: 30.0.pw,
-                offset: Offset(0.0, 5.0.pw),
-              ),
+              // Shadow(
+              //   color: theme.secondaryColor,
+              //   blurRadius: 40.0.pw,
+              // ),
+              // Shadow(
+              //   color: Color(0xFFFFFFFF),
+              //   blurRadius: 30.0.pw,
+              //   offset: Offset(0.0, 2.0.pw),
+              // ),
             ]),
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFFF6E7B9),
+            Color(0xFFA69667),
+            Color(0xFF555145),
+            // Color(0xFF555145),
+          ],
+          stops: [0.2, 0.5, 0.75],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
       ),
+
+      //  Text(
+      //   heading.toUpperCase(),
+      //   textAlign: TextAlign.center,
+      //   style: TextStyle(
+      //       fontSize: 16.0.dp,
+      //       color: theme.supportingColor,
+      //       fontWeight: FontWeight.w900,
+      //       shadows: [
+      //         Shadow(
+      //           color: theme.secondaryColor,
+      //           blurRadius: 40.0.pw,
+      //         ),
+      //         Shadow(
+      //           color: theme.secondaryColorWithDark(),
+      //           blurRadius: 30.0.pw,
+      //           offset: Offset(0.0, 5.0.pw),
+      //         ),
+      //       ]),
+      // ),
     );
   }
 }

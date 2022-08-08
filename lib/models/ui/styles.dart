@@ -41,12 +41,29 @@ class GoldButtonStyle extends ThemedButtonStyle {
     stops: [0, 0.6, 1],
   );
 
+  LinearGradient disabledGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF87806E), Color(0xFF24211A)],
+    stops: [0, 1],
+  );
+
   LinearGradient borderGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
       Color(0xFFFAF0D2),
       Color(0xFF726746),
+    ],
+    stops: [0, 1],
+  );
+
+  LinearGradient disabledBorderGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF87806E),
+      Color(0xFF3B3830),
     ],
     stops: [0, 1],
   );

@@ -212,14 +212,22 @@ class ThemedButton extends StatelessWidget {
     this.focusNode,
     this.split = false,
     this.icon,
+    this.height,
+    this.fontSize,
+    this.width,
+    this.padding,
   });
 
+  final double height;
+  final double width;
   final String text;
+  final double fontSize;
   final ThemedButtonStyle style;
   final Function onTap;
   final bool split;
   final Icon icon;
   final FocusNode focusNode;
+  final EdgeInsets padding;
 
   Widget build(BuildContext context) {
     return InkWell(
@@ -229,6 +237,7 @@ class ThemedButton extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(20.0),
       child: Container(
+        // constraints:BoxConstraints
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4.pw),
             // border: Border.all(
@@ -239,35 +248,50 @@ class ThemedButton extends StatelessWidget {
             gradient: style.borderGradient),
         padding: EdgeInsets.all(2),
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 14.pw,
-            vertical: 3.ph,
-          ),
+          padding: padding ??
+              EdgeInsets.symmetric(
+                horizontal: 14.pw,
+                vertical: 3.ph,
+              ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(2.pw),
             gradient: style.gradient,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Visibility(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: icon,
-                ),
-                visible: icon != null,
-              ),
-              text == null
+          child: icon != null
+              ? Row(
+                  children: [
+                    Visibility(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: icon,
+                      ),
+                      visible: icon != null,
+                    ),
+                    text == null
+                        ? const SizedBox.shrink()
+                        : Container(
+                            child: Text(
+                              split
+                                  ? text?.replaceFirst(" ", "\n") ?? 'Text'
+                                  : text ?? 'Text',
+                              textAlign: TextAlign.center,
+                              style:
+                                  style.textStyle.copyWith(fontSize: fontSize),
+                            ),
+                          )
+                  ],
+                )
+              : text == null
                   ? const SizedBox.shrink()
                   : Text(
                       split
                           ? text?.replaceFirst(" ", "\n") ?? 'Text'
                           : text ?? 'Text',
                       textAlign: TextAlign.center,
-                      style: style.textStyle,
-                    )
-            ],
-          ),
+                      style: style.textStyle.copyWith(
+                        fontSize: fontSize,
+                      ),
+                    ),
         ),
       ),
     );
@@ -439,14 +463,14 @@ class ThemedCircleImageButton extends StatelessWidget {
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,
-        width: imageWidth ?? 18,
-        height: imageHeight ?? 18,
+        width: imageWidth ?? 22,
+        height: imageHeight ?? 22,
         color: buttonColor,
       );
     } else if (icon != null) {
       image = DecoratedIcon(
         icon,
-        size: imageWidth ?? 18,
+        size: imageWidth ?? 22,
         color: buttonColor,
         shadows: [
           BoxShadow(
@@ -467,7 +491,7 @@ class ThemedCircleImageButton extends StatelessWidget {
         child: SizedBox(width: 32, height: 32, child: Center(child: image)),
         gradient: style.borderGradient,
         backgroundGradient: style.gradient,
-        strokeWidth: 3,
+        strokeWidth: 2,
         backgroundColor: Colors.black,
         padding: EdgeInsets.zero,
         radius: Radius.circular(24),
@@ -884,7 +908,7 @@ class OutlineGradient extends StatelessWidget {
     @required this.gradient,
     this.corners,
     this.radius,
-    this.padding = const EdgeInsets.all(8),
+    this.padding = const EdgeInsets.all(0),
     this.backgroundColor = Colors.transparent,
     this.backgroundGradient,
   })  : assert(strokeWidth > 0),
@@ -895,9 +919,12 @@ class OutlineGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BorderRadius br = corners != null
-        ? _fromCorners(corners, strokeWidth)
-        : _fromRadius(radius ?? Radius.zero, strokeWidth);
+    // final BorderRadius br = corners != null
+    //     ? _fromCorners(corners, strokeWidth)
+    //     : _fromRadius(radius ?? Radius.zero, strokeWidth);
+
+    final BorderRadius br =
+        _fromRadius(radius ?? Radius.circular(0), strokeWidth);
     return Material(
       color: backgroundColor,
       borderRadius: br,
@@ -908,7 +935,6 @@ class OutlineGradient extends StatelessWidget {
             child: Container(
                 decoration: BoxDecoration(
                   gradient: backgroundGradient,
-                  color: backgroundColor,
                   borderRadius: BorderRadius.all(radius),
                 ),
                 child: child)),
@@ -932,6 +958,45 @@ class OutlineGradient extends StatelessWidget {
   static BorderRadius _fromRadius(Radius radius, double strokeWidth) {
     return BorderRadius.all(
         Radius.elliptical(radius.x + strokeWidth, radius.y + strokeWidth));
+  }
+}
+
+class OutlineGradientContainer extends StatelessWidget {
+  final Widget child;
+  final double strokeWidth;
+  final Radius radius;
+  final Gradient gradient;
+  final EdgeInsets padding;
+  final Color backgroundColor;
+  final Gradient backgroundGradient;
+
+  const OutlineGradientContainer(
+      {Key key,
+      this.strokeWidth,
+      this.radius,
+      this.gradient,
+      this.padding,
+      this.backgroundColor,
+      this.backgroundGradient,
+      this.child})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(strokeWidth),
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.all(radius),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: backgroundGradient,
+          borderRadius: BorderRadius.all(radius),
+        ),
+        child: child,
+      ),
+    );
   }
 }
 

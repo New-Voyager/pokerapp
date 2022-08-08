@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 class AppDecorators {
   AppDecorators._();
@@ -26,6 +27,24 @@ class AppDecorators {
           ],
           center: Alignment.topLeft,
           radius: 1.5,
+        ),
+      );
+
+  static BoxDecoration bgImageGradient(AppTheme theme) => BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF084922),
+            Color(0xFF121206),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        image: DecorationImage(
+          image: AssetImage(
+            'assets/images/main_bg.png',
+          ),
+          opacity: 0.04,
+          fit: BoxFit.fill,
         ),
       );
 
@@ -219,6 +238,58 @@ class AppDecorators {
       //   ),
       //   fit: BoxFit.fitWidth,
       // ),
+    );
+  }
+
+  static Widget gameItemWidget(
+      {@required AppTheme theme, @required Widget child}) {
+    return OutlineGradient(
+      gradient: LinearGradient(
+        colors: [
+          Color(0x38FFF6DF),
+          Colors.transparent,
+        ],
+        end: Alignment.topLeft,
+        begin: Alignment.bottomRight,
+      ),
+      backgroundGradient: LinearGradient(
+        colors: [
+          Color(0x75AE9E6B),
+          Color(0x239E926E),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      strokeWidth: 1,
+      radius: Radius.circular(12),
+      child: child,
+    );
+  }
+
+  static Widget listBorderWidget(
+      {@required AppTheme theme, @required Widget child}) {
+    return OutlineGradient(
+      radius: Radius.circular(20),
+      gradient: LinearGradient(
+        colors: [
+          Color(0x51FFF6DF),
+          Colors.transparent,
+        ],
+        stops: [0, 0.9],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      backgroundGradient: LinearGradient(
+        colors: [
+          Color(0x25FFECBC),
+          Colors.transparent,
+        ],
+        stops: [0.25, 0.85],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      strokeWidth: 2,
+      child: child,
     );
   }
 

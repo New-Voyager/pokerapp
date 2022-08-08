@@ -14,9 +14,9 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
-import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
-import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
-import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view_new.dart';
+import 'package:pokerapp/screens/main_screens/clubs_page_view/new_clubs_page_view.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/new_live_games.dart';
+import 'package:pokerapp/screens/main_screens/profile_page_view/new_profile_page_view_new.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/store_page.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
@@ -30,8 +30,6 @@ import 'package:pokerapp/services/notifications/notifications.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/utils.dart';
-import 'package:pokerapp/widgets/buttons.dart';
-import 'package:pokerapp/widgets/curved_bottom_navigation.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 
@@ -266,19 +264,23 @@ class _MainScreenState extends State<NewMainScreen>
       width: 46,
       margin: EdgeInsets.only(bottom: 4.0),
       decoration: BoxDecoration(
-        gradient: theme.goldButton.borderGradient,
+        gradient: selected
+            ? theme.goldButton.borderGradient
+            : theme.goldButton.disabledBorderGradient,
         borderRadius: BorderRadius.circular(23),
       ),
       padding: EdgeInsets.all(4.0),
       child: Container(
         decoration: BoxDecoration(
-          gradient: theme.goldButton.gradient,
+          gradient: selected
+              ? theme.goldButton.gradient
+              : theme.goldButton.disabledGradient,
           borderRadius: BorderRadius.circular(19),
         ),
         padding: EdgeInsets.all(4),
         child: SvgPicture.asset(
           icon,
-          color: Colors.white,
+          color: selected ? Color(0xFFFFF4D1) : Color(0xFF979387),
         ),
       ),
     );

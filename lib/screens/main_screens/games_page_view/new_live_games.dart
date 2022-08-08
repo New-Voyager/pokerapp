@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:onboarding_overlay/onboarding_overlay.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
@@ -14,6 +15,7 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -525,7 +527,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       ],
     );
     return Container(
-      decoration: AppDecorators.bgRadialGradient(appTheme),
+      height: MediaQuery.of(context).size.height,
+      decoration: AppDecorators.bgImageGradient(appTheme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -533,146 +536,65 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             // AppBar
             Container(
               margin: EdgeInsets.symmetric(
-                horizontal: 16,
+                horizontal: AppDimensions.kMainPaddingHorizontal,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // RoundRectButton(
-                  //   onTap: () async {
-                  //     startDemoGame();
-                  //   },
-                  //   text: 'Demo Game', //_appScreenText["host"],
-                  //   theme: appTheme,
-                  //   focusNode: focusNodes[0],
-                  // ),
-                  ThemedButton(
-                    onTap: () async {
-                      await hostGame();
-                    },
-                    text: 'Host', //_appScreenText["host"],
-                    style: appTheme.greenButton,
-                    focusNode: focusNodes[0],
-                  ),
+                  ThemedCircleImageButton(
+                      svgAsset: 'assets/icons/feedback.svg',
+                      onTap: () {},
+                      style: appTheme.goldButton),
                   Expanded(
-                      child: Column(children: [
-                    HeadingWidget(
-                      heading: _appScreenText['appName'],
+                    child: Column(
+                      children: [
+                        HeadingWidget(
+                          // heading: _appScreenText['appName'].toUpperCase(),
+                          heading: "Live Games",
+                        ),
+                      ],
                     ),
-                  ])),
-                  // CircleImageButton(
-                  //     focusNode: focusNodes[2],
-                  //     height: 30,
-                  //     width: 30,
-                  //     imageWidth: 18,
-                  //     theme: appTheme,
-                  //     icon: Icons.info,
-                  //     onTap: () {
-                  //       Alerts.showDailog(
-                  //         context: context,
-                  //         child: BugsFeaturesWidget(),
-                  //       );
-                  //     }),
-                  ThemedButton(
-                    onTap: () async {
-                      await joinGame(appTheme);
-                    },
-                    style: appTheme.goldButton,
-                    text: 'Join', //_appScreenText['join'],
-                    focusNode: focusNodes[1],
                   ),
+                  ThemedCircleImageButton(
+                      svgAsset: 'assets/icons/history.svg',
+                      onTap: () {},
+                      style: appTheme.goldButton),
                 ],
               ),
             ),
-            //secondRow,
-            Align(
-                alignment: Alignment.centerRight,
-                child: ThemedButton(
-                  onTap: () async {
-                    Alerts.showDailog(
-                      context: context,
-                      child: BugsFeaturesWidget(),
-                    );
-                  },
-                  text: 'Feedback', //_appScreenText["host"],
-                  style: appTheme.goldButton,
-                )),
-            secondRow,
-            // Align(
-            //     alignment: Alignment.centerRight,
-            //     child: CircleImageButton(
-            //       onTap: () {},
-            //       icon: Icons.email,
-            //       theme: appTheme,
-            //     )),
 
-            TabBar(
-              physics: const BouncingScrollPhysics(),
-              tabs: [
-                Tab(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        AppAssetsNew.liveGamesTabImagePath,
-                        height: 16.ph,
-                        width: 16.pw,
-                        color: _tabController.index == 0
-                            ? appTheme.secondaryColor
-                            : appTheme.secondaryColorWithDark(),
-                      ),
-                      AppDimensionsNew.getHorizontalSpace(8),
-                      Text(
-                        _appScreenText['liveGames'],
-                      ),
-                    ],
-                  ),
-                ),
-                Tab(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        AppAssetsNew.playedGamesTabImagePath,
-                        height: 16.ph,
-                        width: 16.pw,
-                        color: _tabController.index == 1
-                            ? appTheme.secondaryColor
-                            : appTheme.secondaryColorWithDark(),
-                      ),
-                      AppDimensionsNew.getHorizontalSpace(8),
-                      Text(
-                        _appScreenText['gameRecord'],
-                      )
-                    ],
-                  ),
-                ),
-              ],
-              indicatorColor: appTheme.accentColor,
-              labelColor: appTheme.secondaryColor,
-              unselectedLabelColor: appTheme.secondaryColorWithDark(0.2),
-              indicatorSize: TabBarIndicatorSize.label,
-              //labelStyle: AppDecorators.getSubtitle2Style(theme: appTheme),
-              //unselectedLabelStyle: AppDecorators.getSubtitle1Style(theme: appTheme),
-              controller: _tabController,
-            ),
-            // HeadingWidget(
-            //   heading: 'Live Games',
-            // ),
             Expanded(
-              child: TabBarView(
-                physics: const BouncingScrollPhysics(),
-                controller: _tabController,
-                children: [
-                  Stack(
-                    children: [
-                      _isLoading
-                          ? Container()
-                          : liveGames.isEmpty
-                              ? LiveGamesHelpText(appTheme)
-                              : ListView.separated(
+              child: Padding(
+                padding: const EdgeInsets.all(
+                  AppDimensions.kMainPaddingHorizontal,
+                ),
+                child: Stack(
+                  children: [
+                    _isLoading
+                        ? Container()
+                        : liveGames.isEmpty
+                            ? LiveGamesHelpText(appTheme)
+                            : ShaderMask(
+                                shaderCallback: (Rect rect) {
+                                  return LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.purple,
+                                      Colors.transparent,
+                                      Colors.transparent,
+                                      Colors.purple
+                                    ],
+                                    stops: [
+                                      0.0,
+                                      0.025,
+                                      0.95,
+                                      1.0
+                                    ], // 10% purple, 80% transparent, 10% purple
+                                  ).createShader(rect);
+                                },
+                                blendMode: BlendMode.dstOut,
+                                child: ListView.separated(
                                   physics: BouncingScrollPhysics(),
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
@@ -718,14 +640,49 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                   ),
                                   itemCount: liveGames?.length,
                                 ),
-                    ],
-                  ),
-                  _isPlayedGamesLoading
-                      ? Container()
-                      : getPlayedGames(appTheme),
-                ],
+                              ),
+                  ],
+                ),
               ),
             ),
+            SizedBox(
+              height: 8.ph,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ThemedButton(
+                  height: 50.ph,
+                  width: MediaQuery.of(context).size.width / 3,
+                  onTap: () async {
+                    await hostGame();
+                  },
+                  style: appTheme.goldButton,
+                  text: 'HOST',
+                  fontSize: 18.0,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 5,
+                  ),
+                ),
+                ThemedButton(
+                  height: 50.ph,
+                  width: MediaQuery.of(context).size.width / 3,
+                  onTap: () async {
+                    await joinGame(appTheme);
+                  },
+                  style: appTheme.goldButton,
+                  text: 'JOIN',
+                  fontSize: 18.0,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 5,
+                  ),
+                ),
+              ],
+            ),
+            AppDimensionsNew.getVerticalSizedBox(110.ph),
           ]),
         ),
       ),
@@ -784,61 +741,64 @@ class LiveGamesHelpText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      SizedBox(height: 50),
-      Row(
-        children: [
-          SizedBox(width: 20.pw),
-          Text('Tap Host button on top left '),
-          // RoundRectButton(
-          //   onTap: () async {},
-          //   text: 'Host',
-          //   theme: appTheme,
-          // ),
-          //SizedBox(width: 8.pw),
-          Flexible(
-            child: Text('to host a new game'),
-          ),
-        ],
-      ),
-      SizedBox(height: 20),
-      Row(
-        children: [
-          SizedBox(width: 20.pw),
-          Flexible(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 50),
+        Row(
+          children: [
+            SizedBox(width: 20.pw),
+            Text('Tap Host button on top left '),
+            // RoundRectButton(
+            //   onTap: () async {},
+            //   text: 'Host',
+            //   theme: appTheme,
+            // ),
+            //SizedBox(width: 8.pw),
+            Flexible(
+              child: Text('to host a new game'),
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+        Row(
+          children: [
+            SizedBox(width: 20.pw),
+            Flexible(
+                child: Text(
+                    'Tap Join button on top right to join a game with game code')),
+            // RoundRectButton(
+            //   onTap: () async {},
+            //   text: 'Join',
+            //   theme: appTheme,
+            // ),
+            // SizedBox(width: 8.pw),
+            // Flexible(
+            //   child: Text('to join a game with game code'),
+            // ),
+          ],
+        ),
+        SizedBox(height: 20),
+        Row(
+          children: [
+            SizedBox(width: 20.pw),
+            Flexible(
               child: Text(
-                  'Tap Join button on top right to join a game with game code')),
-          // RoundRectButton(
-          //   onTap: () async {},
-          //   text: 'Join',
-          //   theme: appTheme,
-          // ),
-          // SizedBox(width: 8.pw),
-          // Flexible(
-          //   child: Text('to join a game with game code'),
-          // ),
-        ],
-      ),
-      SizedBox(height: 20),
-      Row(
-        children: [
-          SizedBox(width: 20.pw),
-          Flexible(
-            child:
-                Text('Tap on Clubs tab to see your clubs or create a new club'),
-          ),
-        ],
-      ),
-      SizedBox(height: 20),
-      ThemedButton(
-        onTap: () async {
-          startDemoGame(context);
-        },
-        text: 'Try It!', //_appScreenText["host"],
-        style: appTheme.goldButton,
-      ),
-      SizedBox(height: 20),
-    ]);
+                  'Tap on Clubs tab to see your clubs or create a new club'),
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+        ThemedButton(
+          onTap: () async {
+            startDemoGame(context);
+          },
+          text: 'Try It!', //_appScreenText["host"],
+          style: appTheme.goldButton,
+        ),
+        SizedBox(height: 20),
+      ],
+    );
 
     // Center(
     //   child: Text(
