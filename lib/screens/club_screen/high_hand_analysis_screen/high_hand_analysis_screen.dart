@@ -205,7 +205,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
 
   Widget test(AppTheme theme, BuildContext context) {
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
@@ -232,7 +232,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
     // gameTypesWidget.selectedGames = gameTypes;
     // if (searching) {
     //   return Container(
-    //     decoration: AppDecorators.bgRadialGradient(theme),
+    //      decoration: AppDecorators.bgImageGradient(theme),
     //     child: Scaffold(
     //       backgroundColor: Colors.transparent,
     //       body: Center(
@@ -242,7 +242,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
     //   );
     // }
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(

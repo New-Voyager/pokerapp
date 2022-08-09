@@ -385,7 +385,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             borderRadius: BorderRadius.circular(32.pw),
             onTap: () => Navigator.of(context).pop(),
             child: Container(
-              decoration: AppDecorators.bgRadialGradient(theme),
+              decoration: AppDecorators.bgImageGradient(theme),
               child: SvgPicture.asset(
                 'assets/images/backarrow.svg',
                 color: AppColorsNew.newGreenButtonColor,
@@ -630,7 +630,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         return WillPopScope(
           child: Container(
-            decoration: AppDecorators.bgRadialGradient(theme),
+            decoration: AppDecorators.bgImageGradient(theme),
             child: mainBody,
           ),
           onWillPop: () async {

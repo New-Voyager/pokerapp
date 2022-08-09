@@ -75,7 +75,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,

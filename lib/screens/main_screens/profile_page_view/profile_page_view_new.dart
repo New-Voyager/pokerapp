@@ -88,7 +88,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
         }
 
         return Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           child: SafeArea(
             child: Scaffold(
               backgroundColor: Colors.transparent,

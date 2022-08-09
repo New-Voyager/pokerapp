@@ -175,7 +175,7 @@ class _HandHistoryState extends State<HandHistoryListView>
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomAppBar(

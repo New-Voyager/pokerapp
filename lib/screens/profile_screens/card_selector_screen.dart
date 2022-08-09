@@ -77,7 +77,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         return Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
@@ -112,7 +112,7 @@ class _CardSelectorScreenState extends State<CardSelectorScreen>
     return Container(
       //height: size.height * 0.4,
       padding: EdgeInsets.only(top: 16),
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Column(
         children: [
           TabBar(

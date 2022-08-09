@@ -57,7 +57,7 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         return Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomAppBar(

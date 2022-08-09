@@ -1,18 +1,17 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 class ClubItemView extends StatelessWidget {
   final ClubModel club;
@@ -46,27 +45,24 @@ class ClubItemView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         club.picUrl.isEmpty
-            ? Container(
-                width: 60.dp,
-                height: 60.dp,
-                // clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFFFEEBA),
-                      Color(0xFF726746),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.circular(30.dp),
+            ? OutlineGradient(
+                strokeWidth: 2.0,
+                radius: Radius.circular(30.dp),
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFFFFEEBA),
+                    Color(0xFF726746),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
-                padding: EdgeInsets.all(4),
+                // padding: EdgeInsets.all(4),
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFC1B07A),
-                    borderRadius: BorderRadius.circular(26.dp),
-                  ),
+                  // decoration: BoxDecoration(
+                  //   color: Color(0xFFC1B07A),
+                  //   borderRadius: BorderRadius.circular(26.dp),
+                  // ),
+                  height: 60.dp, width: 60.dp,
                   alignment: Alignment.center,
                   child: Text(
                     HelperUtils.getClubShortName(club.clubName),

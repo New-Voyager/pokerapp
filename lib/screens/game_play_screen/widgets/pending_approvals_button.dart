@@ -73,7 +73,7 @@ class PendingApprovalsButton extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              decoration: AppDecorators.bgRadialGradient(theme),
+              decoration: AppDecorators.bgImageGradient(theme),
               child: Column(
                 children: [
                   SizedBox(

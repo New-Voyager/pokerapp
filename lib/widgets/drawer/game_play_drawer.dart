@@ -162,7 +162,7 @@ class _GamePlayScreenDrawerState extends State<GamePlayScreenDrawer> {
 
     return Container(
         padding: EdgeInsets.all(10),
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: contents);
   }
 }

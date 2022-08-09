@@ -73,7 +73,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.transparent,
@@ -92,14 +92,16 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                     ),
                     /* HEADING */
                     Expanded(
-                      child: HeadingWidget(
-                        heading: _appScreenText['gameSettings'],
+                      child: Center(
+                        child: HeadingWidget(
+                          heading: _appScreenText['gameSettings'],
+                        ),
                       ),
                     ),
                     ThemedCircleImageButton(
                       onTap: () => Navigator.of(context).pop(),
                       icon: Icons.close,
-                      style: theme.greenButton,
+                      style: theme.goldButton,
                     ),
                     AppDimensionsNew.getHorizontalSpace(8),
                   ],

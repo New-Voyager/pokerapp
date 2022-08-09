@@ -234,7 +234,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     }
 
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(

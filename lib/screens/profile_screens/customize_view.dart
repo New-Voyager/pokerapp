@@ -82,7 +82,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.transparent,

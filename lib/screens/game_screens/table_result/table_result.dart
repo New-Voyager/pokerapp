@@ -311,7 +311,7 @@ class _TableResultScreenState extends State<TableResultScreen>
     final theme = AppTheme.getTheme(context);
     initializeTableWidgets();
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.transparent,

@@ -543,7 +543,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 children: [
                   ThemedCircleImageButton(
                       svgAsset: 'assets/icons/feedback.svg',
-                      onTap: () {},
+                      onTap: () {
+                        Alerts.showDailog(
+                          context: context,
+                          child: BugsFeaturesWidget(),
+                        );
+                      },
                       style: appTheme.goldButton),
                   Expanded(
                     child: Column(
@@ -557,7 +562,11 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   ),
                   ThemedCircleImageButton(
                       svgAsset: 'assets/icons/history.svg',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                          Routes.game_records,
+                        );
+                      },
                       style: appTheme.goldButton),
                 ],
               ),
@@ -571,7 +580,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 child: Stack(
                   children: [
                     _isLoading
-                        ? Container()
+                        ? Center(child: CircularProgressIndicator())
                         : liveGames.isEmpty
                             ? LiveGamesHelpText(appTheme)
                             : ShaderMask(

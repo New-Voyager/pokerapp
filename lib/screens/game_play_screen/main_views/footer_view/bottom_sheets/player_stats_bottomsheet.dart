@@ -19,7 +19,7 @@ class _PlayerStatsBottomSheetState extends State<PlayerStatsBottomSheet> {
     final theme = AppTheme.getTheme(context);
     return Container(
       height: height / ratio,
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Stack(
         children: [
           Column(

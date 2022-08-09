@@ -125,7 +125,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         height: MediaQuery.of(context).size.height * 0.8,
         child: Stack(
           clipBehavior: Clip.none,

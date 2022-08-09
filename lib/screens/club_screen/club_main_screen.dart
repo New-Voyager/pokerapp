@@ -211,7 +211,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
               ClubHomePageModel clubModel = snapshot.data;
               // log("0-0-0- ${snapshot.connectionState}");
               return Container(
-                decoration: AppDecorators.bgRadialGradient(theme),
+                decoration: AppDecorators.bgImageGradient(theme),
                 child: SafeArea(
                   child: Scaffold(
                     backgroundColor: Colors.transparent,

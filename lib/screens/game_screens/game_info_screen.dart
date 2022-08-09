@@ -116,7 +116,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
 
     return Container(
       padding: EdgeInsets.all(16),
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       width: MediaQuery.of(context).size.width,
       child: (gameInfo == null || loading)
           ? Center(child: CircularProgressWidget())

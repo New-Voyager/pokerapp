@@ -145,7 +145,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
     final theme = AppTheme.getTheme(context);
     if (loading) {
       return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(
@@ -163,7 +163,7 @@ class _ClubActivityCreditScreenState extends State<ClubActivityCreditScreen> {
     }
 
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(

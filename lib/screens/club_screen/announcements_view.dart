@@ -63,7 +63,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         return Container(
-            decoration: AppDecorators.bgRadialGradient(theme),
+            decoration: AppDecorators.bgImageGradient(theme),
             child: SafeArea(
               child: Scaffold(
                 backgroundColor: Colors.transparent,

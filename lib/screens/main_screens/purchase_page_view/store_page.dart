@@ -254,7 +254,7 @@ class _StorePageState extends State<StorePage> {
     ));
     bool showRedeem = false;
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,

@@ -106,7 +106,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
         }
       }
       return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(

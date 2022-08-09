@@ -43,7 +43,7 @@ Vivamus non pretium arcu. Integer sed eleifend purus, eget convallis felis. Duis
     }
     final theme = AppTheme.getTheme(context);
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,

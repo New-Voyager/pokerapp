@@ -53,7 +53,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
           return true;
         },
         child: Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: true,

@@ -242,7 +242,9 @@ class AppDecorators {
   }
 
   static Widget gameItemWidget(
-      {@required AppTheme theme, @required Widget child}) {
+      {@required AppTheme theme,
+      @required Widget child,
+      bool onlyStroke = false}) {
     return OutlineGradient(
       gradient: LinearGradient(
         colors: [
@@ -252,14 +254,16 @@ class AppDecorators {
         end: Alignment.topLeft,
         begin: Alignment.bottomRight,
       ),
-      backgroundGradient: LinearGradient(
-        colors: [
-          Color(0x75AE9E6B),
-          Color(0x239E926E),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+      backgroundGradient: onlyStroke
+          ? null
+          : LinearGradient(
+              colors: [
+                Color(0x75AE9E6B),
+                Color(0x239E926E),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
       strokeWidth: 1,
       radius: Radius.circular(12),
       child: child,

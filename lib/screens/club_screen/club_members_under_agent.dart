@@ -147,7 +147,7 @@ class _ClubMembersUnderAgentState extends State<ClubMembersUnderAgent>
           widget.member.playerId, widget.isOwner));
     }
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(

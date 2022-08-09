@@ -69,7 +69,7 @@ class _PerformanceViewState extends State<PerformanceView>
     return Consumer<AppTheme>(
       builder: (_, theme, __) {
         return Container(
-            decoration: AppDecorators.bgRadialGradient(theme),
+            decoration: AppDecorators.bgImageGradient(theme),
             child: Scaffold(
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: true,

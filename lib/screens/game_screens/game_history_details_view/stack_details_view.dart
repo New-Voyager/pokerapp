@@ -123,7 +123,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
     _tapPosition = Offset((Screen.width - 100) / 2, Screen.height - 100);
     return Consumer<AppTheme>(builder: (_, theme, __) {
       return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(

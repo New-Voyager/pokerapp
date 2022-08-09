@@ -21,6 +21,7 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_de
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/game_screens/tournament/tournament_details.dart';
 import 'package:pokerapp/screens/game_screens/tournament/tournaments.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/game_records.dart';
 import 'package:pokerapp/screens/main_screens/new_main_screen.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/system_announcements.dart';
 import 'package:pokerapp/screens/profile_screens/card_selector_screen.dart';
@@ -68,7 +69,10 @@ class Routes {
   // GamePlayScreen
   static const String game_play = '/game_play';
   // NewGameSettings
+  static const String game_records = '/game_records';
+  // NewGameSettings
   static const String new_game_settings = '/new_game_settings';
+
   //GameHistoryView
   static const String game_history = '/game_history';
   //ClubMembersView
@@ -228,6 +232,12 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ChooseGameNew(clubCode: clubCode),
+        );
+
+      case game_records:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: GameRecords(),
         );
 
       case game_history:

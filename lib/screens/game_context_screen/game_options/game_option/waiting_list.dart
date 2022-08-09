@@ -83,7 +83,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     width = MediaQuery.of(context).size.width;
     return Consumer<AppTheme>(
         builder: (_, theme, __) => Container(
-              decoration: AppDecorators.bgRadialGradient(theme),
+              decoration: AppDecorators.bgImageGradient(theme),
               height: height / 2,
               child: Scaffold(
                 backgroundColor: Colors.transparent,

@@ -114,7 +114,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
       builder: (_, theme, __) {
         final boardView = _buildTopView(theme);
         return Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Column(
@@ -184,7 +184,7 @@ class _TableSelectorScreenState extends State<TableSelectorScreen>
     return Container(
       //height: size.height * 0.4,
       padding: EdgeInsets.only(top: 16),
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Column(
         children: [
           TabBar(

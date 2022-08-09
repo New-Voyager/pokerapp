@@ -417,7 +417,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
       },
       child: Builder(
         builder: (ctx) => Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Padding(

@@ -18,7 +18,7 @@ class _LogsScreenState extends State<LogsScreen> {
     List<String> profileLogs = Profile.profileLogs;
     profileLogs = profileLogs.reversed.toList();
     return Container(
-      decoration: AppDecorators.bgRadialGradient(theme),
+      decoration: AppDecorators.bgImageGradient(theme),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: true,

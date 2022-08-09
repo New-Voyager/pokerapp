@@ -95,7 +95,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
     final bool isHostView = widget.player != null;
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(

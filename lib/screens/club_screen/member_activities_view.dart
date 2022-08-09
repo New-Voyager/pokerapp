@@ -126,7 +126,7 @@ class _ClubMemberActivitiesScreenState
     final theme = AppTheme.getTheme(context);
     if (loading) {
       return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(
@@ -226,7 +226,7 @@ class _ClubMemberActivitiesScreenState
     return SafeArea(
       top: false,
       child: Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(

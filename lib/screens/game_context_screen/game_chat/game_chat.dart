@@ -333,7 +333,7 @@ class _GameChatState extends State<GameChat> {
       builder: (_, __, bool isKeyboardVisible) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           height: _getGameChatHeight(isKeyboardVisible),
           child: Column(
             children: [

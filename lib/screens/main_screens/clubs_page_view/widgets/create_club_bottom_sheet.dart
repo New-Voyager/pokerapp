@@ -40,7 +40,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
 
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-          decoration: AppDecorators.bgRadialGradient(theme),
+          decoration: AppDecorators.bgImageGradient(theme),
           height: MediaQuery.of(context).size.height - 200,
           /*  padding: EdgeInsets.only(
            // bottom: MediaQuery.of(context).viewInsets.bottom,

@@ -278,7 +278,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     return Consumer<AppTheme>(builder: (_, theme, __) {
       if (!loadingDone) {
         return Container(
-            decoration: AppDecorators.bgRadialGradient(theme),
+            decoration: AppDecorators.bgImageGradient(theme),
             child: Scaffold(
                 backgroundColor: Colors.transparent,
                 appBar: CustomAppBar(
@@ -335,7 +335,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
       }
 
       return Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
+        decoration: AppDecorators.bgImageGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(
