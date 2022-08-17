@@ -19,6 +19,7 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -692,44 +693,61 @@ class OverlayStraddle extends StatelessWidget {
                 ),
               ],
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              RoundRectButton(
-                onTap: () {
-                  gameState.straddlePrompt = false;
-                  gameState.straddlePromptState.notify();
-                  // straddle this hand and auto straddle
-                  OverlaySupportEntry.of(context).dismiss();
-                  gameState.playerSettings.autoStraddle = true;
-                  gameState.playerLocalConfig.straddle = true;
 
-                  HandActionProtoService.takeAction(
-                    gameContextObject: gameContextObject,
-                    gameState: gameState,
-                    action: AppConstants.STRADDLE,
-                    amount: 2.0 * gameState.gameInfo.bigBlind,
-                  );
-                },
-                theme: theme,
-                text: 'Auto Straddle',
-                negative: true,
-              ),
-              RoundRectButton(
-                onTap: () {
-                  // don't straddle
-                  gameState.straddlePrompt = false;
-                  gameState.straddlePromptState.notify();
-                  OverlaySupportEntry.of(context).dismiss();
-                  gameState.playerSettings.autoStraddle = false;
-                  gameState.playerLocalConfig.straddle = false;
+            RadioToggleButtonsWidget<String>(
+              onSelect: (int index) {
+                // if (index == 0) {
+                //   gmp.chipUnit = ChipUnit.DOLLAR;
+                // } else {
+                //   gmp.chipUnit = ChipUnit.CENT;
+                // }
+              },
+              // defaultValue: gmp.chipUnit == ChipUnit.DOLLAR ? 0 : 1,
+              defaultValue: 0,
+              values: [
+                'Auto Straddle',
+                'Ask Everytime',
+                'Straddle Off',
+              ],
+            ),
+            // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            //   RoundRectButton(
+            //     onTap: () {
+            //       gameState.straddlePrompt = false;
+            //       gameState.straddlePromptState.notify();
+            //       // straddle this hand and auto straddle
+            //       OverlaySupportEntry.of(context).dismiss();
+            //       gameState.playerSettings.autoStraddle = true;
+            //       gameState.playerLocalConfig.straddle = true;
 
-                  // don't straddle
-                  gameState.showAction(true);
-                },
-                theme: theme,
-                text: 'Straddle Off',
-                negative: true,
-              ),
-            ])
+            //       HandActionProtoService.takeAction(
+            //         gameContextObject: gameContextObject,
+            //         gameState: gameState,
+            //         action: AppConstants.STRADDLE,
+            //         amount: 2.0 * gameState.gameInfo.bigBlind,
+            //       );
+            //     },
+            //     theme: theme,
+            //     text: 'Auto Straddle',
+            //     negative: true,
+            //   ),
+            //   RoundRectButton(
+            //     onTap: () {
+            //       // don't straddle
+            //       gameState.straddlePrompt = false;
+            //       gameState.straddlePromptState.notify();
+            //       OverlaySupportEntry.of(context).dismiss();
+            //       gameState.playerSettings.autoStraddle = false;
+            //       gameState.playerLocalConfig.straddle = false;
+
+            //       // don't straddle
+            //       gameState.showAction(true);
+            //     },
+            //     theme: theme,
+            //     text: 'Straddle Off',
+            //     negative: true,
+            //   ),
+            // ])
           ])),
     );
   }
