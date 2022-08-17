@@ -556,3 +556,181 @@ class OverlayRunItTwice extends StatelessWidget {
     );
   }
 }
+
+class OverlayStraddle extends StatelessWidget {
+  static void showPrompt({
+    @required GameState gameState,
+    @required GameContextObject gameContextObject,
+    @required final int expiresAtInSeconds,
+    @required final BuildContext context,
+  }) {
+    showOverlayNotification(
+      (context) => OverlayStraddle(
+        expiresAtInSeconds: expiresAtInSeconds,
+        gameContextObject: gameContextObject,
+        gameState: gameState,
+      ),
+      duration: Duration(seconds: expiresAtInSeconds),
+      context: context,
+      position: NotificationPosition.bottom,
+    );
+  }
+
+  final int expiresAtInSeconds;
+  final GameState gameState;
+  final GameContextObject gameContextObject;
+
+  const OverlayStraddle({
+    @required this.gameState,
+    @required this.gameContextObject,
+    @required this.expiresAtInSeconds,
+  });
+
+  void _handleButtonTaps({
+    @required bool isYes,
+    @required BuildContext context,
+  }) {
+    gameState.straddlePrompt = false;
+    gameState.straddlePromptState.notify();
+    OverlaySupportEntry.of(context).dismiss();
+    /* if we are in testing mode just return from this function */
+    if (TestService.isTesting) {
+      // dismiss the prompt
+      return;
+    }
+
+    if (isYes) {
+      // straddle
+      HandActionProtoService.takeAction(
+        gameContextObject: gameContextObject,
+        gameState: gameState,
+        action: AppConstants.STRADDLE,
+        amount: 2.0 * gameState.gameInfo.bigBlind,
+      );
+    } else {
+      // don't straddle
+      gameState.showAction(true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.read<AppTheme>();
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 10.0,
+        left: 5.0,
+        right: 5.0,
+      ),
+      child: ParentOverlayNotificationWidget(
+          isDismissible: false,
+          child: Column(children: [
+            Row(
+              children: [
+                // count down timer
+                FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Countdown(
+                    seconds: expiresAtInSeconds,
+                    onFinished: () {
+                      OverlaySupportEntry.of(context).dismiss();
+                      // Navigator.pop(context);
+                    },
+                    build: (_, timeLeft) {
+                      if (timeLeft == 0) {
+                        // no straddle
+                      }
+                      return Text(
+                        //DataFormatter.timeFormatMMSS(timeLeft),
+                        timeLeft.toInt().toString(),
+                        style: TextStyle(color: Colors.red, fontSize: 13.dp),
+                      );
+                    },
+                  ),
+                ),
+
+                // run it twice text
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    'Straddle?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13.dp),
+                  ),
+                ),
+
+                // finally yes / no buttons
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    /* true button */
+                    IconButton(
+                      iconSize: 35.0,
+                      icon: Icon(
+                        Icons.check_circle_outline_sharp,
+                        color: Colors.green,
+                      ),
+                      onPressed: () {
+                        _handleButtonTaps(isYes: true, context: context);
+                      },
+                    ),
+
+                    /* no button */
+                    IconButton(
+                      iconSize: 35.0,
+                      icon: Icon(
+                        Icons.cancel_rounded,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        _handleButtonTaps(isYes: false, context: context);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              RoundRectButton(
+                onTap: () {
+                  gameState.straddlePrompt = false;
+                  gameState.straddlePromptState.notify();
+                  // straddle this hand and auto straddle
+                  OverlaySupportEntry.of(context).dismiss();
+                  gameState.playerSettings.autoStraddle = true;
+                  gameState.playerLocalConfig.straddle = true;
+
+                  HandActionProtoService.takeAction(
+                    gameContextObject: gameContextObject,
+                    gameState: gameState,
+                    action: AppConstants.STRADDLE,
+                    amount: 2.0 * gameState.gameInfo.bigBlind,
+                  );
+                },
+                theme: theme,
+                text: 'Auto Straddle',
+                negative: true,
+              ),
+              RoundRectButton(
+                onTap: () {
+                  // don't straddle
+                  gameState.straddlePrompt = false;
+                  gameState.straddlePromptState.notify();
+                  OverlaySupportEntry.of(context).dismiss();
+                  gameState.playerSettings.autoStraddle = false;
+                  gameState.playerLocalConfig.straddle = false;
+
+                  // don't straddle
+                  gameState.showAction(true);
+                },
+                theme: theme,
+                text: 'Straddle Off',
+                negative: true,
+              ),
+            ])
+          ])),
+    );
+  }
+}

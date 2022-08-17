@@ -190,7 +190,7 @@ class _HoleCardsViewAndFooterActionViewState
                   }),
             ),
           ),
-          StraddleWidget(gameState),
+          // StraddleWidget(gameState),
         ],
       );
     });

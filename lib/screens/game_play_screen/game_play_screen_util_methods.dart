@@ -62,6 +62,18 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Straddle',
+          labelBackgroundColor: Colors.black,
+          onTap: () {
+            TestService.showStraddle();
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show Bets',
           labelBackgroundColor: Colors.black,
           onTap: () {
