@@ -11,7 +11,6 @@
 			"isManager": false
 		}
 	},
-
 	"gameInfo": {
 		"gameCode": "CG-8QI4TZBWJRQAXN",
 		"clubCode": "C-ZZSA3WNME56Y",
@@ -27,7 +26,8 @@
 		"tableStatus": "GAME_RUNNING",
 		"seatInfo": {
 			"availableSeats": [],
-			"playersInSeats": [{
+			"playersInSeats": [
+				{
 					"name": "poker club",
 					"playerId": "1",
 					"seatNo": 1,
@@ -74,7 +74,7 @@
 					"status": "PLAYING"
 				},
 				{
-					"name": "paul",
+					"name": "Albie4Vegas something",
 					"playerId": "6",
 					"seatNo": 6,
 					"playerUuid": "5cd96779-c6b2-4dba-a814-f365b6b48aeb",

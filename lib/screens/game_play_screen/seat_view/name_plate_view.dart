@@ -254,6 +254,7 @@ class NamePlateWidget extends StatelessWidget {
         size: containerSize,
         progressPath: playerProgress,
         progressRatio: progressRatio,
+        seat: seat,
         scale: 1.0,
       );
     }
@@ -266,8 +267,9 @@ class NamePlateWidget extends StatelessWidget {
     }
     double opacity = 1.0;
 
+    // seat.player.playerFolded = true;
     if (seat.player.playerFolded) {
-      opacity = 0.5;
+      opacity = 1.0;
     }
 
     Stack namePlate = Stack(
@@ -297,8 +299,10 @@ class NamePlateWidget extends StatelessWidget {
                       child: playerName == null || playerName == ''
                           ? const SizedBox.shrink()
                           : Opacity(
-                              opacity: opacity,
-                              child: NamePlateNameText(playerName),
+                              opacity: 1.0,
+                              child: Padding(
+                                  padding: EdgeInsets.all(3),
+                                  child: NamePlateNameText(playerName, seat)),
                             ),
                     ),
 
@@ -310,8 +314,7 @@ class NamePlateWidget extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.center,
                         child: Opacity(
-                            opacity: opacity,
-                            child: _bottomWidget(context, theme)),
+                            opacity: 1.0, child: _bottomWidget(context, theme)),
                       ),
                     ),
                   ],
@@ -367,9 +370,9 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget _buildPlayerStack(BuildContext context, AppTheme theme) {
-    Widget _buildStackTextWidget(double stack) => FittedBox(
+    Widget _buildStackTextWidget(Seat seat, double stack) => FittedBox(
           fit: BoxFit.scaleDown,
-          child: NamePlateStackText(stack),
+          child: NamePlateStackText(seat, stack),
         );
 
     if (seat.player.reloadAnimation == true)
@@ -379,7 +382,7 @@ class NamePlateWidget extends StatelessWidget {
         stackTextBuilder: _buildStackTextWidget,
       );
 
-    return _buildStackTextWidget(seat.player.stack);
+    return _buildStackTextWidget(seat, seat.player.stack);
   }
 }
 

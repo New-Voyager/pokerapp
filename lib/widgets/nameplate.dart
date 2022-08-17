@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:path_drawing/path_drawing.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 
 class Nameplate extends StatelessWidget {
   final int remainingTime;
@@ -12,6 +13,7 @@ class Nameplate extends StatelessWidget {
   final Size size;
   final Size progressRatio;
   final double scale;
+  final Seat seat;
 
   Nameplate.fromSvgString({
     Key key,
@@ -21,6 +23,7 @@ class Nameplate extends StatelessWidget {
     @required this.progressPath,
     @required this.size,
     @required this.progressRatio,
+    @required this.seat,
     this.scale = 1.0,
   }) : super(key: key) {
     assert(svg != null &&
@@ -57,6 +60,14 @@ class Nameplate extends StatelessWidget {
         ),
       );
     }
+    String svg = this.svg;
+    if (seat != null &&
+        seat.player != null &&
+        (seat.player.playerFolded || !seat.player.inhand)) {
+      svg = svg.replaceAll("#D7D3C6", "#808080");
+    }
+    log('svg: $svg');
+
     return Transform.scale(
         scale: this.scale,
         child: Container(
