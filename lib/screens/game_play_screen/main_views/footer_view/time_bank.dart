@@ -56,8 +56,7 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
           animate = false;
           int extendTime = minExtendTime;
           if (availableTime < extendTime) {
-            extendTime =
-                availableTime; //widget.gameState.gameHiveStore.getTimeBankTime();
+            extendTime = availableTime;
           }
           time += extendTime;
           await widget.gameState.gameHiveStore

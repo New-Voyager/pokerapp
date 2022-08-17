@@ -277,9 +277,9 @@ class _CommunitcationHandAnalyseViewState
           : SizedBox.shrink(),
 
       // bomb pot
-      !widget.gameState.currentPlayer.isHost()
-          ? SizedBox.shrink()
-          : Row(
+      (widget.gameState.currentPlayer.isHost() ||
+              widget.gameState.currentPlayer.isOwner())
+          ? Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -307,7 +307,8 @@ class _CommunitcationHandAnalyseViewState
                   ),
                 ),
               ],
-            ),
+            )
+          : SizedBox.shrink(),
 
       // game info
       Row(

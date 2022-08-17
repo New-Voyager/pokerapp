@@ -119,36 +119,36 @@ class _CommunicationViewState extends State<CommunicationView> {
                 //   children.add(SizedBox(height: 10));
                 // }
 
-                // if (audioConf &&
-                //     gameState.playerLocalConfig.inAudioConference) {
-                //   if (communicationState.audioConferenceStatus ==
-                //       AudioConferenceStatus.CONNECTED) {
-                //     children.add(DebugBorderWidget(
-                //         child: audioConferenceWidget(gameState, theme)));
-                //     showVoiceText = false;
-                //   }
-                // }
+                if (audioConf &&
+                    gameState.playerLocalConfig.inAudioConference) {
+                  if (communicationState.audioConferenceStatus ==
+                      AudioConferenceStatus.CONNECTED) {
+                    children.add(DebugBorderWidget(
+                        child: audioConferenceWidget(gameState, theme)));
+                    showVoiceText = false;
+                  }
+                }
 
-                // if (gameState.audioConfEnabled &&
-                //     !gameState.playerLocalConfig.inCall) {
-                //   children.addAll(joinAudioConferenceWidget());
-                // }
+                if (gameState.audioConfEnabled &&
+                    !gameState.playerLocalConfig.inCall) {
+                  children.addAll(joinAudioConferenceWidget());
+                }
 
                 // // if (!gameState.customizationMode &&
                 // //     gameState.currentPlayer.isAdmin()) {
                 // //   children.add(PendingApprovalsButton(
                 // //       theme, gameState, gameContextObj, mounted));
                 // // }
-                // children.add(SizedBox(height: 30));
-                // children.add(Consumer<ActionState>(builder: (_, __, ___) {
-                //   // show time widget if the player is acting
-                //   final gameState = GameState.getState(context);
-                //   if (gameState.actionState.show || TestService.isTesting) {
-                //     return DebugBorderWidget(child: TimeBankWidget(gameState));
-                //   } else {
-                //     return Container();
-                //   }
-                // }));
+                children.add(SizedBox(height: 20));
+                children.add(Consumer<ActionState>(builder: (_, __, ___) {
+                  // show time widget if the player is acting
+                  final gameState = GameState.getState(context);
+                  if (gameState.actionState.show || TestService.isTesting) {
+                    return DebugBorderWidget(child: TimeBankWidget(gameState));
+                  } else {
+                    return Container();
+                  }
+                }));
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

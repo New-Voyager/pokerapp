@@ -373,7 +373,7 @@ class NewHandHandler {
               OverlayStraddle.showPrompt(
                 gameContextObject: gameContext,
                 gameState: gameState,
-                expiresAtInSeconds: 30,
+                expiresAtInSeconds: gameState.gameInfo.actionTime,
                 context: gameState.mainScreenContext,
               );
             }
