@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/models/game_play_models/business/game_resp.dart';
 
 GameSettings gameSettingsInputFromJson(String str) =>
     GameSettings.fromJson(json.decode(str));
@@ -35,6 +34,8 @@ class GameSettings {
     this.roeGames,
     this.dealerChoiceGames,
     this.dealerChoiceOrbit,
+    this.gameType,
+    this.actionTime,
   });
 
   bool buyInApproval;
@@ -63,6 +64,11 @@ class GameSettings {
   List roeGames;
   List dealerChoiceGames;
   bool dealerChoiceOrbit;
+  int actionTime;
+  GameType gameType;
+  double rakeCap;
+  double rakePercentage;
+
   BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
 
   factory GameSettings.fromJson(Map<String, dynamic> json) {
@@ -101,32 +107,104 @@ class GameSettings {
     return gameSettings;
   }
 
-  Map<String, dynamic> toJson() => {
-        "buyInApproval": buyInApproval,
-        "runItTwiceAllowed": runItTwiceAllowed,
-        "allowRabbitHunt": allowRabbitHunt,
-        "showHandRank": showHandRank,
-        "funAnimations": funAnimations,
-        "chat": chat,
-        "doubleBoardEveryHand": doubleBoardEveryHand,
-        "bombPotEnabled": bombPotEnabled,
-        "bombPotBet": bombPotBet,
-        "doubleBoardBombPot": doubleBoardBombPot,
-        "bombPotInterval": bombPotInterval,
-        // "bombPotIntervalInSecs": bombPotIntervalInSecs,
-        "bombPotEveryHand": bombPotEveryHand,
-        "bombPotNextHand": bombPotNextHand,
-        "seatChangeAllowed": seatChangeAllowed,
-        "seatChangeTimeout": seatChangeTimeout,
-        "waitlistAllowed": waitlistAllowed,
-        "breakAllowed": breakAllowed,
-        "breakLength": breakLength,
-        "resultPauseTime": resultPauseTime,
-        "ipCheck": ipCheck,
-        "gpsCheck": gpsCheck,
-        "showResult": showResult,
-        "roeGames": roeGames,
-        "dealerChoiceGames": dealerChoiceGames,
-        "dealerChoiceOrbit": dealerChoiceOrbit,
-      };
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> ret = {};
+    if (buyInApproval != null) {
+      ret["buyInApproval"] = buyInApproval;
+    }
+    if (runItTwiceAllowed != null) {
+      ret["runItTwiceAllowed"] = runItTwiceAllowed;
+    }
+    if (allowRabbitHunt != null) {
+      ret["allowRabbitHunt"] = allowRabbitHunt;
+    }
+    if (showHandRank != null) {
+      ret["showHandRank"] = showHandRank;
+    }
+    if (funAnimations != null) {
+      ret["funAnimations"] = funAnimations;
+    }
+    if (chat != null) {
+      ret["chat"] = chat;
+    }
+    if (doubleBoardEveryHand != null) {
+      ret["doubleBoardEveryHand"] = doubleBoardEveryHand;
+    }
+    if (bombPotEnabled != null) {
+      ret["bombPotEnabled"] = bombPotEnabled;
+    }
+    if (bombPotBet != null) {
+      ret["bombPotBet"] = bombPotBet;
+    }
+    if (bombPotEnabled != null) {
+      ret["bombPotEnabled"] = bombPotEnabled;
+    }
+    if (doubleBoardBombPot != null) {
+      ret["doubleBoardBombPot"] = doubleBoardBombPot;
+    }
+    if (bombPotInterval != null) {
+      ret["bombPotInterval"] = bombPotInterval;
+    }
+    if (bombPotEveryHand != null) {
+      ret["bombPotEveryHand"] = bombPotEveryHand;
+    }
+    if (bombPotEveryHand != null) {
+      ret["bombPotInterval"] = bombPotInterval;
+    }
+    if (bombPotNextHand != null) {
+      ret["bombPotNextHand"] = bombPotNextHand;
+    }
+    if (seatChangeAllowed != null) {
+      ret["seatChangeAllowed"] = seatChangeAllowed;
+    }
+    if (bombPotNextHand != null) {
+      ret["bombPotNextHand"] = bombPotNextHand;
+    }
+    if (seatChangeTimeout != null) {
+      ret["seatChangeTimeout"] = seatChangeTimeout;
+    }
+    if (breakAllowed != null) {
+      ret["breakAllowed"] = breakAllowed;
+    }
+    if (breakLength != null) {
+      ret["breakLength"] = breakLength;
+    }
+    if (waitlistAllowed != null) {
+      ret["waitlistAllowed"] = waitlistAllowed;
+    }
+    if (resultPauseTime != null) {
+      ret["resultPauseTime"] = resultPauseTime;
+    }
+    if (ipCheck != null) {
+      ret["ipCheck"] = ipCheck;
+    }
+    if (gpsCheck != null) {
+      ret["gpsCheck"] = gpsCheck;
+    }
+    if (showResult != null) {
+      ret["showResult"] = showResult;
+    }
+    if (roeGames != null) {
+      ret["roeGames"] = roeGames;
+    }
+    if (dealerChoiceGames != null) {
+      ret["dealerChoiceGames"] = dealerChoiceGames;
+    }
+    if (dealerChoiceOrbit != null) {
+      ret["dealerChoiceOrbit"] = dealerChoiceOrbit;
+    }
+    if (gameType != null) {
+      ret['gameType'] = gameType.toJson();
+    }
+    if (actionTime != null) {
+      ret['actionTime'] = actionTime;
+    }
+    if (rakeCap != null) {
+      ret['rakeCap'] = rakeCap;
+    }
+    if (rakePercentage != null) {
+      ret['rakePercentage'] = rakePercentage;
+    }
+    return ret;
+  }
 }

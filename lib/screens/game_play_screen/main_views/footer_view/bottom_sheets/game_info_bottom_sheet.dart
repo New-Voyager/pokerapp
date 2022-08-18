@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/game_settings.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/proto/enums.pbserver.dart';
 import 'package:pokerapp/screens/game_screens/game_info_screen.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/multi_game_selection.dart';
@@ -14,7 +15,6 @@ import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:pokerapp/widgets/texts.dart';
-import 'package:pokerapp/enums/game_type.dart' as GameTypeEnum;
 
 class GameInfoBottomSheet extends StatefulWidget {
   final GameState gameState;
@@ -124,244 +124,7 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
             child: Container(
               child: GestureDetector(
                 onTap: () {
-                  PokerDialogBox.show(
-                    context,
-                    title: "Game Settings",
-                    content: StatefulBuilder(
-                        // You need this, notice the parameters below:
-                        builder: (BuildContext context, StateSetter setState) {
-                      return Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            NewGameSettings2.sepV20,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                    flex: 4,
-                                    child: LabelText(
-                                        label: 'Action time out',
-                                        theme: theme)),
-                                Flexible(
-                                  flex: 6,
-                                  child: Container(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        RadioToggleButtonsWidget<String>(
-                                          onSelect: (int index) {
-                                            // if (index == 0) {
-                                            //   gmp.chipUnit = ChipUnit.DOLLAR;
-                                            // } else {
-                                            //   gmp.chipUnit = ChipUnit.CENT;
-                                            // }
-                                          },
-                                          // defaultValue:
-                                          //     gmp.chipUnit == ChipUnit.DOLLAR
-                                          //         ? 0
-                                          //         : 1,
-                                          values: [
-                                            '10s',
-                                            '15s',
-                                            '20s',
-                                            '30s',
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            NewGameSettings2.sepV8,
-                            LabelText(label: 'Game Type', theme: theme),
-                            RadioListWidget<String>(
-                              defaultValue: 'PLO',
-                              wrap: true,
-                              values: [
-                                'NLH',
-                                'PLO',
-                                '5 Card PLO',
-                                '6 Card PLO',
-                                'ROE',
-                                'Dealers Choice',
-                              ],
-                              onSelect: (String value) {
-                                if (value == 'NLH') {
-                                  // gmp.settings.gameType = GameType.PLO;
-                                  gameType = GameType.HOLDEM.name;
-                                } else if (value == 'PLO') {
-                                  // gmp.settings.gameType = GameType.PLO_HILO;
-                                  gameType = GameType.PLO.name;
-                                } else if (value == '5 Card PLO') {
-                                  // gmp.settings.gameType = GameType.FIVE_CARD_PLO;
-                                  gameType = GameType.FIVE_CARD_PLO.name;
-                                } else if (value == '6 Card PLO') {
-                                  // gmp.settings.gameType = GameType.SIX_CARD_PLO;
-                                  gameType = GameType.SIX_CARD_PLO.name;
-                                } else if (value == 'ROE') {
-                                  // gmp.settings.gameType =
-                                  // GameType.SIX_CARD_PLO_HILO;
-                                  gameType = GameTypeEnum.GameType.ROE.name;
-                                } else if (value == 'Dealers Choice') {
-                                  // gmp.settings.gameType =
-                                  // GameType.SIX_CARD_PLO_HILO;
-                                  gameType =
-                                      GameTypeEnum.GameType.DEALER_CHOICE.name;
-                                }
-                                print(gameType + "shfsf");
-                                // determinePlayerCounts(gmp);
-                                setState(() {});
-
-                                print(gameType == GameType.PLO.name ||
-                                    gameType == GameType.FIVE_CARD_PLO.name ||
-                                    gameType == GameType.SIX_CARD_PLO.name);
-                              },
-                            ),
-                            /* sep */
-                            NewGameSettings2.sepV8,
-
-                            /* UTG straddle */
-                            (gameType == GameType.PLO.name ||
-                                    gameType == GameType.FIVE_CARD_PLO.name ||
-                                    gameType == GameType.SIX_CARD_PLO.name)
-                                ? _buildRadio(
-                                    label: "Hi-Lo",
-                                    // value: gmp.straddleAllowed,
-                                    value: false,
-                                    onChange: (bool b) {
-                                      // gmp.straddleAllowed = b;
-                                    },
-                                    theme: theme,
-                                  )
-                                : SizedBox.shrink(),
-                            /* tips */
-                            NewGameSettings2.sepV8,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                    flex: 3,
-                                    child:
-                                        LabelText(label: 'Tips', theme: theme)),
-                                Flexible(
-                                  flex: 7,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        flex: 3,
-                                        child: TextInputWidget(
-                                          // value: gmp.rakePercentage,
-                                          small: true,
-                                          //label: appScreenText['min'],
-                                          trailing: '%', //appScreenText['bb'],
-                                          title: appScreenText["tipsPercent"],
-                                          minValue: 0,
-                                          maxValue: 50,
-                                          // decimalAllowed:
-                                          //     gmp.chipUnit == ChipUnit.CENT,
-                                          // onChange: (value) {
-                                          //   gmp.rakePercentage = value;
-                                          // },
-                                        ),
-                                      ),
-                                      NewGameSettings2.sepH10,
-                                      Text('Cap:'),
-                                      NewGameSettings2.sepH10,
-                                      Flexible(
-                                        flex: 3,
-                                        child: TextInputWidget(
-                                          key: UniqueKey(),
-                                          // value: gmp.rakeCap,
-                                          small: true,
-                                          // decimalAllowed:
-                                          //     gmp.chipUnit == ChipUnit.CENT,
-                                          title: appScreenText['maxTips'],
-                                          trailing: '', // appScreenText['bb'],
-                                          minValue: 0,
-                                          maxValue: -1,
-                                          // onChange: (value) {
-                                          //   gmp.rakeCap = value;
-                                          // },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            (gameType == GameTypeEnum.GameType.ROE.name ||
-                                    gameType ==
-                                        GameTypeEnum
-                                            .GameType.DEALER_CHOICE.name)
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      LabelText(
-                                          label: 'Choose Games', theme: theme),
-                                      MultiGameSelection(
-                                        [
-                                          GameTypeEnum.GameType.HOLDEM,
-                                          GameTypeEnum.GameType.PLO,
-                                          GameTypeEnum.GameType.PLO_HILO,
-                                          GameTypeEnum.GameType.FIVE_CARD_PLO,
-                                          GameTypeEnum
-                                              .GameType.FIVE_CARD_PLO_HILO,
-                                          GameTypeEnum.GameType.SIX_CARD_PLO,
-                                          GameTypeEnum
-                                              .GameType.SIX_CARD_PLO_HILO,
-                                        ],
-                                        onSelect: (games) {
-                                          // if (widget.mainGameType == GameType.ROE) {
-                                          //   gmp.settings.roeGames.addAll(games);
-                                          // } else {
-                                          //   gmp.settings.dealerChoiceGames.addAll(games);
-                                          // }
-                                          // determinePlayerCounts(gmp);
-                                        },
-                                        onRemove: (game) {
-                                          // if (widget.mainGameType == GameType.ROE) {
-                                          //   gmp.settings.roeGames.remove(game);
-                                          // } else {
-                                          //   gmp.settings.dealerChoiceGames.remove(game);
-                                          // }
-                                          // determinePlayerCounts(gmp);
-                                        },
-                                        // existingChoices:
-                                        //     widget.gameState.currentHandGameType == GameType.ROE
-                                        //         ? gmp.settings.roeGames
-                                        //         : gmp.settings.dealerChoiceGames),
-                                      ),
-                                    ],
-                                  )
-                                : SizedBox.shrink(),
-                            NewGameSettings2.sepV20,
-                            ButtonWidget(
-                              text: 'Save',
-                              onTap: () {
-                                // if (gmp.buyInMax < gmp.buyInMin) {
-                                //   Alerts.showNotification(
-                                //     titleText:
-                                //         appScreenText['gameCreationFailed'],
-                                //     subTitleText:
-                                //         appScreenText['checkBuyinRange'],
-                                //     duration: Duration(seconds: 5),
-                                //   );
-                                //   return;
-                                // } else {
-                                //   Navigator.pop(context, gmp);
-                                // }
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  );
+                  showSettingsDialog(widget.gameState, theme);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -398,6 +161,245 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
           ),
         ],
       ),
+    );
+  }
+
+  void showSettingsDialog(GameState gameState, AppTheme theme) {
+    var actionTimeouts = [
+      '10s',
+      '15s',
+      '20s',
+      '30s',
+    ];
+
+    var gameTypes = [
+      'NLH',
+      'PLO',
+      '5 Card PLO',
+      '6 Card PLO',
+      'ROE',
+      "Dealer's Choice",
+    ];
+
+    List<GameType> selectedGames = [];
+    int actionTimeout = gameState.gameInfo.actionTime;
+    String actionTimeoutStr = '${actionTimeout}s';
+    int actionTimeoutIdx = actionTimeouts.indexOf(actionTimeoutStr);
+    if (actionTimeoutIdx == -1) {
+      actionTimeoutIdx = 2;
+    }
+
+    double rakeCap = gameState.gameInfo.tipsCap;
+    double rakePercentage = gameState.gameInfo.tipsPercentage;
+
+    bool hiLo = false;
+    GameType gameType =
+        GameTypeSerialization.fromJson(gameState.gameInfo.gameType);
+    String gameTypeStr = '';
+    if (gameType == GameType.PLO_HILO ||
+        gameType == GameType.FIVE_CARD_PLO_HILO ||
+        gameType == GameType.SIX_CARD_PLO_HILO) {
+      hiLo = true;
+    }
+
+    if (gameType == GameType.HOLDEM) {
+      gameTypeStr = 'NLH';
+    } else if (gameType == GameType.PLO || gameType == GameType.PLO_HILO) {
+      gameTypeStr = 'PLO';
+      gameType = GameType.PLO;
+    } else if (gameType == GameType.FIVE_CARD_PLO ||
+        gameType == GameType.FIVE_CARD_PLO_HILO) {
+      gameTypeStr = '5 Card PLO';
+      gameType = GameType.FIVE_CARD_PLO;
+    } else if (gameType == GameType.SIX_CARD_PLO ||
+        gameType == GameType.SIX_CARD_PLO_HILO) {
+      gameTypeStr = '6 Card PLO';
+      gameType = GameType.SIX_CARD_PLO;
+    } else if (gameType == GameType.DEALER_CHOICE) {
+      gameTypeStr = "Dealer's Choice";
+    } else if (gameType == GameType.ROE) {
+      gameTypeStr = "ROE";
+    }
+
+    PokerDialogBox.show(
+      context,
+      title: "Change Settings",
+      content: StatefulBuilder(
+          // You need this, notice the parameters below:
+          builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              NewGameSettings2.sepV20,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 4,
+                      child: LabelText(label: 'Action Timeout', theme: theme)),
+                  Flexible(
+                    flex: 6,
+                    child: Container(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          RadioToggleButtonsWidget<String>(
+                            onSelect: (int index) {},
+                            values: actionTimeouts,
+                            defaultValue: actionTimeoutIdx,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              NewGameSettings2.sepV8,
+              LabelText(label: 'Game Type', theme: theme),
+              RadioListWidget<String>(
+                defaultValue: gameTypeStr,
+                wrap: true,
+                values: gameTypes,
+                onSelect: (String value) {
+                  if (value == 'NLH') {
+                    gameType = GameType.HOLDEM;
+                  } else if (value == 'PLO') {
+                    gameType = GameType.PLO;
+                  } else if (value == '5 Card PLO') {
+                    gameType = GameType.FIVE_CARD_PLO;
+                  } else if (value == '6 Card PLO') {
+                    gameType = GameType.SIX_CARD_PLO;
+                  } else if (value == 'ROE') {
+                    gameType = GameType.ROE;
+                  } else if (value == 'Dealers Choice') {
+                    gameType = GameType.DEALER_CHOICE;
+                  }
+                  setState(() {});
+                },
+              ),
+              /* sep */
+              NewGameSettings2.sepV8,
+
+              /* Hi Lo*/
+              (gameType == GameType.PLO ||
+                      gameType == GameType.FIVE_CARD_PLO ||
+                      gameType == GameType.SIX_CARD_PLO)
+                  ? _buildRadio(
+                      label: "Hi-Lo",
+                      value: hiLo,
+                      onChange: (bool b) {
+                        hiLo = b;
+                      },
+                      theme: theme,
+                    )
+                  : SizedBox.shrink(),
+
+              /* tips */
+              NewGameSettings2.sepV8,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 3, child: LabelText(label: 'Tips', theme: theme)),
+                  Flexible(
+                    flex: 7,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          flex: 3,
+                          child: TextInputWidget(
+                            value: rakePercentage,
+                            small: true,
+                            trailing: '%', //appScreenText['bb'],
+                            title: appScreenText["tipsPercent"],
+                            minValue: 0,
+                            maxValue: 50,
+                            decimalAllowed:
+                                gameState.gameInfo.chipUnit == ChipUnit.CENT,
+                            onChange: (value) {
+                              rakePercentage = value;
+                            },
+                          ),
+                        ),
+                        NewGameSettings2.sepH10,
+                        Text('Cap:'),
+                        NewGameSettings2.sepH10,
+                        Flexible(
+                          flex: 3,
+                          child: TextInputWidget(
+                            key: UniqueKey(),
+                            value: rakeCap,
+                            small: true,
+                            decimalAllowed:
+                                gameState.gameInfo.chipUnit == ChipUnit.CENT,
+                            title: appScreenText['maxTips'],
+                            trailing: '', // appScreenText['bb'],
+                            minValue: 0,
+                            maxValue: -1,
+                            onChange: (value) {
+                              rakeCap = value;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              (gameType == GameType.ROE || gameType == GameType.DEALER_CHOICE)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelText(label: 'Choose Games', theme: theme),
+                        MultiGameSelection(
+                          [
+                            GameType.HOLDEM,
+                            GameType.PLO,
+                            GameType.PLO_HILO,
+                            GameType.FIVE_CARD_PLO,
+                            GameType.FIVE_CARD_PLO_HILO,
+                            GameType.SIX_CARD_PLO,
+                            GameType.SIX_CARD_PLO_HILO,
+                          ],
+                          onSelect: (games) {
+                            selectedGames.addAll(games);
+                          },
+                          onRemove: (game) {
+                            selectedGames.remove(game);
+                          },
+                        ),
+                      ],
+                    )
+                  : SizedBox.shrink(),
+              NewGameSettings2.sepV20,
+              ButtonWidget(
+                text: 'Change',
+                onTap: () async {
+                  GameSettings settings = GameSettings();
+                  settings.actionTime = actionTimeout;
+                  settings.rakeCap = rakeCap;
+                  settings.rakePercentage = rakePercentage;
+                  settings.gameType = gameType;
+                  if (gameType == GameType.ROE) {
+                    settings.roeGames = selectedGames;
+                  } else if (gameType == GameType.DEALER_CHOICE) {
+                    settings.dealerChoiceGames = selectedGames;
+                  }
+                  try {
+                    await GameSettingsService.updateGameSettings(
+                        gameState.gameCode, settings);
+                  } catch (err) {
+                    showAlertDialog(context, 'Error', 'Update failed');
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

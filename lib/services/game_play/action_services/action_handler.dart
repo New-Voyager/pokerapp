@@ -420,7 +420,7 @@ class PlayerActionHandler {
         int secondsTillTimeout = seatAction.secondsTillTimesout;
         final gameContextObject = _context.read<GameContextObject>();
 
-        return OverlayStraddle.showPrompt(
+        return OverlayRunItTwice.showPrompt(
           expiresAtInSeconds: secondsTillTimeout,
           gameState: _gameState,
           gameContextObject: gameContextObject,
