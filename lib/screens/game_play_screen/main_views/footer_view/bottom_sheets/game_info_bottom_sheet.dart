@@ -8,6 +8,7 @@ import 'package:pokerapp/screens/game_screens/game_info_screen.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/poker_dialog_box.dart';
@@ -119,21 +120,29 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
               ),
             ),
           ),
-          Positioned(
-            right: 70,
-            child: Container(
-              child: GestureDetector(
-                onTap: () {
-                  showSettingsDialog(widget.gameState, theme);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: theme.accentColor),
-                  padding: EdgeInsets.all(6),
-                  child: Icon(
-                    Icons.edit,
-                    size: 20,
-                    color: theme.primaryColorWithDark(),
+          Visibility(
+            visible: widget.gameState.isAdmin(),
+            child: Positioned(
+              right: 70,
+              child: Container(
+                child: GestureDetector(
+                  onTap: () {
+                    if (!widget.gameState.tableState.gamePaused) {
+                      showAlertDialog(context, 'Error',
+                          'Game should be paused to change settings');
+                      return;
+                    }
+                    showSettingsDialog(widget.gameState, theme);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: theme.accentColor),
+                    padding: EdgeInsets.all(6),
+                    child: Icon(
+                      Icons.edit,
+                      size: 20,
+                      color: theme.primaryColorWithDark(),
+                    ),
                   ),
                 ),
               ),
@@ -178,7 +187,7 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
       '5 Card PLO',
       '6 Card PLO',
       'ROE',
-      "Dealer's Choice",
+      // "Dealer's Choice",
     ];
 
     List<GameType> selectedGames = [];
@@ -220,6 +229,9 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
     } else if (gameType == GameType.ROE) {
       gameTypeStr = "ROE";
     }
+
+    selectedGames.add(GameType.PLO);
+    selectedGames.add(GameType.HOLDEM);
 
     PokerDialogBox.show(
       context,
@@ -365,7 +377,12 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
                             GameType.SIX_CARD_PLO_HILO,
                           ],
                           onSelect: (games) {
-                            selectedGames.addAll(games);
+                            for (var gameType in games) {
+                              if (selectedGames.indexOf(gameType) == -1) {
+                                selectedGames.add(gameType);
+                              }
+                            }
+                            //selectedGames.addAll(games);
                           },
                           onRemove: (game) {
                             selectedGames.remove(game);
@@ -382,16 +399,31 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
                   settings.actionTime = actionTimeout;
                   settings.rakeCap = rakeCap;
                   settings.rakePercentage = rakePercentage;
-                  settings.gameType = gameType;
                   if (gameType == GameType.ROE) {
                     settings.roeGames = selectedGames;
                   } else if (gameType == GameType.DEALER_CHOICE) {
                     settings.dealerChoiceGames = selectedGames;
                   }
+                  if (hiLo) {
+                    if (gameType == GameType.PLO) {
+                      gameType = GameType.PLO_HILO;
+                    } else if (gameType == GameType.FIVE_CARD_PLO) {
+                      gameType = GameType.FIVE_CARD_PLO_HILO;
+                    } else if (gameType == GameType.SIX_CARD_PLO) {
+                      gameType = GameType.SIX_CARD_PLO_HILO;
+                    }
+                  }
+                  final loadingDialog = LoadingDialog();
                   try {
+                    settings.gameType = gameType;
+                    loadingDialog.show(
+                        context: context, loadingText: 'Updating...');
                     await GameSettingsService.updateGameSettings(
                         gameState.gameCode, settings);
+                    loadingDialog.dismiss(context: context);
+                    Navigator.pop(context);
                   } catch (err) {
+                    loadingDialog.dismiss(context: context);
                     showAlertDialog(context, 'Error', 'Update failed');
                   }
                 },

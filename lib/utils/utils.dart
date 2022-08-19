@@ -362,7 +362,7 @@ class HelperUtils {
     if (gamesList != null) {
       String str = "(";
       for (var type in gamesList) {
-        str += "${gameTypeShortStr(gameTypeFromStr(type))}, ";
+        str += "${gameTypeShortStr(gameTypeFromStr(type.toString()))}, ";
       }
       str += ")";
       return "${str.replaceFirst(", )", ")")}";

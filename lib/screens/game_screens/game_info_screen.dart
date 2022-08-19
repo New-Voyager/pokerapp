@@ -113,7 +113,8 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
     tableItems.add(_buildOneRow(
         col1: appScreenText["showResult"],
         col2: _getYesNo(gameSettings?.showResult)));
-
+    String gameType = '${gameTypeStr2(gameTypeFromStr(gameInfo.gameType))}';
+    GameType gameTypeE = gameTypeFromStr(gameInfo.gameType);
     return Container(
       padding: EdgeInsets.all(16),
       decoration: AppDecorators.bgRadialGradient(theme),
@@ -123,7 +124,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
           : Column(
               children: [
                 Text(
-                  "${gameTypeStr(gameTypeFromStr(gameInfo.gameType))} ${DataFormatter.chipsFormat(gameInfo.smallBlind)}/${DataFormatter.chipsFormat(gameInfo.bigBlind)}",
+                  "$gameType ${DataFormatter.chipsFormat(gameInfo.smallBlind)}/${DataFormatter.chipsFormat(gameInfo.bigBlind)}",
                   style: AppDecorators.getHeadLine3Style(theme: theme),
                 ),
                 Row(
@@ -165,8 +166,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                               ),
                               AppDimensionsNew.getVerticalSizedBox(8),
                               Visibility(
-                                visible: gameTypeFromStr(gameInfo.gameType) ==
-                                    GameType.ROE,
+                                visible: gameTypeE == GameType.ROE,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -187,8 +187,7 @@ class _GameInfoScreenState extends State<GameInfoScreen> {
                                 ),
                               ),
                               Visibility(
-                                visible: gameTypeFromStr(gameInfo.gameType) ==
-                                    GameType.DEALER_CHOICE,
+                                visible: gameTypeE == GameType.DEALER_CHOICE,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

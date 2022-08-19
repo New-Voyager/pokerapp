@@ -61,8 +61,8 @@ class GameSettings {
   bool ipCheck;
   bool gpsCheck;
   bool showResult;
-  List roeGames;
-  List dealerChoiceGames;
+  List<GameType> roeGames;
+  List<GameType> dealerChoiceGames;
   bool dealerChoiceOrbit;
   int actionTime;
   GameType gameType;
@@ -72,6 +72,20 @@ class GameSettings {
   BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;
 
   factory GameSettings.fromJson(Map<String, dynamic> json) {
+    List<GameType> roeGames = [];
+    if (json['roeGames'] != null) {
+      for (var gameTypeStr in json["roeGames"]) {
+        GameType gameType = GameTypeSerialization.fromJson(gameTypeStr);
+        roeGames.add(gameType);
+      }
+    }
+    List<GameType> dealerChoiceGames = [];
+    if (json['dealerChoiceGames'] != null) {
+      for (var gameTypeStr in json["dealerChoiceGames"]) {
+        GameType gameType = GameTypeSerialization.fromJson(gameTypeStr);
+        dealerChoiceGames.add(gameType);
+      }
+    }
     final gameSettings = GameSettings(
       buyInApproval: json["buyInApproval"] ?? false,
       runItTwiceAllowed: json["runItTwiceAllowed"] ?? false,
@@ -96,8 +110,8 @@ class GameSettings {
       ipCheck: json["ipCheck"] ?? false,
       gpsCheck: json["gpsCheck"] ?? false,
       showResult: json["showResult"] ?? false,
-      roeGames: json["roeGames"] ?? [],
-      dealerChoiceGames: json["dealerChoiceGames"] ?? [],
+      roeGames: roeGames,
+      dealerChoiceGames: dealerChoiceGames,
       dealerChoiceOrbit: json["dealerChoiceOrbit"] ?? true,
     );
     if (json["buyInLimit"] != null) {
@@ -185,10 +199,16 @@ class GameSettings {
       ret["showResult"] = showResult;
     }
     if (roeGames != null) {
-      ret["roeGames"] = roeGames;
+      List<String> games = [];
+      for (GameType gameType in roeGames) {
+        String gameTypeStr = gameType.toJson();
+        games.add(gameTypeStr);
+      }
+      ret["roeGames"] = games;
     }
     if (dealerChoiceGames != null) {
-      ret["dealerChoiceGames"] = dealerChoiceGames;
+      ret["dealerChoiceGames"] =
+          dealerChoiceGames.map((x) => x.toJson()).toList();
     }
     if (dealerChoiceOrbit != null) {
       ret["dealerChoiceOrbit"] = dealerChoiceOrbit;
