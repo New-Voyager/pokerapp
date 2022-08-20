@@ -45,7 +45,7 @@ void main() async {
 
   //appState.currentFlavor = Flavor.DEV;
   appState.currentFlavor = Flavor.PROD;
-  appState.debugMode = true;
+  //appState.debugMode = true;
   if (Platform.isIOS) {
     PlatformUtils.isIOS = true;
   } else if (Platform.isAndroid) {

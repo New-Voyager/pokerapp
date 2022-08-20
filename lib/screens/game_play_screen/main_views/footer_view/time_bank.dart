@@ -9,7 +9,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-int minExtendTime = 10;
+int minExtendTime = 15;
 
 class TimeBankWidget extends StatefulWidget {
   final GameState gameState;

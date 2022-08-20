@@ -558,7 +558,7 @@ class OverlayRunItTwice extends StatelessWidget {
   }
 }
 
-class OverlayStraddle extends StatelessWidget {
+class OverlayStraddle extends StatefulWidget {
   static void showPrompt({
     @required GameState gameState,
     @required GameContextObject gameContextObject,
@@ -587,12 +587,18 @@ class OverlayStraddle extends StatelessWidget {
     @required this.expiresAtInSeconds,
   });
 
+  @override
+  State<OverlayStraddle> createState() => _OverlayStraddleState();
+}
+
+class _OverlayStraddleState extends State<OverlayStraddle> {
+  int straddleChoice = 1;
   void _handleButtonTaps({
     @required bool isYes,
     @required BuildContext context,
   }) {
-    gameState.straddlePrompt = false;
-    gameState.straddlePromptState.notify();
+    widget.gameState.straddlePrompt = false;
+    widget.gameState.straddlePromptState.notify();
     OverlaySupportEntry.of(context).dismiss();
     /* if we are in testing mode just return from this function */
     if (TestService.isTesting) {
@@ -600,23 +606,36 @@ class OverlayStraddle extends StatelessWidget {
       return;
     }
 
+    if (straddleChoice == 1) {
+      // prompt
+      widget.gameState.playerSettings.autoStraddle = false;
+      widget.gameState.playerLocalConfig.straddle = true;
+    } else if (straddleChoice == 0) {
+      // auto straddle
+      widget.gameState.playerSettings.autoStraddle = true;
+      widget.gameState.playerLocalConfig.straddle = true;
+    } else if (straddleChoice == 2) {
+      // straddle off
+      widget.gameState.playerSettings.autoStraddle = false;
+      widget.gameState.playerLocalConfig.straddle = false;
+    }
+
     if (isYes) {
       // straddle
       HandActionProtoService.takeAction(
-        gameContextObject: gameContextObject,
-        gameState: gameState,
+        gameContextObject: widget.gameContextObject,
+        gameState: widget.gameState,
         action: AppConstants.STRADDLE,
-        amount: 2.0 * gameState.gameInfo.bigBlind,
+        amount: 2.0 * widget.gameState.gameInfo.bigBlind,
       );
     } else {
       // don't straddle
-      gameState.showAction(true);
+      widget.gameState.showAction(true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.read<AppTheme>();
     return Container(
       margin: const EdgeInsets.only(
         bottom: 10.0,
@@ -632,17 +651,15 @@ class OverlayStraddle extends StatelessWidget {
                 FittedBox(
                   fit: BoxFit.fitWidth,
                   child: Countdown(
-                    seconds: expiresAtInSeconds,
+                    seconds: widget.expiresAtInSeconds,
                     onFinished: () {
                       OverlaySupportEntry.of(context).dismiss();
-                      // Navigator.pop(context);
                     },
                     build: (_, timeLeft) {
                       if (timeLeft == 0) {
                         // no straddle
                       }
                       return Text(
-                        //DataFormatter.timeFormatMMSS(timeLeft),
                         timeLeft.toInt().toString(),
                         style: TextStyle(color: Colors.red, fontSize: 13.dp),
                       );
@@ -693,61 +710,18 @@ class OverlayStraddle extends StatelessWidget {
                 ),
               ],
             ),
-
             RadioToggleButtonsWidget<String>(
               onSelect: (int index) {
-                // if (index == 0) {
-                //   gmp.chipUnit = ChipUnit.DOLLAR;
-                // } else {
-                //   gmp.chipUnit = ChipUnit.CENT;
-                // }
+                straddleChoice = index;
               },
               // defaultValue: gmp.chipUnit == ChipUnit.DOLLAR ? 0 : 1,
-              defaultValue: 0,
+              defaultValue: straddleChoice,
               values: [
                 'Auto Straddle',
                 'Ask Everytime',
                 'Straddle Off',
               ],
             ),
-            // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            //   RoundRectButton(
-            //     onTap: () {
-            //       gameState.straddlePrompt = false;
-            //       gameState.straddlePromptState.notify();
-            //       // straddle this hand and auto straddle
-            //       OverlaySupportEntry.of(context).dismiss();
-            //       gameState.playerSettings.autoStraddle = true;
-            //       gameState.playerLocalConfig.straddle = true;
-
-            //       HandActionProtoService.takeAction(
-            //         gameContextObject: gameContextObject,
-            //         gameState: gameState,
-            //         action: AppConstants.STRADDLE,
-            //         amount: 2.0 * gameState.gameInfo.bigBlind,
-            //       );
-            //     },
-            //     theme: theme,
-            //     text: 'Auto Straddle',
-            //     negative: true,
-            //   ),
-            //   RoundRectButton(
-            //     onTap: () {
-            //       // don't straddle
-            //       gameState.straddlePrompt = false;
-            //       gameState.straddlePromptState.notify();
-            //       OverlaySupportEntry.of(context).dismiss();
-            //       gameState.playerSettings.autoStraddle = false;
-            //       gameState.playerLocalConfig.straddle = false;
-
-            //       // don't straddle
-            //       gameState.showAction(true);
-            //     },
-            //     theme: theme,
-            //     text: 'Straddle Off',
-            //     negative: true,
-            //   ),
-            // ])
           ])),
     );
   }

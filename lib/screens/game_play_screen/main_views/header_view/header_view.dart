@@ -134,27 +134,6 @@ class HeaderView extends StatelessWidget {
         },
       ),
     );
-
-    // return Align(
-    //   alignment: Alignment.centerRight,
-    //   child: InkWell(
-    //     onTap: () => _onGameMenuNavButtonPress(context),
-    //     child: Container(
-    //       decoration: BoxDecoration(
-    //         shape: BoxShape.circle,
-    //         border: Border.all(
-    //           color: theme.secondaryColor,
-    //           width: 2,
-    //         ),
-    //       ),
-    //       // padding: EdgeInsets.all(5),
-    //       child: Icon(
-    //         iconData,
-    //         color: theme.secondaryColor,
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   @override
@@ -177,7 +156,8 @@ class HeaderView extends StatelessWidget {
                 // back button
                 BackArrowWidget(
                   onBackHandle: () {
-                    if (gameState.tableState.tableStatus != 'ENDED' &&
+                    if (gameState.tableState.gameStatus != 'ENDED' &&
+                        gameState.tableState.tableStatus != 'ENDED' &&
                         gameState.isPlaying) {
                       PokerDialogBox.show(
                         context,

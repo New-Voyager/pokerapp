@@ -33,23 +33,79 @@ class _Actions5WidgetState extends State<Actions5Widget> {
     super.dispose();
   }
 
+  Widget straddleWidget(AppTheme theme) {
+    if (widget.gameState.gameInfo.utgStraddleAllowed) {
+      int straddleChoice = 1;
+      if (!widget.gameState.playerSettings.autoStraddle &&
+          widget.gameState.playerLocalConfig.straddle) {
+        straddleChoice = 1;
+      } else if (widget.gameState.playerSettings.autoStraddle &&
+          widget.gameState.playerLocalConfig.straddle) {
+        straddleChoice = 0;
+      } else if (!widget.gameState.playerSettings.autoStraddle &&
+          !widget.gameState.playerLocalConfig.straddle) {
+        straddleChoice = 2;
+      }
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: SubTitleText(text: "Straddle Options", theme: theme),
+          ),
+          Center(
+              child: RadioToggleButtonsWidget<String>(
+            onSelect: (int index) {
+              straddleChoice = index;
+              if (straddleChoice == 1) {
+                // prompt
+                widget.gameState.playerSettings.autoStraddle = false;
+                widget.gameState.playerLocalConfig.straddle = true;
+              } else if (straddleChoice == 0) {
+                // auto straddle
+                widget.gameState.playerSettings.autoStraddle = true;
+                widget.gameState.playerLocalConfig.straddle = true;
+              } else if (straddleChoice == 2) {
+                // straddle off
+                widget.gameState.playerSettings.autoStraddle = false;
+                widget.gameState.playerLocalConfig.straddle = false;
+              }
+            },
+            defaultValue: straddleChoice,
+            values: [
+              'Auto\nStraddle',
+              'Ask\nEverytime',
+              'Straddle\nOff',
+            ],
+          )),
+          SizedBox(
+            height: 8,
+          ),
+        ],
+      );
+      // return MenuListTile(
+      //   switchable: true,
+      //   title: text['autoUTGStraddle'],
+      //   onSwitchChanged: (val) {},
+      // );
+    } else {
+      return SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    if (widget.gameState.gameInfo.utgStraddleAllowed) {
-      children.add(MenuListTile(
-        switchable: true,
-        title: text['autoUTGStraddle'],
-        onSwitchChanged: (val) {},
-      ));
-    }
+    AppTheme theme = AppTheme.getTheme(context);
+
+    children.add(straddleWidget(theme));
 
     final boardAttributes = widget.gameState.getBoardAttributes(context);
     int defaultValue = 0; // horizontal/landscape
     if (!boardAttributes.isOrientationHorizontal) {
       defaultValue = 1; // vertical/portrait
     }
-    AppTheme theme = AppTheme.getTheme(context);
     Widget layout = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
