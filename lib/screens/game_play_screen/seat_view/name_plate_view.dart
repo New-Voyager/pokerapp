@@ -268,7 +268,7 @@ class NamePlateWidget extends StatelessWidget {
     double opacity = 1.0;
 
     // seat.player.playerFolded = true;
-    if (seat.player.playerFolded) {
+    if (seat.player != null && seat.player.playerFolded) {
       opacity = 1.0;
     }
 

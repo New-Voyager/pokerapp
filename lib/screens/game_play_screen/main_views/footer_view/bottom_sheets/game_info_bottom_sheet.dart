@@ -6,10 +6,10 @@ import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/game_screens/game_info_screen.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/graphql/gamesettings_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
+import 'package:pokerapp/widgets/dialogs.dart';
 import 'package:pokerapp/widgets/multi_game_selection.dart';
 import 'package:pokerapp/widgets/poker_dialog_box.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
@@ -128,7 +128,7 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
                 child: GestureDetector(
                   onTap: () {
                     if (!widget.gameState.tableState.gamePaused) {
-                      showAlertDialog(context, 'Error',
+                      showErrorDialog(context, 'Change',
                           'Game should be paused to change settings');
                       return;
                     }
@@ -424,7 +424,7 @@ class _GameInfoBottomSheetState extends State<GameInfoBottomSheet> {
                     Navigator.pop(context);
                   } catch (err) {
                     loadingDialog.dismiss(context: context);
-                    showAlertDialog(context, 'Error', 'Update failed');
+                    showErrorDialog(context, 'Error', 'Update failed');
                   }
                 },
               ),
