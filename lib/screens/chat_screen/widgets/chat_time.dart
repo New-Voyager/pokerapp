@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import '../utils.dart';
 
@@ -23,7 +24,10 @@ class ChatTimeWidget extends StatelessWidget {
         padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
         child: Text(
           dateString(date),
-          style: AppDecorators.getSubtitle3Style(theme: theme),
+          style: AppDecorators.getSubtitle3Style(theme: theme).copyWith(
+            fontSize: 6.dp,
+            color: Colors.grey,
+          ),
         ),
       ),
     );

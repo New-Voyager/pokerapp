@@ -260,13 +260,14 @@ class Client {
           _info = Info.fromJson(jsonDecode(data));
           break;
         case 'ping':
+          log('Nats: ping from server [${DateTime.now().toString()}]');
           _add('pong');
           break;
         case '-err':
           _processErr(data);
           break;
         case 'pong':
-          log('Pause: [${DateTime.now().toString()}] PONG');
+          log('Nats: [${DateTime.now().toString()}] PONG');
           _pingCompleter.complete();
           break;
         case '+ok':
