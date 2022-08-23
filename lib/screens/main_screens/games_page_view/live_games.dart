@@ -33,12 +33,17 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/dialogs.dart';
+import 'package:pokerapp/widgets/poker_dialog_box.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/switch.dart';
 import 'package:pokerapp/widgets/textfields.dart';
 import 'package:pokerapp/widgets/texts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../enums/game_type.dart';
 import '../../../main_helper.dart';
 
 class LiveGamesScreen extends StatefulWidget {
@@ -848,29 +853,130 @@ class LiveGamesHelpText extends StatelessWidget {
     // );
   }
 
+  Widget _buildSeperator(AppTheme theme) => Container(
+        color: theme.fillInColor,
+        width: double.infinity,
+        height: 1.0,
+      );
+
+  Widget _buildRadio({
+    @required bool value,
+    @required String label,
+    @required void Function(bool v) onChange,
+    @required AppTheme theme,
+  }) =>
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          /* switch */
+          SwitchWidget2(
+            label: label,
+            value: value,
+            onChange: onChange,
+          ),
+
+          /* seperator */
+          _buildSeperator(theme),
+        ],
+      );
+
   void startDemoGame(BuildContext context) async {
-    final demoGame = NewGameModel.demoGame();
-    String gameCode = await GameService.configurePlayerGame(demoGame);
+    var theme = AppTheme.getTheme(context);
+    GameType gameType = GameType.HOLDEM;
 
-    if (gameCode == null) return;
+    var demoGame = NewGameModel.demoGame();
 
-    // wait for all the bots taken the seats
-    ConnectionDialog.show(context: context, loadingText: 'Starting demo game');
-    try {
-      while (true) {
-        final gameInfo = await GameService.getGameInfo(gameCode);
-        if (gameInfo.availableSeats.length == 1) {
-          break;
-        } else {
-          await Future.delayed(Duration(milliseconds: 500));
-        }
-      }
-    } catch (err) {}
-    ConnectionDialog.dismiss(context: context);
+    await PokerDialogBox.show(
+      context,
+      title: "Choose Game",
+      content: StatefulBuilder(
+          // You need this, notice the parameters below:
+          builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              NewGameSettings2.sepV20,
+              LabelText(label: 'Game Type', theme: theme),
+              RadioListWidget<String>(
+                defaultValue: 'PLO',
+                wrap: true,
+                values: ['NLH', 'PLO', '5 Card PLO', '6 Card PLO'],
+                onSelect: (String value) {
+                  if (value == 'NLH') {
+                    // gmp.settings.gameType = GameType.PLO;
+                    gameType = GameType.HOLDEM;
+                  } else if (value == 'PLO') {
+                    // gmp.settings.gameType = GameType.PLO_HILO;
+                    gameType = GameType.PLO;
+                  } else if (value == '5 Card PLO') {
+                    // gmp.settings.gameType = GameType.FIVE_CARD_PLO;
+                    gameType = GameType.FIVE_CARD_PLO;
+                  } else if (value == '6 Card PLO') {
+                    // gmp.settings.gameType = GameType.SIX_CARD_PLO;
+                    gameType = GameType.SIX_CARD_PLO;
+                  }
+                  // print(gameType + "shfsf");
+                  // determinePlayerCounts(gmp);
+                  setState(() {});
 
-    navigatorKey.currentState.pushNamed(
-      Routes.game_play,
-      arguments: gameCode,
+                  // print(gameType == GameType.PLO.name ||
+                  //     gameType == GameType.FIVE_CARD_PLO.name ||
+                  //     gameType == GameType.SIX_CARD_PLO.name);
+                },
+              ),
+              /* sep */
+              NewGameSettings2.sepV8,
+
+              /* UTG straddle */
+              _buildRadio(
+                label: "Double Board Bomb Pot",
+                value: demoGame.doubleBoardBombPot,
+                onChange: (bool b) {
+                  demoGame.doubleBoardBombPot = b;
+                },
+                theme: theme,
+              ),
+              /* tips */
+              NewGameSettings2.sepV8,
+              NewGameSettings2.sepV20,
+              ButtonWidget(
+                text: 'Go',
+                onTap: () async {
+                  Navigator.pop(context);
+                  demoGame.gameType = gameType;
+                  String gameCode =
+                      await GameService.configurePlayerGame(demoGame);
+
+                  if (gameCode == null) return;
+
+                  // wait for all the bots taken the seats
+                  ConnectionDialog.show(
+                      context: context, loadingText: 'Starting demo game');
+                  try {
+                    while (true) {
+                      final gameInfo = await GameService.getGameInfo(gameCode);
+                      if (gameInfo.availableSeats.length == 1) {
+                        break;
+                      } else {
+                        await Future.delayed(Duration(milliseconds: 500));
+                      }
+                    }
+                  } catch (err) {}
+                  ConnectionDialog.dismiss(context: context);
+
+                  navigatorKey.currentState.pushNamed(
+                    Routes.game_play,
+                    arguments: gameCode,
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
