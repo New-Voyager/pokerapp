@@ -936,6 +936,7 @@ class LiveGamesHelpText extends StatelessWidget {
                 value: demoGame.doubleBoardBombPot,
                 onChange: (bool b) {
                   demoGame.doubleBoardBombPot = b;
+                  demoGame.bombPotEnabled = b;
                 },
                 theme: theme,
               ),
