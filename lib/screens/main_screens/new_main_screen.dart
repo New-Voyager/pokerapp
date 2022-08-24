@@ -280,7 +280,7 @@ class _MainScreenState extends State<NewMainScreen>
         padding: EdgeInsets.all(4),
         child: SvgPicture.asset(
           icon,
-          color: selected ? Color(0xFFFFF4D1) : Color(0xFF979387),
+          color: selected ? Color(0xFF544523) : Color(0xFF979387),
         ),
       ),
     );

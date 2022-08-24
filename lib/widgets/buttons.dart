@@ -472,12 +472,12 @@ class ThemedCircleImageButton extends StatelessWidget {
         icon,
         size: imageWidth ?? 22,
         color: buttonColor,
-        shadows: [
-          BoxShadow(
-            blurRadius: 10.0,
-            color: Colors.black38,
-          ),
-        ],
+        // shadows: [
+        //   BoxShadow(
+        //     blurRadius: 10.0,
+        //     color: Colors.black38,
+        //   ),
+        // ],
       );
     }
 

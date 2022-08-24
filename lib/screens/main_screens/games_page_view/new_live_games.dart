@@ -657,39 +657,50 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             SizedBox(
               height: 8.ph,
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ThemedButton(
-                  height: 50.ph,
-                  width: MediaQuery.of(context).size.width / 3,
-                  onTap: () async {
-                    await hostGame();
-                  },
-                  style: appTheme.goldButton,
-                  text: 'HOST',
-                  fontSize: 18.0,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 5,
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: ThemedButton(
+                      height: 50.ph,
+                      onTap: () async {
+                        await hostGame();
+                      },
+                      style: appTheme.goldButton,
+                      text: 'HOST',
+                      fontSize: 18.0,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 5,
+                      ),
+                    ),
                   ),
-                ),
-                ThemedButton(
-                  height: 50.ph,
-                  width: MediaQuery.of(context).size.width / 3,
-                  onTap: () async {
-                    await joinGame(appTheme);
-                  },
-                  style: appTheme.goldButton,
-                  text: 'JOIN',
-                  fontSize: 18.0,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 5,
+                  SizedBox(
+                    width: 16.0,
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: ThemedButton(
+                      height: 50.ph,
+                      onTap: () async {
+                        await joinGame(appTheme);
+                      },
+                      style: appTheme.goldButton,
+                      text: 'JOIN',
+                      fontSize: 18.0,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             AppDimensionsNew.getVerticalSizedBox(110.ph),
           ]),

@@ -4,7 +4,7 @@ class ThemedButtonStyle {
   LinearGradient gradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFFE3CD89), Color(0xFF877950), Color(0xFF555145)],
+    colors: [Color(0xFFC9A13B), Color(0xFFEDCA70), Color(0xFF755605)],
     stops: [0, 0.6, 1],
   );
 
@@ -21,13 +21,13 @@ class ThemedButtonStyle {
   TextStyle textStyle = TextStyle(
     color: Color(0xFFFFF6DF),
     fontWeight: FontWeight.bold,
-    shadows: <Shadow>[
-      Shadow(
-        offset: Offset(0, 0),
-        blurRadius: 5.0,
-        color: Color.fromARGB(180, 0, 0, 0),
-      ),
-    ],
+    // shadows: <Shadow>[
+    //   Shadow(
+    //     offset: Offset(0, 0),
+    //     blurRadius: 5.0,
+    //     color: Color.fromARGB(180, 0, 0, 0),
+    //   ),
+    // ],
   );
 
   Color iconColor = Color(0xFFFFF6D7);
@@ -37,7 +37,7 @@ class GoldButtonStyle extends ThemedButtonStyle {
   LinearGradient gradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFFE3CD89), Color(0xFF877950), Color(0xFF555145)],
+    colors: [Color(0xFFC9A13B), Color(0xFFEDCA70), Color(0xFF755605)],
     stops: [0, 0.6, 1],
   );
 
@@ -52,8 +52,8 @@ class GoldButtonStyle extends ThemedButtonStyle {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFFFAF0D2),
-      Color(0xFF726746),
+      Color(0xFFC9A13B),
+      Color(0xFF755605),
     ],
     stops: [0, 1],
   );
@@ -69,18 +69,18 @@ class GoldButtonStyle extends ThemedButtonStyle {
   );
 
   TextStyle textStyle = TextStyle(
-    color: Color(0xFFFFF6DF),
+    color: Color(0xFF544523),
     fontWeight: FontWeight.bold,
-    shadows: <Shadow>[
-      Shadow(
-        offset: Offset(0, 0),
-        blurRadius: 5.0,
-        color: Color.fromARGB(180, 0, 0, 0),
-      ),
-    ],
+    // shadows: <Shadow>[
+    //   Shadow(
+    //     offset: Offset(0, 0),
+    //     blurRadius: 5.0,
+    //     color: Color.fromARGB(180, 0, 0, 0),
+    //   ),
+    // ],
   );
 
-  Color iconColor = Color(0xFFFFF6D7);
+  Color iconColor = Color(0xFF544523);
 }
 
 class GreenButtonStyle extends ThemedButtonStyle {

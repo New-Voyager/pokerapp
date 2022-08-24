@@ -33,7 +33,7 @@ class AppDecorators {
   static BoxDecoration bgImageGradient(AppTheme theme) => BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF084922),
+            Color(0xFF12320A),
             Color(0xFF121206),
           ],
           begin: Alignment.topCenter,
@@ -248,8 +248,8 @@ class AppDecorators {
     return OutlineGradient(
       gradient: LinearGradient(
         colors: [
-          Color(0x38FFF6DF),
-          Colors.transparent,
+          Color(0xFF755605),
+          Color(0xFFC9A13B),
         ],
         end: Alignment.topLeft,
         begin: Alignment.bottomRight,
@@ -264,7 +264,7 @@ class AppDecorators {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-      strokeWidth: 1,
+      strokeWidth: 1.5,
       radius: Radius.circular(12),
       child: child,
     );

@@ -53,8 +53,8 @@ class LiveGameItem extends StatelessWidget {
         child: OutlineGradient(
           gradient: LinearGradient(
             colors: [
-              Color(0x38FFF6DF),
-              Colors.transparent,
+              Color(0xFF755605),
+              Color(0xFFC9A13B),
             ],
             end: Alignment.topLeft,
             begin: Alignment.bottomRight,
@@ -67,7 +67,7 @@ class LiveGameItem extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          strokeWidth: 1,
+          strokeWidth: 1.5,
           radius: Radius.circular(12),
           child: Padding(
             padding: EdgeInsets.only(
