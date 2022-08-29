@@ -374,12 +374,17 @@ class _PlayersOnTableViewNewVerticalState
               NamePlateWidgetParent.namePlateSize.height / 3,
         );
       }
-
+      final chatBubbleHolder = ChatBubbleHolder(
+        chatMessageHolder: chatMessageHolder,
+        // overlayEntry: overlayEntry,
+        seatPos: seat.seatPos,
+      );
       final playerChatBubble = PlayerChatBubble(
         gameState: widget.gameState,
         gameComService: gameComService,
         seat: seat,
         chatMessageHolder: chatMessageHolder,
+        chatBubbleHolder: chatBubbleHolder,
       );
 
       final overlayEntry = OverlayEntry(
@@ -390,11 +395,7 @@ class _PlayersOnTableViewNewVerticalState
         ),
       );
 
-      final chatBubbleHolder = ChatBubbleHolder(
-        chatMessageHolder: chatMessageHolder,
-        overlayEntry: overlayEntry,
-        seatPos: seat.seatPos,
-      );
+      chatBubbleHolder.overlayEntry = overlayEntry;
 
       chatBubbleHolders.add(chatBubbleHolder);
     }

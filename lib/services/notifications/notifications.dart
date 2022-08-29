@@ -647,15 +647,21 @@ class NotificationHandler {
     String text = json['text'].toString();
     String clubName = json['clubName'].toString();
     String clubCode = json['clubCode'].toString();
-
+    dynamic message = jsonDecode(text);
+    double amount = double.parse(message['credits'].toString());
     // invalidate cache
     appState.cacheService
         .removePlayerActivitiesCache(clubCode, playerState.playerUuid);
     // toggle pending approvals
     Alerts.showNotification(
         titleText: 'Credits: ${clubName}',
-        subTitleText: text,
+        subTitleText: 'Credits updated: ${DataFormatter.chipsFormat(amount)}',
         duration: Duration(seconds: 5));
+    await appState.cacheService.getClubHomePageData(clubCode, update: true);
+
+    appState.clubUpdateState.updatedClubCode = clubCode;
+    appState.clubUpdateState.whatChanged = 'CREDIT';
+    appState.clubUpdateState.notify();
   }
 
   Future<void> handleNewGame(Map<String, dynamic> json) async {

@@ -26,7 +26,7 @@ class ChatTimeWidget extends StatelessWidget {
           dateString(date),
           style: AppDecorators.getSubtitle3Style(theme: theme).copyWith(
             fontSize: 6.dp,
-            color: Colors.grey,
+            color: Colors.grey[300],
           ),
         ),
       ),
