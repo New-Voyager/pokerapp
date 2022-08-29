@@ -98,10 +98,12 @@ class AppConfig {
   }
 
   static String get deviceId {
+    //return "07483297721753b87ccf38d75441c7370e906937";
     return _deviceId;
   }
 
   static String get deviceSecret {
+    //return "376d52a6-a1fd-42c9-a069-03efd063f386";
     return _deviceSecret;
   }
 

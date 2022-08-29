@@ -68,7 +68,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     }
   }
 
-  void listener() {
+  void listener() async {
     if (!mounted) return;
 
     final state = context.read<ClubsUpdateState>();
