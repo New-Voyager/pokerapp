@@ -21,7 +21,7 @@ class ChatTimeWidget extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+        padding: const EdgeInsets.only(left: 3, right: 3, bottom: 3),
         child: Text(
           dateString(date),
           style: AppDecorators.getSubtitle3Style(theme: theme).copyWith(

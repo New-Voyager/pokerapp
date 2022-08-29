@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:onboarding_overlay/onboarding_overlay.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
@@ -886,6 +887,7 @@ class LiveGamesHelpText extends StatelessWidget {
     GameType gameType = GameType.HOLDEM;
 
     var demoGame = NewGameModel.demoGame();
+    BuildContext mainScreenContext = context;
 
     await PokerDialogBox.show(
       context,
@@ -901,7 +903,7 @@ class LiveGamesHelpText extends StatelessWidget {
               NewGameSettings2.sepV20,
               LabelText(label: 'Game Type', theme: theme),
               RadioListWidget<String>(
-                defaultValue: 'PLO',
+                defaultValue: 'NLH',
                 wrap: true,
                 values: ['NLH', 'PLO', '5 Card PLO', '6 Card PLO'],
                 onSelect: (String value) {
@@ -937,6 +939,9 @@ class LiveGamesHelpText extends StatelessWidget {
                 onChange: (bool b) {
                   demoGame.doubleBoardBombPot = b;
                   demoGame.bombPotEnabled = b;
+                  demoGame.bombPotIntervalType =
+                      BombPotIntervalType.EVERY_X_HANDS;
+                  demoGame.bombPotHandInterval = 2;
                 },
                 theme: theme,
               ),
@@ -951,12 +956,15 @@ class LiveGamesHelpText extends StatelessWidget {
                   String gameCode =
                       await GameService.configurePlayerGame(demoGame);
 
-                  if (gameCode == null) return;
+                  if (gameCode == null) {
+                    return;
+                  }
 
                   // wait for all the bots taken the seats
-                  ConnectionDialog.show(
-                      context: context, loadingText: 'Starting demo game');
                   try {
+                    ConnectionDialog.show(
+                        context: mainScreenContext,
+                        loadingText: 'Starting demo game');
                     while (true) {
                       final gameInfo = await GameService.getGameInfo(gameCode);
                       if (gameInfo.availableSeats.length == 1) {
@@ -965,8 +973,10 @@ class LiveGamesHelpText extends StatelessWidget {
                         await Future.delayed(Duration(milliseconds: 500));
                       }
                     }
-                  } catch (err) {}
-                  ConnectionDialog.dismiss(context: context);
+                  } catch (err) {
+                    log('Demo game failed');
+                  }
+                  ConnectionDialog.dismiss(context: mainScreenContext);
 
                   navigatorKey.currentState.pushNamed(
                     Routes.game_play,

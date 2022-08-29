@@ -779,6 +779,11 @@ class HandActionProtoService {
     //log('Hand Message: ::handleBombPot:: START');
     if (_close) return;
     try {
+      Alerts.showNotification(
+        titleText: 'Bomb Pot',
+        duration: Duration(seconds: 3),
+      );
+
       final TableState tableState = _gameState.tableState;
       final handInfo = _gameState.handInfo;
       tableState.clear();
@@ -995,11 +1000,14 @@ class HandActionProtoService {
       GameType gameType = gameTypeFromStr(game);
       // String title = gameTypeStr(gameType);
       log("-=-= $gameType");
-      Alerts.showNotification(
-        titleText: gameTypeStr(gameType),
-        duration: Duration(seconds: 5),
-        imagePath: GameModel.getGameTypeImageAssetFromEnum(gameType),
-      );
+      if (_gameState.gameInfo.gameType == GameType.DEALER_CHOICE ||
+          _gameState.gameInfo.gameType == GameType.ROE) {
+        Alerts.showNotification(
+          titleText: gameTypeStr(gameType),
+          duration: Duration(seconds: 5),
+          imagePath: GameModel.getGameTypeImageAssetFromEnum(gameType),
+        );
+      }
     }
     //log('Hand Message: ::handleAnnouncement:: END');
   }

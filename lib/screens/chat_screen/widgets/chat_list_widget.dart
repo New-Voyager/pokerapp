@@ -177,7 +177,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
             maxWidth: MediaQuery.of(context).size.width * 0.70,
           ),
           padding: EdgeInsets.all(
-            message.messageType == MessageType.GIPHY ? 0 : 5.0,
+            message.messageType == MessageType.GIPHY ? 0 : 2.0,
           ),
           decoration: AppDecorators.tileDecorationWithoutBorder(theme).copyWith(
             color: isSender ? myColor : othersColor,
@@ -187,10 +187,10 @@ class _ChatListWidgetState extends State<ChatListWidget> {
                 isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(7.0),
+                padding: const EdgeInsets.all(3.0),
                 child: Text(
                   message.text,
-                  style: AppDecorators.getHeadLine4Style(theme: theme),
+                  style: AppDecorators.getHeadLine5Style(theme: theme),
                 ),
               ),
               ChatTimeWidget(

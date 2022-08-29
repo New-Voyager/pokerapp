@@ -46,16 +46,21 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
   final ValueNotifier<bool> _vnShowFavouriteMessages = ValueNotifier(false);
   final TextEditingController _textController = TextEditingController();
-  List<MessagesFromMember> messages = [];
+  List<MessagesFromMember> messages = null;
   AppTextScreen _appScreenText;
 
   Timer _timer;
 
   void _fetchAndUpdate() async {
     final messagesFromMembers = await _fetchData();
+    if (messages == null) {
+      messages = [];
+    }
 
     // if no new message just return
-    if (messagesFromMembers.length == messages.length) return;
+    if (messagesFromMembers.length == messages.length) {
+      return;
+    }
 
     dev.log('chat screen for host-member message: fetching');
 
@@ -110,17 +115,23 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   }
 
   Widget _buildBody(final bool isHostView) {
+    Widget messagesView;
+    if (messages == null) {
+      messagesView = LoadingWidget();
+    } else if (messages.isEmpty) {
+      messagesView = NoMessageWidget();
+    } else {
+      messagesView = ChatListWidget(
+        isHostView: isHostView,
+        chats: _convert(),
+        name: widget.name,
+      );
+    }
     return Column(
       children: [
         // chat list
         Expanded(
-          child: messages.isEmpty
-              ? NoMessageWidget()
-              : ChatListWidget(
-                  isHostView: isHostView,
-                  chats: _convert(),
-                  name: widget.name,
-                ),
+          child: messagesView,
         ),
 
         // player typing field
