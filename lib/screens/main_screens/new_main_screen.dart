@@ -217,6 +217,7 @@ class _MainScreenState extends State<NewMainScreen>
                   setState(() => _navPos = i);
                   appState.setIndex(i);
                 },
+                elevation: 0,
                 currentIndex: _navPos,
                 items: [
                   BottomNavigationBarItem(

@@ -471,14 +471,14 @@ class ThemedCircleImageButton extends StatelessWidget {
     } else if (svgAsset != null) {
       image = SvgPicture.asset(
         svgAsset,
-        width: imageWidth ?? 22,
-        height: imageHeight ?? 22,
+        width: imageWidth ?? 24,
+        height: imageHeight ?? 24,
         color: buttonColor,
       );
     } else if (icon != null) {
       image = DecoratedIcon(
         icon,
-        size: imageWidth ?? 22,
+        size: imageWidth ?? 24,
         color: buttonColor,
         // shadows: [
         //   BoxShadow(
@@ -496,7 +496,7 @@ class ThemedCircleImageButton extends StatelessWidget {
         this.onTap();
       },
       child: OutlineGradient(
-        child: SizedBox(width: 32, height: 32, child: Center(child: image)),
+        child: SizedBox(width: 36, height: 36, child: Center(child: image)),
         gradient: style.borderGradient,
         backgroundGradient: style.gradient,
         strokeWidth: 2,

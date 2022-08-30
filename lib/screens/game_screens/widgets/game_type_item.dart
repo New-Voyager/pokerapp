@@ -57,7 +57,6 @@ class GameTypeItem extends StatelessWidget {
                       AppAssetsNew.pathArrowImage,
                       height: 32,
                       width: 32,
-                      color: theme.orangeGradientColors[0],
                       fit: BoxFit.contain,
                     ),
                   ),
