@@ -23,6 +23,19 @@ class AppTheme extends ChangeNotifier {
 
   GoldButtonStyle goldButton = GoldButtonStyle();
   GreenButtonStyle greenButton = GreenButtonStyle();
+  BlueButtonStyle blueButton = BlueButtonStyle();
+  OrangeButtonStyle orangeButton = OrangeButtonStyle();
+
+  List<Color> blueGradientColors = [Color(0xFF69C2DE), Color(0xFF3D8AB6)];
+
+  List<Color> blueGradientStrokeColors = [Color(0xFFA3E9FF), Color(0xFF174D6B)];
+
+  List<Color> orangeGradientColors = [Color(0xFFFF8D4E), Color(0xFFA33A0E)];
+
+  List<Color> orangeGradientStrokeColors = [
+    Color(0xFFFFC2A0),
+    Color(0xFFA33A0E)
+  ];
 
   // function to update the theme data
   void updateThemeData(AppThemeData themeData) {

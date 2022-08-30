@@ -88,7 +88,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         _handleLoadGameClick(context, theme);
                       },
                       icon: Icons.open_in_browser_rounded,
-                      style: theme.goldButton,
+                      style: theme.orangeButton,
                     ),
                     /* HEADING */
                     Expanded(
@@ -101,7 +101,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                     ThemedCircleImageButton(
                       onTap: () => Navigator.of(context).pop(),
                       icon: Icons.close,
-                      style: theme.goldButton,
+                      style: theme.orangeButton,
                     ),
                     AppDimensionsNew.getHorizontalSpace(8),
                   ],

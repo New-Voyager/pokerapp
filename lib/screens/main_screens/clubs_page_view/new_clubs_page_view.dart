@@ -439,7 +439,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                     children: [
                       ThemedCircleImageButton(
                           // theme: theme,
-                          style: GoldButtonStyle(),
+                          style: theme.orangeButton,
                           icon: Icons.search,
                           onTap: () async {
                             // Alerts.showDailog(
@@ -486,7 +486,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                       //   focusNode: focusNodes[1],
                       // ),
                       ThemedCircleImageButton(
-                        style: GoldButtonStyle(),
+                        style: theme.orangeButton,
                         icon: Icons.add,
                         onTap: () {
                           _createClub(ctx);
@@ -578,7 +578,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
       //   ctx,
       //   theme,
       // ),
-      child: AppDecorators.gameItemWidget(
+      child: AppDecorators.generalListItemWidget(
         theme: theme,
         child: ClubItem(
           club: club,

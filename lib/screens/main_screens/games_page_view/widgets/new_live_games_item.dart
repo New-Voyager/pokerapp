@@ -50,25 +50,8 @@ class LiveGameItem extends StatelessWidget {
         constraints: BoxConstraints(
           minHeight: _minHeight,
         ),
-        child: OutlineGradient(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF755605),
-              Color(0xFFC9A13B),
-            ],
-            end: Alignment.topLeft,
-            begin: Alignment.bottomRight,
-          ),
-          backgroundGradient: LinearGradient(
-            colors: [
-              Color(0x75AE9E6B),
-              Color(0x239E926E),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          strokeWidth: 1.5,
-          radius: Radius.circular(12),
+        child: AppDecorators.generalListItemWidget(
+          theme: theme,
           child: Padding(
             padding: EdgeInsets.only(
               left: 16.pw,
@@ -308,7 +291,7 @@ class LiveGameItem extends StatelessWidget {
                         ? "${_appScreenText['join']}"
                         : "${_appScreenText['view']}",
                     onTap: onTapFunction,
-                    style: theme.goldButton,
+                    style: theme.blueButton,
                   ),
                 ),
               ],

@@ -237,16 +237,20 @@ class ThemedButton extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(20.0),
       child: Container(
+        constraints: BoxConstraints(
+          minHeight: height ?? 0,
+        ),
+
         // constraints:BoxConstraints
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4.pw),
+            borderRadius: BorderRadius.circular(8.pw),
             // border: Border.all(
             //     color: theme.roundedButtonBorderColor ??
             //         theme.roundedButtonBackgroundColor,
             //     width: 1.pw),
             // color: theme.roundedButtonBackgroundColor,
             gradient: style.borderGradient),
-        padding: EdgeInsets.all(2),
+        padding: EdgeInsets.all(3),
         child: Container(
           padding: padding ??
               EdgeInsets.symmetric(
@@ -254,9 +258,10 @@ class ThemedButton extends StatelessWidget {
                 vertical: 3.ph,
               ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2.pw),
+            borderRadius: BorderRadius.circular(5.pw),
             gradient: style.gradient,
           ),
+          alignment: height != null ? Alignment.center : null,
           child: icon != null
               ? Row(
                   children: [
@@ -290,6 +295,9 @@ class ThemedButton extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: style.textStyle.copyWith(
                         fontSize: fontSize,
+                        color: Color(
+                          0xFF292929,
+                        ),
                       ),
                     ),
         ),

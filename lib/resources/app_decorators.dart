@@ -33,8 +33,8 @@ class AppDecorators {
   static BoxDecoration bgImageGradient(AppTheme theme) => BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF12320A),
-            Color(0xFF121206),
+            Color(0xFF39444D),
+            Color(0xFF0E0E0E),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -238,6 +238,40 @@ class AppDecorators {
       //   ),
       //   fit: BoxFit.fitWidth,
       // ),
+    );
+  }
+
+  static Widget generalListItemWidget(
+      {@required AppTheme theme,
+      @required Widget child,
+      bool onlyStroke = false}) {
+    return Container(
+      // gradient: LinearGradient(
+      //   colors: [
+      //     Color(0xFF755605),
+      //     Color(0xFFC9A13B),
+      //   ],
+      //   end: Alignment.topLeft,
+      //   begin: Alignment.bottomRight,
+      // ),
+      // backgroundGradient: onlyStroke
+      //     ? null
+      //     : LinearGradient(
+      //         colors: [
+      //           Color(0x75AE9E6B),
+      //           Color(0x239E926E),
+      //         ],
+      //         begin: Alignment.topLeft,
+      //         end: Alignment.bottomRight,
+      //       ),
+      // strokeWidth: 1.5,
+      // radius: Radius.circular(12),
+      decoration: BoxDecoration(
+        color: Color(0xFF1C1A17),
+        border: Border.all(color: Color(0xFF7E7E7E), width: 1.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: child,
     );
   }
 

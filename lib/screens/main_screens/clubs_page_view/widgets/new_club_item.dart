@@ -49,10 +49,7 @@ class ClubItemView extends StatelessWidget {
                 strokeWidth: 2.0,
                 radius: Radius.circular(30.dp),
                 gradient: LinearGradient(
-                  colors: [
-                    Color(0xFFFFEEBA),
-                    Color(0xFF726746),
-                  ],
+                  colors: theme.orangeGradientColors,
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),

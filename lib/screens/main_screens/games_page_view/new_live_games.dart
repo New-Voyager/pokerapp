@@ -549,7 +549,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           child: BugsFeaturesWidget(),
                         );
                       },
-                      style: appTheme.goldButton),
+                      style: appTheme.orangeButton),
                   Expanded(
                     child: Column(
                       children: [
@@ -567,7 +567,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           Routes.game_records,
                         );
                       },
-                      style: appTheme.goldButton),
+                      style: appTheme.orangeButton),
                 ],
               ),
             ),
@@ -668,12 +668,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 children: [
                   Expanded(
                     child: ThemedButton(
-                      height: 50.ph,
+                      height: 55.ph,
                       onTap: () async {
-                        await hostGame();
+                        await joinGame(appTheme);
                       },
-                      style: appTheme.goldButton,
-                      text: 'HOST',
+                      style: appTheme.blueButton,
+                      text: 'JOIN',
                       fontSize: 18.0,
                       padding: EdgeInsets.symmetric(
                         horizontal: 30,
@@ -686,12 +686,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   ),
                   Expanded(
                     child: ThemedButton(
-                      height: 50.ph,
+                      height: 55.ph,
                       onTap: () async {
-                        await joinGame(appTheme);
+                        await hostGame();
                       },
-                      style: appTheme.goldButton,
-                      text: 'JOIN',
+                      style: appTheme.orangeButton,
+                      text: 'HOST',
                       fontSize: 18.0,
                       padding: EdgeInsets.symmetric(
                         horizontal: 30,
@@ -814,7 +814,7 @@ class LiveGamesHelpText extends StatelessWidget {
             startDemoGame(context);
           },
           text: 'Try It!', //_appScreenText["host"],
-          style: appTheme.goldButton,
+          style: appTheme.blueButton,
         ),
         SizedBox(height: 20),
       ],

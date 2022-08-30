@@ -265,22 +265,22 @@ class _MainScreenState extends State<NewMainScreen>
       margin: EdgeInsets.only(bottom: 4.0),
       decoration: BoxDecoration(
         gradient: selected
-            ? theme.goldButton.borderGradient
-            : theme.goldButton.disabledBorderGradient,
+            ? theme.blueButton.borderGradient
+            : theme.blueButton.disabledBorderGradient,
         borderRadius: BorderRadius.circular(23),
       ),
       padding: EdgeInsets.all(4.0),
       child: Container(
         decoration: BoxDecoration(
           gradient: selected
-              ? theme.goldButton.gradient
-              : theme.goldButton.disabledGradient,
+              ? theme.blueButton.gradient
+              : theme.blueButton.disabledGradient,
           borderRadius: BorderRadius.circular(19),
         ),
         padding: EdgeInsets.all(4),
         child: SvgPicture.asset(
           icon,
-          color: selected ? Color(0xFF544523) : Color(0xFF979387),
+          color: selected ? Color(0xFFFFFAEF) : Color(0xFF979387),
         ),
       ),
     );

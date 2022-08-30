@@ -23,6 +23,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/stats_service.dart';
 import 'package:pokerapp/services/data/hive_models/player_state.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/linear_gradient_mask.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/buttons.dart';
@@ -116,7 +117,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Color(0x50FFF6DF),
+                                                color: theme
+                                                    .orangeGradientStrokeColors[0],
                                                 spreadRadius: 2,
                                                 blurRadius: 10,
                                                 offset: Offset(0, 1),
@@ -127,7 +129,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           margin: EdgeInsets.symmetric(
                                               vertical: 16),
                                           child: CircleAvatar(
-                                            backgroundColor: Color(0x50D8BD77),
+                                            backgroundColor:
+                                                theme.orangeGradientColors[0],
                                             radius: 24.pw,
                                             child: Icon(
                                               Icons.person,
@@ -229,7 +232,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                   child: Column(
                                     children: [
                                       // Section 1
-                                      AppDecorators.gameItemWidget(
+                                      AppDecorators.generalListItemWidget(
                                         theme: theme,
                                         child: Padding(
                                           padding:
@@ -315,7 +318,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       AppDimensionsNew.getVerticalSizedBox(16),
 
                                       // Section 2
-                                      AppDecorators.gameItemWidget(
+                                      AppDecorators.generalListItemWidget(
                                         theme: theme,
                                         child: Padding(
                                           padding:
@@ -358,7 +361,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       AppDimensionsNew.getVerticalSizedBox(16),
 
                                       // Section 3
-                                      AppDecorators.gameItemWidget(
+                                      AppDecorators.generalListItemWidget(
                                         theme: theme,
                                         child: Padding(
                                           padding:
@@ -608,7 +611,10 @@ class ListTileItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            image,
+            LinearGradientMask(
+              child: image,
+              colors: theme.orangeGradientColors,
+            ),
             //  Icon(Icons.bookmarks),
             AppDimensionsNew.getHorizontalSpace(16),
             Expanded(

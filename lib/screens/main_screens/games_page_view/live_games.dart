@@ -577,7 +577,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                     onTap: () async {
                       await joinGame(appTheme);
                     },
-                    style: appTheme.goldButton,
+                    style: appTheme.blueButton,
                     text: 'Join', //_appScreenText['join'],
                     focusNode: focusNodes[1],
                   ),
@@ -595,7 +595,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                     );
                   },
                   text: 'Feedback', //_appScreenText["host"],
-                  style: appTheme.goldButton,
+                  style: appTheme.blueButton,
                 )),
             secondRow,
             // Align(
@@ -835,7 +835,7 @@ class LiveGamesHelpText extends StatelessWidget {
           startDemoGame(context);
         },
         text: 'Try It!', //_appScreenText["host"],
-        style: appTheme.goldButton,
+        style: appTheme.blueButton,
       ),
       SizedBox(height: 20),
     ]);

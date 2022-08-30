@@ -37,7 +37,7 @@ class GameTypeItem extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: AppDecorators.gameItemWidget(
+          child: AppDecorators.generalListItemWidget(
             onlyStroke: true,
             theme: theme,
             child: Container(
@@ -57,6 +57,7 @@ class GameTypeItem extends StatelessWidget {
                       AppAssetsNew.pathArrowImage,
                       height: 32,
                       width: 32,
+                      color: theme.orangeGradientColors[0],
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -68,7 +69,7 @@ class GameTypeItem extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: AppDecorators.gameItemWidget(
+          child: AppDecorators.generalListItemWidget(
             theme: theme,
             child: Container(
               // margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -96,8 +96,8 @@ class HeadingWidget extends StatelessWidget {
               // ),
             ]),
         gradient: LinearGradient(
-          colors: [Color(0xFFC9A13B), Color(0xFFEDCA70), Color(0xFF755605)],
-          stops: [0.2, 0.5, 0.75],
+          colors: [Color(0xFFFFFFFF), Color(0xFFCCCCCC)],
+          stops: [0.2, 1],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
