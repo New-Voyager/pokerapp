@@ -66,7 +66,7 @@ class Nameplate extends StatelessWidget {
         (seat.player.playerFolded || !seat.player.inhand)) {
       svg = svg.replaceAll("#D7D3C6", "#808080");
     }
-    log('svg: $svg');
+    // log('svg: $svg');
 
     return Transform.scale(
         scale: this.scale,

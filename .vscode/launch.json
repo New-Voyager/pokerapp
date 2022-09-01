@@ -13,7 +13,7 @@
         "--flavor",
         "dev"
       ]
-    }, 
+    },
     {
       "name": "web-pokerapp",
       "request": "launch",
@@ -25,6 +25,6 @@
         "--flavor",
         "dev"
       ]
-    }, 
+    },
   ]
 }

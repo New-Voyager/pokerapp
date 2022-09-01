@@ -91,6 +91,7 @@ class Nats {
     String natsUrl = await UtilService.getNatsURL();
     // instantiate new clients
     _clientSub = Client();
+    _clientSub.pingServer = true;
     _clientPub = Client();
 
     _playerChannel = playerChannel;

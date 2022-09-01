@@ -31,6 +31,7 @@ class FooterGameActionView extends StatefulWidget {
 class _FooterGameActionViewState extends State<FooterGameActionView> {
   final vnGameStatus = ValueNotifier<String>(null);
   final vnTableStatus = ValueNotifier<String>(null);
+  final vnPlayerStatus = ValueNotifier<String>(null);
   TableState get tableState => widget.gameState.tableState;
   AppTextScreen _appScreenText;
 
@@ -39,16 +40,22 @@ class _FooterGameActionViewState extends State<FooterGameActionView> {
     vnTableStatus.value = widget.gameState.tableState.tableStatus;
   }
 
+  void playerStateListener() {
+    vnPlayerStatus.value = widget.gameState.me.status;
+  }
+
   @override
   void initState() {
     super.initState();
     _appScreenText = getAppTextScreen("centerView");
     tableState.addListener(tableStateListener);
+    widget.gameState.myState.addListener(playerStateListener);
   }
 
   @override
   void dispose() {
     tableState.removeListener(tableStateListener);
+    widget.gameState.myState.removeListener(playerStateListener);
     super.dispose();
   }
 
@@ -71,49 +78,97 @@ class _FooterGameActionViewState extends State<FooterGameActionView> {
   Widget build(BuildContext context) {
     return Consumer<TableState>(
         builder: (_, TableState tableState, __) =>
-            ValueListenableBuilder2<String, String>(vnGameStatus, vnTableStatus,
-                builder: (_, gameStatus, tableStatus, __) {
-              if (!widget.gameState.isHost()) {
-                return SizedBox.shrink();
-              }
-              // if table is running, don't show the buttons
-              if (widget.gameState.tableState.gameStatus !=
-                      AppConstants.GAME_CONFIGURED ||
-                  widget.gameState.gameInfo.demoGame) {
-                return SizedBox.shrink();
-              }
+            ValueListenableBuilder3<String, String, String>(
+                vnGameStatus, vnTableStatus, vnPlayerStatus,
+                builder: (_, gameStatus, tableStatus, playerStatus, __) {
+              Widget ret = SizedBox.shrink();
               AppTheme appTheme = AppTheme.getTheme(context);
               List<Widget> actionButtons = [];
-              actionButtons.add(GameActionButton(
-                  theme: appTheme,
-                  onTap: () async {
-                    await startGame(context);
-                  },
-                  text: ' Start ',
-                  btnColor: Colors.green,
-                  icon: Icons.play_arrow));
-              actionButtons.add(GameActionButton(
-                  theme: appTheme,
-                  onTap: () {},
-                  text: ' End ',
-                  btnColor: Color.fromARGB(255, 208, 91, 83),
-                  icon: Icons.close));
-              // actionButtons.add(GameActionButton(
-              //     theme: appTheme,
-              //     onTap: () {},
-              //     text: ' Shuffle ',
-              //     btnColor: Colors.blueGrey,
-              //     icon: Icons.shuffle));
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: actionButtons,
-                  ),
-                ],
-              );
+              bool showGameStartButtons = false;
+              bool showGamePauseButtons = false;
+              bool buyInButtons = false;
+              if (widget.gameState.isHost()) {
+                // if host or owner, show start/end buttons if the game is just configured
+                if (widget.gameState.tableState.gameStatus ==
+                        AppConstants.GAME_CONFIGURED &&
+                    !widget.gameState.gameInfo.demoGame) {
+                  showGameStartButtons = true;
+                }
+              }
+              if ((widget.gameState.isHost() ||
+                      widget.gameState.currentPlayer.isOwner()) &&
+                  widget.gameState.tableState.gameStatus ==
+                      AppConstants.GAME_PAUSED) {
+                showGamePauseButtons = false;
+              }
+
+              if (playerStatus == AppConstants.WAIT_FOR_BUYIN) {
+                buyInButtons = false;
+              }
+
+              if (showGameStartButtons) {
+                actionButtons.add(GameActionButton(
+                    theme: appTheme,
+                    onTap: () async {
+                      await startGame(context);
+                    },
+                    text: ' Start ',
+                    btnColor: Colors.green,
+                    icon: Icons.play_arrow));
+                actionButtons.add(GameActionButton(
+                    theme: appTheme,
+                    onTap: () {},
+                    text: ' End ',
+                    btnColor: Color.fromARGB(255, 208, 91, 83),
+                    icon: Icons.close));
+              }
+
+              if (showGamePauseButtons) {
+                actionButtons.add(GameActionButton(
+                    theme: appTheme,
+                    onTap: () async {
+                      await startGame(context);
+                    },
+                    text: ' Resume ',
+                    btnColor: Colors.green,
+                    icon: Icons.play_arrow));
+                actionButtons.add(GameActionButton(
+                    theme: appTheme,
+                    onTap: () {},
+                    text: ' Rearrange\n Seats ',
+                    btnColor: Color.fromARGB(255, 208, 91, 83),
+                    icon: Icons.close));
+                actionButtons.add(GameActionButton(
+                    theme: appTheme,
+                    onTap: () {},
+                    text: ' End \n Game ',
+                    btnColor: Color.fromARGB(255, 208, 91, 83),
+                    icon: Icons.close));
+              }
+              if (buyInButtons) {
+                actionButtons.add(GameActionButton(
+                    theme: appTheme,
+                    onTap: () async {
+                      await startGame(context);
+                    },
+                    text: ' Buyin ',
+                    btnColor: Colors.green,
+                    icon: Icons.play_arrow));
+              }
+
+              if (actionButtons.isNotEmpty) {
+                ret = Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: actionButtons,
+                    ),
+                  ],
+                );
+              }
+              return ret;
               //return Container(child: Text(tableState.gameStatus.toString()));
             }));
 
