@@ -131,6 +131,12 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 
+  Future<void> onRefresh(BuildContext context) async {
+    // refresh the game screen
+    Navigator.of(context).pop();
+    widget.gameState.refreshGameState.refreshGame();
+  }
+
   Future<void> onPlayerStatsBottomSheet(BuildContext context) async {
     showBottomSheet(
       context: context,
@@ -173,7 +179,35 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   List<Widget> getMenuItems(AppTheme theme) {
+    bool showResult = widget.gameState.gameSettings.showResult;
+    if (widget.gameState.isHost()) {
+      showResult = true;
+    }
     return [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleImageButton(
+            theme: theme,
+            //caption: 'Prev',
+            icon: Icons.refresh,
+            onTap: () {
+              onRefresh(context);
+            },
+          ),
+          InkWell(
+            onTap: () {
+              onRefresh(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text("Refresh",
+                  style: AppDecorators.getSubtitle1Style(theme: theme)),
+            ),
+          ),
+        ],
+      ),
       Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -199,6 +233,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           ),
         ],
       ),
+
       // game history
       Row(
         mainAxisSize: MainAxisSize.min,
@@ -252,9 +287,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           : SizedBox.shrink(),
 
       // bomb pot
-      !widget.gameState.currentPlayer.isHost()
-          ? SizedBox.shrink()
-          : Row(
+      (widget.gameState.currentPlayer.isHost() ||
+              widget.gameState.currentPlayer.isOwner())
+          ? Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -282,7 +317,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   ),
                 ),
               ],
-            ),
+            )
+          : SizedBox.shrink(),
 
       // game info
       Row(
@@ -309,7 +345,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         ],
       ),
 
-      widget.gameState.gameSettings.showResult ?? false
+      showResult ?? false
           ?
           // result table
           Row(

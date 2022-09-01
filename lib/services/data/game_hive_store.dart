@@ -47,7 +47,7 @@ if (now - lastHandTime) > 10*60 {
 */
 
 //int kDefaultDiamonds = 5;
-int kDefaultTimebankSecs = 10;
+int kDefaultTimebankSecs = 15;
 
 class GameHiveStore {
   Box _gameBox;
@@ -109,11 +109,14 @@ class GameHiveStore {
 
   Future<bool> deductTimebank({int num = 10}) async {
     int availableTime = getTimeBankTime();
-    if (availableTime < num) return false;
-
-    await _addTimeToTimeBank(-num);
-    if (getTimeBankTime() > AppConstants.maxTimeBankSecs) {
-      _gameBox.put(_TIMEBANK, AppConstants.maxTimeBankSecs - num);
+    if (availableTime < num) {
+      _gameBox.put(_TIMEBANK, 0);
+      return true;
+    } else {
+      await _addTimeToTimeBank(-num);
+      if (getTimeBankTime() > AppConstants.maxTimeBankSecs) {
+        _gameBox.put(_TIMEBANK, AppConstants.maxTimeBankSecs - num);
+      }
     }
     return true;
   }
@@ -128,7 +131,7 @@ class GameHiveStore {
     // }
     final timebank = box.get(_TIMEBANK, defaultValue: null) as int;
     if (timebank == null) {
-      _gameBox.put(_TIMEBANK, 20);
+      _gameBox.put(_TIMEBANK, 60);
     }
   }
 
@@ -136,10 +139,6 @@ class GameHiveStore {
   static const _LASTHAND_TIME = 'lasthand_time';
   void handEnded() async {
     try {
-      // if (getTimeBankTime() < AppConstants.maxTimeBankSecs) {
-      //   _addTimeToTimeBank(kDefaultTimebankSecs);
-      // }
-
       // a hand ended
       final String lastHandTimeStr = _gameBox.get(_LASTHAND_TIME);
 
@@ -166,16 +165,6 @@ class GameHiveStore {
       // final DateTime lastDiamondTime = DateTime.parse(lastDiamondTimeStr);
       final String lastTimebankTimeStr = _gameBox.get(_TIMEBANK_UPDATE);
       final DateTime lastTimebankTime = DateTime.parse(lastTimebankTimeStr);
-
-      // final diffSinceLastDiamond = now.difference(lastDiamondTime).inSeconds;
-      // if (diffSinceLastDiamond >=
-      //     AppConstants.diamondUpdateDuration.inSeconds) {
-      //   // the player earned new diamonds
-      //   if (getDiamonds() < AppConstants.maxDiamondNumber) {
-      //     _addDiamonds(kDefaultDiamonds);
-      //   }
-      // _gameBox.put(_DIAMONDS_UPDATE, now.toIso8601String());
-      // }
 
       final diffSinceLastTimebank = now.difference(lastTimebankTime).inSeconds;
       if (diffSinceLastTimebank >=

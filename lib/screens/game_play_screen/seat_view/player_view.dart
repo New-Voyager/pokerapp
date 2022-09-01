@@ -319,6 +319,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     bool isMe = widget.seat.isMe;
     bool showdown = gameState.showdown;
     log('Build: SeatView: ${widget.seat.seatPos}');
+    final boardAttributes = gameState.getBoardAttributes(context);
 
     // if open seat, just show open seat widget
     if (openSeat) {
@@ -330,15 +331,36 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         }
       }
 
-      final openSeatWidget = OpenSeat(
-        seat: widget.seat,
-        onUserTap: this.widget.onUserTap,
-        seatChangeInProgress: gameState.hostSeatChangeInProgress,
-        seatChangeSeat: seatChangeSeat,
-      );
+      double left = 0;
+      if (widget.seat.seatPos == SeatPos.middleRight ||
+          widget.seat.seatPos == SeatPos.bottomLeft ||
+          widget.seat.seatPos == SeatPos.bottomRight ||
+          widget.seat.seatPos == SeatPos.bottomCenter) {
+        left = NamePlateWidgetParent.namePlateSize.width / 3;
+      } else if (widget.seat.seatPos == SeatPos.topLeft ||
+          widget.seat.seatPos == SeatPos.topRight ||
+          widget.seat.seatPos == SeatPos.topCenter ||
+          widget.seat.seatPos == SeatPos.topCenter1 ||
+          widget.seat.seatPos == SeatPos.topCenter2) {
+        left = NamePlateWidgetParent.namePlateSize.width / 4;
+      }
+
+      final openSeatWidget = Positioned(
+          left: left,
+          top: 0,
+          child: OpenSeat(
+            seat: widget.seat,
+            onUserTap: this.widget.onUserTap,
+            seatChangeInProgress: gameState.hostSeatChangeInProgress,
+            seatChangeSeat: seatChangeSeat,
+          ));
 
       List<Widget> children = [];
-
+      children.add(Container(
+        color: Colors.transparent,
+        width: NamePlateWidgetParent.namePlateSize.width,
+        height: NamePlateWidgetParent.namePlateSize.height,
+      ));
       if (widget.seat.dealer) {
         children.add(
           // dealer button
@@ -398,7 +420,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     Size fireworksContainer = Size(50, 50);
     double fireworksScale = 1.5;
 
-    final boardAttributes = gameState.getBoardAttributes(context);
     widget.seat.betWidgetUIKey = GlobalKey();
 
     bool animate = widget.seat.player.action.animateAction;

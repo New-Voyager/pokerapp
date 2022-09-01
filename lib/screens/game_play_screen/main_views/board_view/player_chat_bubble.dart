@@ -14,6 +14,8 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 
+import 'chat_bubble_holder.class.dart';
+
 const kTextLengthLimit = 30;
 
 class PlayerChatBubble extends StatefulWidget {
@@ -21,12 +23,14 @@ class PlayerChatBubble extends StatefulWidget {
   final GameState gameState;
   final Seat seat;
   final ValueNotifier<ChatMessage> chatMessageHolder;
+  final ChatBubbleHolder chatBubbleHolder;
 
   PlayerChatBubble({
     @required this.gameState,
     @required this.gameComService,
     @required this.seat,
     @required this.chatMessageHolder,
+    @required this.chatBubbleHolder,
     Key key,
   }) : super(key: key);
 
@@ -44,6 +48,7 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
   @override
   void initState() {
     super.initState();
+    widget.chatBubbleHolder.overlayRemoved = false;
     theme = AppTheme.getTheme(context);
   }
 
@@ -80,12 +85,26 @@ class _PlayerChatBubbleState extends State<PlayerChatBubble> {
 
   void _onTap() {
     log('player_chat_bubble :: InkWell');
+    bool closeBubble = false;
 
+    if (widget.chatBubbleHolder.chatMessageHolder != null &&
+        widget.chatBubbleHolder.chatMessageHolder.value.text != null &&
+        widget.chatBubbleHolder.chatMessageHolder.value.text.length > 0) {
+      closeBubble = true;
+    }
     if (gifScale == 1.0) {
       setState(() => gifScale = 4.0);
       // todo: increment the time
     } else {
       // todo: cancel
+      closeBubble = true;
+    }
+
+    if (closeBubble) {
+      if (widget.chatBubbleHolder.overlayEntry != null) {
+        widget.chatBubbleHolder.overlayEntry.remove();
+        widget.chatBubbleHolder.overlayRemoved = true;
+      }
     }
   }
 

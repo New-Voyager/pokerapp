@@ -943,7 +943,7 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                                               '1',
                                               '.01',
                                             ],
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ),

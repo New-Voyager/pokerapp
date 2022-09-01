@@ -123,17 +123,6 @@ class _MessagesPageViewState extends State<MessagesPageView>
         onGifSelect: (String gifUrl) => _sendGif(gifUrl),
       ),
     );
-
-    // await showModalBottomSheet(
-    //   context: context,
-    //   isScrollControlled: true,
-    //   builder: (_) => GifWidget(
-    //     showPresets: false,
-    //     onPresetTextSelect: (String pText) => {},
-    //     onGifSelect: (String gifUrl) => _sendGif(gifUrl),
-    //     gifSuggestions: AppConstants.GIF_CATEGORIES_CLUB,
-    //   ),
-    // );
   }
 
   _fetchMembers() async {
@@ -212,7 +201,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                       return ListView.separated(
                         physics: BouncingScrollPhysics(),
                         reverse: true,
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(3),
                         itemBuilder: (_, int index) {
                           return MessageItem(
                             messageModel: mess[index],
@@ -221,7 +210,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                           );
                         },
                         separatorBuilder: (_, __) => const SizedBox(
-                          height: 5.0,
+                          height: 3.0,
                         ),
                         itemCount: mess.length,
                       );

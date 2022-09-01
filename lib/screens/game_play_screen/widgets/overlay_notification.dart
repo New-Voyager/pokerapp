@@ -19,6 +19,7 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/buttons.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -553,6 +554,175 @@ class OverlayRunItTwice extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class OverlayStraddle extends StatefulWidget {
+  static void showPrompt({
+    @required GameState gameState,
+    @required GameContextObject gameContextObject,
+    @required final int expiresAtInSeconds,
+    @required final BuildContext context,
+  }) {
+    showOverlayNotification(
+      (context) => OverlayStraddle(
+        expiresAtInSeconds: expiresAtInSeconds,
+        gameContextObject: gameContextObject,
+        gameState: gameState,
+      ),
+      duration: Duration(seconds: expiresAtInSeconds),
+      context: context,
+      position: NotificationPosition.bottom,
+    );
+  }
+
+  final int expiresAtInSeconds;
+  final GameState gameState;
+  final GameContextObject gameContextObject;
+
+  const OverlayStraddle({
+    @required this.gameState,
+    @required this.gameContextObject,
+    @required this.expiresAtInSeconds,
+  });
+
+  @override
+  State<OverlayStraddle> createState() => _OverlayStraddleState();
+}
+
+class _OverlayStraddleState extends State<OverlayStraddle> {
+  int straddleChoice = 1;
+  void _handleButtonTaps({
+    @required bool isYes,
+    @required BuildContext context,
+  }) {
+    widget.gameState.straddlePrompt = false;
+    widget.gameState.straddlePromptState.notify();
+    OverlaySupportEntry.of(context).dismiss();
+    /* if we are in testing mode just return from this function */
+    if (TestService.isTesting) {
+      // dismiss the prompt
+      return;
+    }
+
+    if (straddleChoice == 1) {
+      // prompt
+      widget.gameState.playerSettings.autoStraddle = false;
+      widget.gameState.playerLocalConfig.straddle = true;
+    } else if (straddleChoice == 0) {
+      // auto straddle
+      widget.gameState.playerSettings.autoStraddle = true;
+      widget.gameState.playerLocalConfig.straddle = true;
+    } else if (straddleChoice == 2) {
+      // straddle off
+      widget.gameState.playerSettings.autoStraddle = false;
+      widget.gameState.playerLocalConfig.straddle = false;
+    }
+
+    if (isYes) {
+      // straddle
+      HandActionProtoService.takeAction(
+        gameContextObject: widget.gameContextObject,
+        gameState: widget.gameState,
+        action: AppConstants.STRADDLE,
+        amount: 2.0 * widget.gameState.gameInfo.bigBlind,
+      );
+    } else {
+      // don't straddle
+      widget.gameState.showAction(true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 10.0,
+        left: 5.0,
+        right: 5.0,
+      ),
+      child: ParentOverlayNotificationWidget(
+          isDismissible: false,
+          child: Column(children: [
+            Row(
+              children: [
+                // count down timer
+                FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Countdown(
+                    seconds: widget.expiresAtInSeconds,
+                    onFinished: () {
+                      OverlaySupportEntry.of(context).dismiss();
+                    },
+                    build: (_, timeLeft) {
+                      if (timeLeft == 0) {
+                        // no straddle
+                      }
+                      return Text(
+                        timeLeft.toInt().toString(),
+                        style: TextStyle(color: Colors.red, fontSize: 13.dp),
+                      );
+                    },
+                  ),
+                ),
+
+                // run it twice text
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    'Straddle?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13.dp),
+                  ),
+                ),
+
+                // finally yes / no buttons
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    /* true button */
+                    IconButton(
+                      iconSize: 35.0,
+                      icon: Icon(
+                        Icons.check_circle_outline_sharp,
+                        color: Colors.green,
+                      ),
+                      onPressed: () {
+                        _handleButtonTaps(isYes: true, context: context);
+                      },
+                    ),
+
+                    /* no button */
+                    IconButton(
+                      iconSize: 35.0,
+                      icon: Icon(
+                        Icons.cancel_rounded,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        _handleButtonTaps(isYes: false, context: context);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            RadioToggleButtonsWidget<String>(
+              onSelect: (int index) {
+                straddleChoice = index;
+              },
+              // defaultValue: gmp.chipUnit == ChipUnit.DOLLAR ? 0 : 1,
+              defaultValue: straddleChoice,
+              values: [
+                'Auto Straddle',
+                'Ask Everytime',
+                'Straddle Off',
+              ],
+            ),
+          ])),
     );
   }
 }

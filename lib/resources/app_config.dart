@@ -42,7 +42,7 @@ class AppConfig {
 
       // _apiUrl = 'http://192.168.0.103:9501';
     }
-    // _apiUrl = 'http://192.168.40.84:9501';
+    // _apiUrl = 'http://192.168.86.86:9501';
     String deviceId = sharedPreferences.getString(AppConstants.DEVICE_ID);
     String deviceSecret =
         sharedPreferences.getString(AppConstants.DEVICE_SECRET);
@@ -98,10 +98,12 @@ class AppConfig {
   }
 
   static String get deviceId {
+    //return "07483297721753b87ccf38d75441c7370e906937";
     return _deviceId;
   }
 
   static String get deviceSecret {
+    //return "376d52a6-a1fd-42c9-a069-03efd063f386";
     return _deviceSecret;
   }
 

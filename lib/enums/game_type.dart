@@ -124,6 +124,9 @@ String gameTypeShortStr(GameType type) {
 
 GameType gameTypeFromStr(String gameTypeStr) {
   List<String> types = GameType.values.map((e) => e.toString()).toList();
+  if (gameTypeStr.indexOf('GameType.') != -1) {
+    gameTypeStr = gameTypeStr.replaceAll('GameType.', '');
+  }
   int i = types.indexOf('GameType.' + gameTypeStr);
   if (i != -1) {
     return GameType.values

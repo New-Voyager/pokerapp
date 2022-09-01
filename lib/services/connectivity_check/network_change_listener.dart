@@ -51,7 +51,7 @@ class NetworkChangeListener {
       );
 
       // wait for a bit
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 1000));
     }
 
     // if we are outside the while loop, means we have internet connection

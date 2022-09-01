@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/liveness_sender.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/platform.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -60,7 +61,11 @@ class PlayerActionHandler {
 
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
-    log('Current hand state: $currentHandState');
+    log('Hand: Current hand state: $currentHandState');
+    Alerts.showNotification(
+      titleText: "Refresh the screen",
+      duration: Duration(seconds: 3),
+    );
     if (_gameState.uiClosing) return;
 
     // current players cards

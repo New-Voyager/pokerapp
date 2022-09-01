@@ -277,21 +277,6 @@ class LoadingDialog {
                     ),
                   ],
                 ),
-
-                // // sep
-                // const SizedBox(height: 20),
-
-                // // show button - to close the app
-                // Transform.scale(
-                //   scale: 0.80,
-                //   child: ButtonWidget(
-                //     text: 'Close App',
-                //     onTap: () {
-                //       SystemChannels.platform
-                //           .invokeMethod('SystemNavigator.pop');
-                //     },
-                //   ),
-                // ),
               ],
             ),
           ),
