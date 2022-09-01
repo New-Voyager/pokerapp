@@ -27,6 +27,7 @@ import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/connectivity_check/network_change_listener.dart';
 import 'package:pokerapp/services/game_play/customization_service.dart';
+import 'package:pokerapp/services/nats/client.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -106,6 +107,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   void dispose() {
     appState.isInGameScreen = false;
     appState.removeGameCode();
+    natsConnectionLostCallback = null;
+
+    gamePlayObjects.gameState.refreshGameState.removeListener(refreshGame);
 
     _timer?.cancel();
 
@@ -265,6 +269,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         }
       }
 
+      // set callback to call when connection is lost
+      natsConnectionLostCallback = onNatsLostConnectionCallback;
+
       setState(() {});
     });
 
@@ -273,6 +280,24 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }).onError((error, stackTrace) {
       // ignore it
     });
+  }
+
+  void onNatsLostConnectionCallback(bool reconnect) {
+    Alerts.showNotification(
+      titleText: "Connection Lost",
+      subTitleText: "Reconnecting to the servers",
+      duration: Duration(seconds: 3),
+    );
+    gamePlayObjects.reconnectGameComService(reconnectNats: true);
+  }
+
+  void refreshGame() {
+    // Alerts.showNotification(
+    //   titleText: "Refresh",
+    //   subTitleText: "Reload game",
+    //   duration: Duration(seconds: 3),
+    // );
+    gamePlayObjects.reconnectGameComService(reconnectNats: true);
   }
 
   void reload() {
@@ -284,6 +309,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     log('game screen initState');
     try {
       await _initGameInfoModel();
+      gamePlayObjects.gameState.refreshGameState.addListener(refreshGame);
     } catch (e) {
       Alerts.showNotification(
         titleText: "Game not found",
@@ -300,6 +326,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // _timer?.cancel();
 
     try {
+      natsConnectionLostCallback = null;
       if (gamePlayObjects.locationUpdates != null) {
         gamePlayObjects.locationUpdates.stop();
       }

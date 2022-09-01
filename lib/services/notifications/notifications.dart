@@ -682,6 +682,22 @@ class NotificationHandler {
   Future<void> handleGameEnded(Map<String, dynamic> json) async {
     if (appState != null) {
       appState.setGameEnded(true);
+
+      /*
+      const message: any = {
+        type: msgType,
+        clubCode: club.clubCode,
+        clubName: club.name,
+        gameCode: gameCode,
+        requestId: messageId,
+      };
+      */
+      String clubCode = json['clubCode'];
+      if (clubCode != null) {
+        await appState.cacheService.getMembers(clubCode, update: true);
+        await appState.cacheService.getClubHomePageData(clubCode);
+        await appState.cacheService.getMyClubs(update: true);
+      }
     }
   }
 

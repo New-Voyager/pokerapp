@@ -243,13 +243,13 @@ class GamePlayObjects {
     }
   }
 
-  void reconnectGameComService() async {
+  void reconnectGameComService({bool reconnectNats = false}) async {
     if (TestService.isTesting) {
       return;
     }
     log('network_reconnect: _reconnectGameComService invoked');
     final nats = context.read<Nats>();
-    if (nats.connectionBroken) {
+    if (nats.connectionBroken || reconnectNats) {
       await nats.reconnect();
     }
 
