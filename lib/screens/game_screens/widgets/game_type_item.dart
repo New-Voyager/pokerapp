@@ -37,9 +37,8 @@ class GameTypeItem extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: AppDecorators.generalListItemWidget(
-            onlyStroke: true,
-            theme: theme,
+          child: Container(
+            decoration: AppDecorators.generalListItemWidget(),
             child: Container(
               // margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -68,64 +67,61 @@ class GameTypeItem extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: AppDecorators.generalListItemWidget(
-            theme: theme,
-            child: Container(
-              // margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              // decoration: BoxDecoration(
-              //   color: isSelected
-              //       ? theme.primaryColorWithDark()
-              //       : theme.fillInColor,
-              //   border: Border.all(
-              //     color: theme.accentColor,
-              //     width: 2,
-              //   ),
-              //   borderRadius: BorderRadius.circular(8),
-              // ),
-              // -32 is for margin for container. and remaining difference is for revealing arrow.
-              width: width - 32 - (isSelected ? (animValue * 64) : 0),
-              child: Row(
-                children: [
-                  AppDimensionsNew.getVerticalSizedBox(50),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.contain,
-                    ),
+          child: Container(
+            // margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: AppDecorators.generalListItemWidget(),
+            // decoration: BoxDecoration(
+            //   color: isSelected
+            //       ? theme.primaryColorWithDark()
+            //       : theme.fillInColor,
+            //   border: Border.all(
+            //     color: theme.accentColor,
+            //     width: 2,
+            //   ),
+            //   borderRadius: BorderRadius.circular(8),
+            // ),
+            // -32 is for margin for container. and remaining difference is for revealing arrow.
+            width: width - 32 - (isSelected ? (animValue * 64) : 0),
+            child: Row(
+              children: [
+                AppDimensionsNew.getVerticalSizedBox(50),
+                Container(
+                  height: 40,
+                  width: 40,
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
                   ),
-                  AppDimensionsNew.getHorizontalSpace(16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          gameTypeStr(type),
-                          style: AppDecorators.getHeadLine4Style(theme: theme),
+                ),
+                AppDimensionsNew.getHorizontalSpace(16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        gameTypeStr(type),
+                        style: AppDecorators.getHeadLine4Style(theme: theme),
+                      ),
+                      Visibility(
+                        child: Text(
+                          HelperUtils.buildGameTypeStrFromList(gamesList),
+                          style: AppDecorators.getSubtitle2Style(theme: theme),
                         ),
-                        Visibility(
-                          child: Text(
-                            HelperUtils.buildGameTypeStrFromList(gamesList),
-                            style:
-                                AppDecorators.getSubtitle2Style(theme: theme),
-                          ),
-                          visible: (gamesList != null && gamesList.length > 0),
-                        ),
-                      ],
-                    ),
+                        visible: (gamesList != null && gamesList.length > 0),
+                      ),
+                    ],
                   ),
-                  // Visibility(
-                  //   child: IconButton(
-                  //     onPressed: onSettingsClick,
-                  //     icon: Icon(Icons.settings),
-                  //     color: theme.supportingColor,
-                  //   ),
-                  //   visible: type == GameType.ROE || type == GameType.DEALER_CHOICE,
-                  // ),
-                ],
-              ),
+                ),
+                // Visibility(
+                //   child: IconButton(
+                //     onPressed: onSettingsClick,
+                //     icon: Icon(Icons.settings),
+                //     color: theme.supportingColor,
+                //   ),
+                //   visible: type == GameType.ROE || type == GameType.DEALER_CHOICE,
+                // ),
+              ],
             ),
           ),
         ),

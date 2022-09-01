@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/gradient_text.dart';
+import 'package:pokerapp/widgets/buttons.dart';
 
 class CustomAppBar extends AppBar {
   final titleText;
@@ -36,10 +38,16 @@ class CustomAppBar extends AppBar {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                GradientText(
                   titleText ?? "",
                   style: AppDecorators.getAppBarStyle(theme: theme),
-                  textAlign: TextAlign.center,
+                  // textAlign: TextAlign.center,
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFFFFFFF), Color(0xFFCCCCCC)],
+                    stops: [0.2, 1],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
                 Visibility(
                   visible: subTitleText != null,
@@ -65,25 +73,46 @@ class BackArrowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.getTheme(context);
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: EdgeInsets.only(left: 16.pw),
-      child: InkWell(
-          child: SvgPicture.asset(
-            'assets/images/backarrow.svg',
-            color: theme.secondaryColor,
-            width: 32.pw,
-            height: 32.pw,
-            fit: BoxFit.contain,
+    // return Container(
+    //   alignment: Alignment.centerLeft,
+    //   padding: EdgeInsets.only(left: 16.pw),
+    //   child: InkWell(
+    //       child: SvgPicture.asset(
+    //         'assets/images/backarrow.svg',
+    //         color: theme.secondaryColor,
+    //         width: 32.pw,
+    //         height: 32.pw,
+    //         fit: BoxFit.contain,
+    //       ),
+    //       borderRadius: BorderRadius.circular(32.pw),
+    //       onTap: () {
+    //         if (onBackHandle != null) {
+    //           onBackHandle();
+    //         } else {
+    //           Navigator.of(context).pop();
+    //         }
+    //       }),
+    // );
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 8.pw),
+          child: ThemedCircleImageButton(
+            onTap: () {
+              if (onBackHandle != null) {
+                onBackHandle();
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
+            style: theme.orangeButton,
+            icon: Icons.arrow_back,
+            // svgAsset: 'assets/images/backarrow.svg',
           ),
-          borderRadius: BorderRadius.circular(32.pw),
-          onTap: () {
-            if (onBackHandle != null) {
-              onBackHandle();
-            } else {
-              Navigator.of(context).pop();
-            }
-          }),
+        ),
+      ],
     );
   }
 }

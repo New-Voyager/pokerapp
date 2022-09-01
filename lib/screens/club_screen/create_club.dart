@@ -33,9 +33,10 @@ class CreateClubDialog {
           contentPadding: EdgeInsets.zero,
           content: Container(
               padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
-              decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+              decoration:
+                  AppDecorators.bgImageGradient(theme, noImage: true).copyWith(
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: theme.accentColor, width: 3),
+                border: Border.all(color: Color(0xFFA9A9A9), width: 2),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +52,8 @@ class CreateClubDialog {
                           appScreenText['createClub'],
                           style: AppDecorators.getHeadLine3Style(theme: theme),
                         ),
-                        RoundRectButton(
+                        ThemedButton(
+                          style: theme.blueButton,
                           text: appScreenText['create'],
                           onTap: () async {
                             if (!_formKey.currentState.validate()) {
@@ -80,7 +82,7 @@ class CreateClubDialog {
 
                             Navigator.pop(context, clubCode);
                           },
-                          theme: theme,
+                          // theme: theme,
                         ),
                       ],
                     ),
@@ -113,7 +115,7 @@ class CreateClubDialog {
                         horizontal: 8.0,
                       ),
                       decoration:
-                          AppDecorators.tileDecorationWithoutBorder(theme),
+                          AppDecorators.generalListItemWidget(stroke: false),
                       child: Form(
                         key: _formKey,
                         child: Container(

@@ -578,8 +578,8 @@ class _ClubsPageViewState extends State<ClubsPageView>
       //   ctx,
       //   theme,
       // ),
-      child: AppDecorators.generalListItemWidget(
-        theme: theme,
+      child: Container(
+        decoration: AppDecorators.generalListItemWidget(),
         child: ClubItem(
           club: club,
           theme: theme,

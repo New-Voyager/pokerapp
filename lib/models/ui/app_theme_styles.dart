@@ -213,8 +213,8 @@ AppThemeStyle getAppStyle(String name) {
 String defaultAppStyle = '''{
   "fontFamily": "Poppins",
   "primaryColor": "FF033614",
-  "secondaryColor": "FF00FAAD",
-  "accentColor": "FFD89E40",
+  "secondaryColor": "FFFF8D4E",
+  "accentColor": "FFFF8D4E",
   "fillInColor": "FF0B2324",
   "supportingColor": "FFFFFFFF",
   "negativeOrErrorColor": "FFFA0000",

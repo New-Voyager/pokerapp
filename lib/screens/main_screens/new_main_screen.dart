@@ -206,42 +206,46 @@ class _MainScreenState extends State<NewMainScreen>
                   end: Alignment.bottomCenter,
                 ),
               ),
-              child: BottomNavigationBar(
-                backgroundColor: Colors.transparent,
-                selectedLabelStyle: TextStyle(
-                    color: Color(0xFFFFF6DF), fontWeight: FontWeight.bold),
-                unselectedLabelStyle: TextStyle(color: Color(0xFF979387)),
-                selectedItemColor: Color(0xFFFFF6DF),
-                unselectedItemColor: Color(0xFF979387),
-                onTap: (i) {
-                  setState(() => _navPos = i);
-                  appState.setIndex(i);
-                },
-                elevation: 0,
-                currentIndex: _navPos,
-                items: [
-                  BottomNavigationBarItem(
-                    icon: getBottomNavIcon(
-                      icon: 'assets/icons/main_games.svg',
-                      selected: _navPos == 0,
+              child: Container(
+                color: Colors.black.withAlpha(100),
+                padding: EdgeInsets.only(top: 4),
+                child: BottomNavigationBar(
+                  backgroundColor: Colors.transparent,
+                  selectedLabelStyle: TextStyle(
+                      color: Color(0xFFFFF6DF), fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: TextStyle(color: Color(0xFF979387)),
+                  selectedItemColor: Color(0xFFFFF6DF),
+                  unselectedItemColor: Color(0xFF979387),
+                  onTap: (i) {
+                    setState(() => _navPos = i);
+                    appState.setIndex(i);
+                  },
+                  elevation: 0,
+                  currentIndex: _navPos,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: getBottomNavIcon(
+                        icon: 'assets/icons/main_games.svg',
+                        selected: _navPos == 0,
+                      ),
+                      label: _appScreenText['games'].toUpperCase(),
                     ),
-                    label: _appScreenText['games'].toUpperCase(),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: getBottomNavIcon(
-                      icon: 'assets/icons/main_clubs.svg',
-                      selected: _navPos == 1,
+                    BottomNavigationBarItem(
+                      icon: getBottomNavIcon(
+                        icon: 'assets/icons/main_clubs.svg',
+                        selected: _navPos == 1,
+                      ),
+                      label: _appScreenText['clubs'].toUpperCase(),
                     ),
-                    label: _appScreenText['clubs'].toUpperCase(),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: getBottomNavIcon(
-                      icon: 'assets/icons/main_profile.svg',
-                      selected: _navPos == 2,
+                    BottomNavigationBarItem(
+                      icon: getBottomNavIcon(
+                        icon: 'assets/icons/main_profile.svg',
+                        selected: _navPos == 2,
+                      ),
+                      label: _appScreenText['profile'].toUpperCase(),
                     ),
-                    label: _appScreenText['profile'].toUpperCase(),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

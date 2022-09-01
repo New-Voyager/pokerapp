@@ -99,7 +99,7 @@ class CardFormTextField extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius ?? 5.0),
         side: BorderSide(
-          color: theme.accentColorWithDark(0.30),
+          color: theme.accentColor,
           width: 1.0,
         ),
       ),

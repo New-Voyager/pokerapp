@@ -232,8 +232,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                   child: Column(
                                     children: [
                                       // Section 1
-                                      AppDecorators.generalListItemWidget(
-                                        theme: theme,
+                                      Container(
+                                        decoration: AppDecorators
+                                            .generalListItemWidget(),
                                         child: Padding(
                                           padding:
                                               EdgeInsets.symmetric(vertical: 8),
@@ -318,8 +319,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       AppDimensionsNew.getVerticalSizedBox(16),
 
                                       // Section 2
-                                      AppDecorators.generalListItemWidget(
-                                        theme: theme,
+                                      Container(
+                                        decoration: AppDecorators
+                                            .generalListItemWidget(),
                                         child: Padding(
                                           padding:
                                               EdgeInsets.symmetric(vertical: 8),
@@ -361,8 +363,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       AppDimensionsNew.getVerticalSizedBox(16),
 
                                       // Section 3
-                                      AppDecorators.generalListItemWidget(
-                                        theme: theme,
+                                      Container(
+                                        decoration: AppDecorators
+                                            .generalListItemWidget(),
                                         child: Padding(
                                           padding:
                                               EdgeInsets.symmetric(vertical: 8),

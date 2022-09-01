@@ -29,16 +29,16 @@ class ClubBannerViewNew extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           width: clubModel.picUrl.isEmpty ? 3.pw : 0,
-          color: theme.secondaryColor,
+          color: Color(0xFFE4E4E4),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.primaryColor,
-            blurRadius: 1.pw,
-            spreadRadius: 1.pw,
-            offset: Offset(1.pw, 4.pw),
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     // color: theme.primaryColor,
+        //     blurRadius: 1.pw,
+        //     spreadRadius: 1.pw,
+        //     offset: Offset(1.pw, 4.pw),
+        //   ),
+        // ],
         image: clubModel.picUrl.isEmpty
             ? null
             : DecorationImage(

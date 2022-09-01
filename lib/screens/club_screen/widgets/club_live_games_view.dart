@@ -94,12 +94,13 @@ class ClubLiveGamesView extends StatelessWidget {
                 visible: canHostGame,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
-                  child: RoundRectButton(
+                  child: ThemedButton(
+                    style: theme.blueButton,
                     onTap: () async {
                       hostGame(context);
                     },
                     text: 'Host Game', //_appScreenText['hostGame'],
-                    theme: theme,
+                    // theme: theme,
                   ),
                 ),
               ),

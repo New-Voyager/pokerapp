@@ -50,8 +50,8 @@ class LiveGameItem extends StatelessWidget {
         constraints: BoxConstraints(
           minHeight: _minHeight,
         ),
-        child: AppDecorators.generalListItemWidget(
-          theme: theme,
+        child: Container(
+          decoration: AppDecorators.generalListItemWidget(),
           child: Padding(
             padding: EdgeInsets.only(
               left: 16.pw,

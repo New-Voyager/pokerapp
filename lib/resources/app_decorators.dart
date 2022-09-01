@@ -30,7 +30,9 @@ class AppDecorators {
         ),
       );
 
-  static BoxDecoration bgImageGradient(AppTheme theme) => BoxDecoration(
+  static BoxDecoration bgImageGradient(AppTheme theme,
+          {bool noImage = false}) =>
+      BoxDecoration(
         gradient: LinearGradient(
           colors: [
             Color(0xFF8397A6),
@@ -39,13 +41,15 @@ class AppDecorators {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
-        image: DecorationImage(
-          image: AssetImage(
-            'assets/images/main_bg.png',
-          ),
-          opacity: 0.04,
-          fit: BoxFit.fill,
-        ),
+        image: noImage
+            ? null
+            : DecorationImage(
+                image: AssetImage(
+                  'assets/images/main_bg.png',
+                ),
+                opacity: 0.04,
+                fit: BoxFit.fill,
+              ),
       );
 
   static BoxDecoration accentNoBorderDecoration(AppTheme theme) =>
@@ -241,37 +245,11 @@ class AppDecorators {
     );
   }
 
-  static Widget generalListItemWidget(
-      {@required AppTheme theme,
-      @required Widget child,
-      bool onlyStroke = false}) {
-    return Container(
-      // gradient: LinearGradient(
-      //   colors: [
-      //     Color(0xFF755605),
-      //     Color(0xFFC9A13B),
-      //   ],
-      //   end: Alignment.topLeft,
-      //   begin: Alignment.bottomRight,
-      // ),
-      // backgroundGradient: onlyStroke
-      //     ? null
-      //     : LinearGradient(
-      //         colors: [
-      //           Color(0x75AE9E6B),
-      //           Color(0x239E926E),
-      //         ],
-      //         begin: Alignment.topLeft,
-      //         end: Alignment.bottomRight,
-      //       ),
-      // strokeWidth: 1.5,
-      // radius: Radius.circular(12),
-      decoration: BoxDecoration(
-        color: Color(0x660C151D),
-        border: Border.all(color: Color(0xFFA9A9A9), width: 1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: child,
+  static BoxDecoration generalListItemWidget({bool stroke = true}) {
+    return BoxDecoration(
+      color: Color(0x660C151D),
+      border: stroke ? Border.all(color: Color(0xFFA9A9A9), width: 1) : null,
+      borderRadius: BorderRadius.circular(12),
     );
   }
 

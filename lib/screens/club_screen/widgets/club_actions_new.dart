@@ -27,7 +27,10 @@ class ClubActionsNew extends StatelessWidget {
       this._clubHomePageModel,
       ClubActions.CHAT,
       appScreenText['chat'],
-      SvgPicture.asset("assets/icons/chat.svg", color: theme.accentColor),
+      SvgPicture.asset(
+        "assets/icons/chat.svg",
+        color: Color(0xFFE4E4E4),
+      ),
       badgeContent: chatBadgeContent,
     );
     return chat;
@@ -49,10 +52,9 @@ class ClubActionsNew extends StatelessWidget {
       this._clubHomePageModel,
       ClubActions.MEMBERS,
       appScreenText['members'],
-      SvgPicture.asset(
-        "assets/images/club/member.svg",
-        color: theme.accentColor,
-      ),
+      SvgPicture.asset("assets/images/club/member.svg",
+          // color: theme.accentColor,
+          color: Color(0xFFE4E4E4)),
       badgeContent: badgeContent,
     );
   }
@@ -90,7 +92,7 @@ class ClubActionsNew extends StatelessWidget {
           : appScreenText['messageHost'],
       SvgPicture.asset(
         "assets/icons/contacthost.svg",
-        color: theme.accentColor,
+        color: Color(0xFFE4E4E4),
       ),
       badgeContent: badgeContent,
     );
@@ -105,7 +107,7 @@ class ClubActionsNew extends StatelessWidget {
           scale: 2.0,
           child: Icon(
             Icons.settings_outlined,
-            color: theme.accentColor,
+            color: Color(0xFFE4E4E4),
           )),
     );
   }
@@ -119,7 +121,7 @@ class ClubActionsNew extends StatelessWidget {
           scale: 2.0,
           child: Icon(
             Icons.list_alt_outlined,
-            color: theme.accentColor,
+            color: Color(0xFFE4E4E4),
           )),
     );
   }
@@ -129,8 +131,10 @@ class ClubActionsNew extends StatelessWidget {
         this._clubHomePageModel,
         ClubActions.MEMBER_ACTIVITIES,
         'Players Report',
-        SvgPicture.asset('assets/images/game/memberactivities.svg',
-            color: theme.accentColor));
+        SvgPicture.asset(
+          'assets/images/game/memberactivities.svg',
+          color: Color(0xFFE4E4E4),
+        ));
   }
 
   ClubActionButtonNew getAgentsPageWidget(AppTheme theme) {
@@ -138,8 +142,10 @@ class ClubActionsNew extends StatelessWidget {
         this._clubHomePageModel,
         ClubActions.AGENTS,
         'Agents',
-        SvgPicture.asset('assets/images/game/memberactivities.svg',
-            color: theme.accentColor));
+        SvgPicture.asset(
+          'assets/images/game/memberactivities.svg',
+          color: Color(0xFFE4E4E4),
+        ));
   }
 
   @override
@@ -158,7 +164,7 @@ class ClubActionsNew extends StatelessWidget {
       appScreenText['gameHistory'],
       SvgPicture.asset(
         "assets/images/club/game_history.svg",
-        color: theme.accentColor,
+        color: Color(0xFFE4E4E4),
       ),
     ));
     buttons.add(getMembers(theme));
@@ -168,7 +174,7 @@ class ClubActionsNew extends StatelessWidget {
       appScreenText['bookmarkedHands'],
       SvgPicture.asset(
         "assets/images/club/bookmarks.svg",
-        color: theme.accentColor,
+        color: Color(0xFFE4E4E4),
       ),
     ));
     buttons.add(getChat(theme));
@@ -179,8 +185,10 @@ class ClubActionsNew extends StatelessWidget {
         this._clubHomePageModel,
         ClubActions.SHARED_HANDS,
         appScreenText['shared_hands'],
-        SvgPicture.asset("assets/images/club/sharedhands.svg",
-            color: theme.accentColor),
+        SvgPicture.asset(
+          "assets/images/club/sharedhands.svg",
+          color: Color(0xFFE4E4E4),
+        ),
       ),
     );
 
@@ -192,7 +200,7 @@ class ClubActionsNew extends StatelessWidget {
       appScreenText['announcements'],
       SvgPicture.asset(
         "assets/images/club/announcements.svg",
-        color: theme.accentColor,
+        color: Color(0xFFE4E4E4),
       ),
     ));
 
@@ -218,7 +226,7 @@ class ClubActionsNew extends StatelessWidget {
         // appScreenText['botScripts'],
         SvgPicture.asset(
           "assets/images/club/rewards.svg",
-          color: theme.accentColor,
+          color: Color(0xFFE4E4E4),
         ),
       ));
     }

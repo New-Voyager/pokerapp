@@ -103,7 +103,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                     children: [
                       // Head section
                       Container(
-                        decoration: AppDecorators.tileDecoration(theme),
+                        decoration: AppDecorators.generalListItemWidget(),
                         margin:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         padding:
@@ -125,14 +125,14 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                           _clubModel.picUrl.isEmpty ? 3.pw : 0,
                                       color: theme.secondaryColor,
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: theme.primaryColor,
-                                        blurRadius: 1.pw,
-                                        spreadRadius: 1.pw,
-                                        offset: Offset(1.pw, 4.pw),
-                                      ),
-                                    ],
+                                    // boxShadow: [
+                                    //   BoxShadow(
+                                    //     color: theme.primaryColor,
+                                    //     blurRadius: 1.pw,
+                                    //     spreadRadius: 1.pw,
+                                    //     offset: Offset(1.pw, 4.pw),
+                                    //   ),
+                                    // ],
                                     image: _clubModel.picUrl.isEmpty
                                         ? null
                                         : DecorationImage(
@@ -188,7 +188,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                                   //
                                   Container(
                                     decoration:
-                                        AppDecorators.tileDecoration(theme),
+                                        AppDecorators.generalListItemWidget(),
                                     padding: EdgeInsets.symmetric(vertical: 8),
                                     child: Column(
                                       crossAxisAlignment:
@@ -320,7 +320,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
                       Visibility(
                         visible: true,
                         child: Container(
-                          decoration: AppDecorators.tileDecoration(theme),
+                          decoration: AppDecorators.generalListItemWidget(),
                           padding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           margin:
@@ -538,7 +538,7 @@ class _ClubSettingsScreenState extends State<ClubSettingsScreen> {
             children: [
               //
               Container(
-                decoration: AppDecorators.tileDecoration(theme),
+                decoration: AppDecorators.generalListItemWidget(),
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

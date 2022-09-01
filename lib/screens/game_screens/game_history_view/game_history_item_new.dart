@@ -51,8 +51,8 @@ class GameHistoryItemNew extends StatelessWidget {
 
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        decoration: AppDecorators.getGameItemDecoration(theme: theme),
         child: Container(
+          decoration: AppDecorators.generalListItemWidget(),
           child: Stack(
             alignment: Alignment.center,
             children: [
