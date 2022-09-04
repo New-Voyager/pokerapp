@@ -392,6 +392,8 @@ class NotificationHandler {
         handleCreditUpdate(json);
       } else if (type == 'GAME_STATUS_CHANGE') {
         handleGameStatusChange(json);
+      } else if (type == 'YOUR_TURN') {
+        handleYourTurn(json);
       }
     }
   }
@@ -411,7 +413,8 @@ class NotificationHandler {
         type == 'CLUB_ANNOUNCEMENT' ||
         type == 'HOST_TO_MEMBER' ||
         type == 'MEMBER_TO_HOST' ||
-        type == 'CREDIT_UPDATE')) {
+        type == 'CREDIT_UPDATE' ||
+        type == 'YOUR_TURN')) {
       return;
     }
     String body = '';
@@ -485,6 +488,8 @@ class NotificationHandler {
       body = json['clubName'] + ' host: ' + json['text'];
     } else if (type == 'MEMBER_TO_HOST') {
       body = json['clubName'] + ' ${json['sender']}: ' + json['text'];
+    } else if (type == 'YOUR_TURN') {
+      body = 'Game: ${json["gameCode"]} It is your turn';
     }
     if (body.length == 0) {
       return;
@@ -642,15 +647,21 @@ class NotificationHandler {
     String text = json['text'].toString();
     String clubName = json['clubName'].toString();
     String clubCode = json['clubCode'].toString();
-
+    dynamic message = jsonDecode(text);
+    double amount = double.parse(message['credits'].toString());
     // invalidate cache
     appState.cacheService
         .removePlayerActivitiesCache(clubCode, playerState.playerUuid);
     // toggle pending approvals
     Alerts.showNotification(
         titleText: 'Credits: ${clubName}',
-        subTitleText: text,
+        subTitleText: 'Credits updated: ${DataFormatter.chipsFormat(amount)}',
         duration: Duration(seconds: 5));
+    await appState.cacheService.getClubHomePageData(clubCode, update: true);
+
+    appState.clubUpdateState.updatedClubCode = clubCode;
+    appState.clubUpdateState.whatChanged = 'CREDIT';
+    appState.clubUpdateState.notify();
   }
 
   Future<void> handleNewGame(Map<String, dynamic> json) async {
@@ -671,6 +682,22 @@ class NotificationHandler {
   Future<void> handleGameEnded(Map<String, dynamic> json) async {
     if (appState != null) {
       appState.setGameEnded(true);
+
+      /*
+      const message: any = {
+        type: msgType,
+        clubCode: club.clubCode,
+        clubName: club.name,
+        gameCode: gameCode,
+        requestId: messageId,
+      };
+      */
+      String clubCode = json['clubCode'];
+      if (clubCode != null) {
+        await appState.cacheService.getMembers(clubCode, update: true);
+        await appState.cacheService.getClubHomePageData(clubCode);
+        await appState.cacheService.getMyClubs(update: true);
+      }
     }
   }
 
@@ -694,6 +721,14 @@ class NotificationHandler {
     Alerts.showNotification(
         titleText: 'Announcement',
         subTitleText: json['shortText'],
+        duration: Duration(seconds: 5));
+  }
+
+  // handle messages when app is running foreground
+  Future<void> handleYourTurn(Map<String, dynamic> json) async {
+    Alerts.showNotification(
+        titleText: json['gameCode'],
+        subTitleText: 'It is your turn',
         duration: Duration(seconds: 5));
   }
 }

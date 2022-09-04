@@ -73,6 +73,10 @@ class MessageItem extends StatelessWidget {
         isMinified = true;
       }
     }
+
+    if (messageModel.messageType == MessageType.NEW_GAME) {
+      return SizedBox.shrink();
+    }
     if (isMe) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -149,7 +153,7 @@ class MessageItem extends StatelessWidget {
                       children: [
                         // main event
                         Text(
-                          '$text',
+                          text,
                           style: AppDecorators.getSubtitle3Style(theme: theme),
                           textAlign: TextAlign.center,
                         ),
@@ -410,7 +414,7 @@ class MessageItem extends StatelessWidget {
             maxWidth: MediaQuery.of(context).size.width * 0.70,
           ),
           padding: EdgeInsets.all(
-            messageModel.messageType == MessageType.GIPHY ? 0 : 5.0,
+            messageModel.messageType == MessageType.GIPHY ? 0 : 2.0,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
@@ -422,12 +426,12 @@ class MessageItem extends StatelessWidget {
               if (messageModel.isGroupFirst)
                 if (!clubMessage)
                   Padding(
-                    padding: const EdgeInsets.all(3.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Text(
                       isMe ? _appScreenText['you'] : playerName,
                       style: AppDecorators.getAccentTextStyle(theme: theme)
                           .copyWith(
-                              fontWeight: FontWeight.normal, fontSize: 10.dp),
+                              fontWeight: FontWeight.normal, fontSize: 8.dp),
                     ),
                   ),
               messageModel.messageType == MessageType.GIPHY
@@ -437,16 +441,16 @@ class MessageItem extends StatelessWidget {
                       isMe: isMe,
                     )
                   : Container(
-                      padding: EdgeInsets.all(3),
+                      padding: EdgeInsets.all(1),
                       child: Text(
                         text,
-                        style: AppDecorators.getHeadLine4Style(theme: theme),
+                        style: AppDecorators.getHeadLine5Style(theme: theme),
                       ),
                     ),
 
               /* show the message time */
               if (messageModel.messageType != MessageType.GIPHY)
-                SizedBox(height: 3),
+                SizedBox(height: 2),
               if (messageModel.messageType != MessageType.GIPHY)
                 ChatTimeWidget(
                   isSender: isMe,

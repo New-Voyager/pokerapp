@@ -531,6 +531,27 @@ class TestService {
     seat.notify();
   }
 
+  static Future<void> showStraddle() async {
+    final gameState = GameState.getState(_context);
+
+    gameState.me.action.amount = 4;
+    gameState.me.action.straddle = true;
+    gameState.straddlePrompt = true;
+    // redraw seat
+    final seat = gameState.getSeat(gameState.me.seatNo);
+    seat.notify();
+    gameState.holeCardsState.notify();
+    gameState.straddlePromptState.notify();
+
+    final gameContextObject = _context.read<GameContextObject>();
+    OverlayStraddle.showPrompt(
+      gameContextObject: gameContextObject,
+      gameState: gameState,
+      expiresAtInSeconds: 30,
+      context: _context,
+    );
+  }
+
   static Future<void> movePotToPlayer() async {
     BuildContext context = _context;
 

@@ -7,7 +7,7 @@ import 'package:pokerapp/utils/formatter.dart';
 class StackReloadAnimatingWidget extends StatefulWidget {
   final StackReloadState stackReloadState;
   final Seat seat;
-  final Function(double stack) stackTextBuilder;
+  final Function(Seat seat, double stack) stackTextBuilder;
 
   StackReloadAnimatingWidget({
     @required this.seat,
@@ -23,13 +23,14 @@ class StackReloadAnimatingWidget extends StatefulWidget {
 class _StackReloadAnimatingWidgetState
     extends State<StackReloadAnimatingWidget> {
   StackReloadState get srs => widget.stackReloadState;
-  Function(double stack) get stackTextBuilder => widget.stackTextBuilder;
+  Function(Seat seat, double stack) get stackTextBuilder =>
+      widget.stackTextBuilder;
 
   Widget _currentWidget;
 
   Widget _buildStackText(double value) => Container(
         key: UniqueKey(),
-        child: stackTextBuilder(value),
+        child: stackTextBuilder(widget.seat, value),
       );
 
   Widget _buildLoadedAmountText(double value) => Text(

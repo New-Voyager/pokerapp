@@ -17,6 +17,11 @@ enum ReceiveState {
 
 }
 
+var pingTimerCount = 0;
+DateTime lastPongTime = DateTime.now();
+var pingTimerTick = 0;
+Function(bool) natsConnectionLostCallback;
+
 ///status of the nats client
 enum Status {
   /// discontected or not connected
@@ -48,6 +53,8 @@ class Pub {
 
 ///NATS client
 class Client {
+  bool pingServer = false;
+  int pingInterval = 15;
   bool _wsConnection = false;
   String _uri;
   WebSocketChannel _channel;
@@ -55,6 +62,7 @@ class Client {
   Info _info;
   Completer _pingCompleter;
   Function onDisconnect;
+  Timer _pingTimer;
 
   ///status of the client
   var status = Status.disconnected;
@@ -165,6 +173,30 @@ class Client {
       _backendSubscriptAll();
       _flushPubBuffer();
 
+      if (pingServer && pingTimerCount == 0) {
+        pingTimerCount++;
+        log('Nats: Ping timer is started: ${DateTime.now().toString()}');
+        _pingTimer = Timer.periodic(Duration(seconds: pingInterval), (t) {
+          pingTimerTick++;
+          log('Nats: [$pingTimerTick] Pinging server: ${DateTime.now().toString()} status: ${status}');
+          if (status == Status.connected) {
+            var now = DateTime.now();
+            var diff = now.difference(lastPongTime);
+            lastPongTime = now;
+            if (diff.inSeconds >= 2 * pingInterval ||
+                (pingTimerTick % 5) == 0) {
+              log('Nats: We did not receive pong ${DateTime.now().toString()} status: ${status} callback: ${natsConnectionLostCallback}');
+              // looks like we lost the connection
+              if (natsConnectionLostCallback != null) {
+                natsConnectionLostCallback(true);
+              }
+            } else {
+              ping();
+            }
+          }
+        });
+      }
+
       _buffer = [];
       _socket.listen((d) {
         _buffer.addAll(d);
@@ -260,14 +292,18 @@ class Client {
           _info = Info.fromJson(jsonDecode(data));
           break;
         case 'ping':
+          log('Nats: ping from server [${DateTime.now().toString()}]');
           _add('pong');
           break;
         case '-err':
           _processErr(data);
           break;
         case 'pong':
-          log('Pause: [${DateTime.now().toString()}] PONG');
-          _pingCompleter.complete();
+          log('Nats: [${DateTime.now().toString()}] PONG from server [${DateTime.now().toString()}]');
+          lastPongTime = DateTime.now();
+          if (_pingCompleter != null) {
+            _pingCompleter.complete();
+          }
           break;
         case '+ok':
           //do nothing
@@ -322,11 +358,11 @@ class Client {
   int maxPayload() => _info.maxPayload;
 
   ///ping server current not implement pong verification
-  Future ping() {
-    _pingCompleter = Completer();
+  void ping() {
+    //_pingCompleter = Completer();
     _add('ping');
     log('Pause: [${DateTime.now().toString()}] PING');
-    return _pingCompleter.future;
+    //return _pingCompleter.future;
   }
 
   ///default buffer action for pub
@@ -480,6 +516,11 @@ class Client {
 
   ///close connection to NATS server unsub to server but still keep subscription list at client
   void close() {
+    if (_pingTimer != null) {
+      log('Nats: Close ping timer');
+      _pingTimer.cancel();
+      _pingTimer = null;
+    }
     _backendSubs.forEach((_, s) => s = false);
     _inboxs.clear();
     if (_channel != null) {

@@ -822,11 +822,12 @@ class BetWidgetNew extends StatelessWidget {
       if (increment) {
         double value = valueNotifierVal.value;
 
-        if (isCentsGame) {
-          value += 0.01;
-        } else {
-          value++;
-        }
+        // if (isCentsGame) {
+        //   value += 0.01;
+        // } else {
+        //   value++;
+        // }
+        value += gameState.gameInfo.bigBlind;
 
         if (value > action.maxRaiseAmount) {
           value = action.maxRaiseAmount.toDouble();
@@ -834,11 +835,12 @@ class BetWidgetNew extends StatelessWidget {
         valueNotifierVal.value = value;
       } else {
         double value = valueNotifierVal.value;
-        if (isCentsGame) {
-          value -= 0.01;
-        } else {
-          value--;
-        }
+        value -= gameState.gameInfo.bigBlind;
+        // if (isCentsGame) {
+        //   value -= 0.01;
+        // } else {
+        //   value--;
+        // }
         if (value < action.minRaiseAmount) {
           value = action.minRaiseAmount.toDouble();
         }

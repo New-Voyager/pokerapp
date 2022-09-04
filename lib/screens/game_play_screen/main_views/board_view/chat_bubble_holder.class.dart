@@ -10,10 +10,10 @@ class ChatBubbleHolder {
   Offset offset;
   final SeatPos seatPos;
   Timer timer;
+  bool overlayRemoved = true;
 
   ChatBubbleHolder({
     @required this.chatMessageHolder,
-    @required this.overlayEntry,
     @required this.offset,
     @required this.seatPos,
   });

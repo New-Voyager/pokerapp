@@ -131,6 +131,7 @@ class GameState {
   CommunicationState _communicationState;
   TableState _tableState;
   HandInfoState _handInfo;
+  GameRefreshState _refreshState = GameRefreshState();
 
   final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   GameComService gameComService;
@@ -595,6 +596,8 @@ class GameState {
 
   ListenableProvider<HandChangeState> get handChangeStateProvider =>
       this._handChangeStateProvider;
+
+  GameRefreshState get refreshGameState => this._refreshState;
 
   bool get started {
     return this._gameInfo.status == AppConstants.GAME_ACTIVE;
@@ -1801,5 +1804,11 @@ class AudioConfState extends ChangeNotifier {
     joined = true;
     left = false;
     leave = false;
+  }
+}
+
+class GameRefreshState extends ChangeNotifier {
+  void refreshGame() {
+    notifyListeners();
   }
 }

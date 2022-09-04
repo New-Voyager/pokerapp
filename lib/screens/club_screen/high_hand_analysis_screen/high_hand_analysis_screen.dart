@@ -318,13 +318,12 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
   List<Widget> rankSelectionWidget(AppTheme theme) {
     return [
       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Expanded(
-            flex: 3, child: LabelText(label: 'Minimum Rank', theme: theme)),
+        Expanded(flex: 2, child: LabelText(label: 'Rank', theme: theme)),
         SizedBox(
           width: 8.pw,
         ),
         Expanded(
-          flex: 7,
+          flex: 15,
           child: RadioToggleButtonsWidget<String>(
             defaultValue: _selectedMinimumRankIndex,
             values: ['Full House', 'Four Of Kind', 'Straight Flush'],
@@ -354,13 +353,12 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
       Column(
         children: [
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Expanded(
-                flex: 3, child: LabelText(label: 'Date Range', theme: theme)),
+            Expanded(flex: 2, child: LabelText(label: 'Dates', theme: theme)),
             SizedBox(
-              width: 8.pw,
+              width: 4.pw,
             ),
             Expanded(
-              flex: 7,
+              flex: 15,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -369,10 +367,9 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
                     values: [
                       'Today',
                       'Yesterday',
-                      'This Week',
+                      'This\nWeek',
+                      'Last\nWeek',
                       'Custom',
-                      // 'Last Week',
-                      // 'Last Month'
                     ],
                     onSelect: (int value) async {
                       final now = DateTime.now();
@@ -394,7 +391,7 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
                             startDate.day, 0, 0, 0);
                         endDate = startDate.add(Duration(days: 7));
                         setState(() {});
-                      } else if (value == 'Last Week') {
+                      } else if (value == 3) {
                         endDate =
                             DateTime(now.year, now.month, now.day, 0, 0, 0);
                         endDate =
@@ -404,27 +401,12 @@ class _HighHandAnalysisScreenState extends State<HighHandAnalysisScreen>
                                 .subtract(weeks: 1)
                                 .format('yyyy-MM-dd'));
                         setState(() {});
-                      } else if (value == 'This Month') {
-                        startDate = DateTime(now.year, now.month, 1, 0, 0, 0);
-                        endDate = DateTime.parse(Jiffy()
-                            .startOf(Units.MONTH)
-                            .add(months: 1)
-                            .format('yyyy-MM-dd'));
-                        setState(() {});
-                      } else if (value == 'Last Month') {
-                        endDate = DateTime(now.year, now.month, 1, 0, 0, 0);
-                        startDate = DateTime.parse(
-                            Jiffy(startDate.toIso8601String())
-                                .subtract(months: 1)
-                                .format('yyyy-MM-dd'));
-                        setState(() {});
-                      } else if (value == 3) {
+                      } else if (value == 4) {
                         await _handleDateRangePicker(context, theme);
                         startDate = _dateTimeRange.start;
                         endDate = _dateTimeRange.end.add(Duration(days: 1));
                         setState(() {});
                       }
-
                       log('Start Date: ${startDate.toIso8601String()}  End Date: ${endDate.toIso8601String()}');
                     },
                   ),

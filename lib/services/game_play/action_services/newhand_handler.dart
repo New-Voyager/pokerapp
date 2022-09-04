@@ -11,6 +11,7 @@ import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/platform.dart';
@@ -368,6 +369,13 @@ class NewHandHandler {
             } else {
               // prompt for the straddle dialog
               gameState.straddlePrompt = true;
+
+              OverlayStraddle.showPrompt(
+                gameContextObject: gameContext,
+                gameState: gameState,
+                expiresAtInSeconds: gameState.gameInfo.actionTime,
+                context: gameState.mainScreenContext,
+              );
             }
           }
         }

@@ -36,6 +36,30 @@ class NoMessageWidget extends StatelessWidget {
   }
 }
 
+class LoadingWidget extends StatelessWidget {
+  LoadingWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.message_rounded,
+          size: 56.dp,
+          color: theme.fillInColor,
+        ),
+        Text(
+          'Loading ...',
+          textAlign: TextAlign.center,
+          style: AppDecorators.getSubtitle3Style(theme: theme),
+        )
+      ],
+    );
+  }
+}
+
 class CircularProgressWidget extends StatelessWidget {
   CircularProgressWidget({
     this.text,

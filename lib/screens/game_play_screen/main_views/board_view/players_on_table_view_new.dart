@@ -272,9 +272,14 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         // );
         overlayState.insert(chatHolder.overlayEntry);
 
-        chatHolder.timer = Timer(const Duration(seconds: 4), () {
-          chatHolder.chatMessageHolder.value = null;
-          chatHolder.overlayEntry.remove();
+        chatHolder.timer = Timer(const Duration(seconds: 10), () {
+          if (chatHolder.overlayEntry != null) {
+            chatHolder.chatMessageHolder.value = null;
+            if (!chatHolder.overlayRemoved) {
+              chatHolder.overlayEntry.remove();
+            }
+            chatHolder.overlayRemoved = true;
+          }
         });
 
         break;
@@ -380,12 +385,18 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
               NamePlateWidgetParent.namePlateSize.height / 3,
         );
       }
+      final chatBubbleHolder = ChatBubbleHolder(
+        chatMessageHolder: chatMessageHolder,
+        offset: Offset(overlayOffset.dx, overlayOffset.dy),
+        seatPos: seat.seatPos,
+      );
 
       final playerChatBubble = PlayerChatBubble(
         gameState: widget.gameState,
         gameComService: gameComService,
         seat: seat,
         chatMessageHolder: chatMessageHolder,
+        chatBubbleHolder: chatBubbleHolder,
       );
 
       final overlayEntry = OverlayEntry(
@@ -397,13 +408,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
               playerChatBubble,
         ),
       );
-
-      final chatBubbleHolder = ChatBubbleHolder(
-        chatMessageHolder: chatMessageHolder,
-        overlayEntry: overlayEntry,
-        offset: Offset(overlayOffset.dx, overlayOffset.dy),
-        seatPos: seat.seatPos,
-      );
+      chatBubbleHolder.overlayEntry = overlayEntry;
 
       chatBubbleHolders.add(chatBubbleHolder);
     }

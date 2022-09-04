@@ -9,7 +9,7 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-int minExtendTime = 10;
+int minExtendTime = 15;
 
 class TimeBankWidget extends StatefulWidget {
   final GameState gameState;
@@ -47,42 +47,49 @@ class _TimeBankWidgetState extends State<TimeBankWidget> {
       return Container();
     }
 
+    int count = availableTime ~/ minExtendTime;
+    if (availableTime % minExtendTime > 0) {
+      count++;
+    }
+
     children.add(
-      CircleImageButton(
-        icon: Icons.access_alarms,
-        theme: theme,
-        onTap: () async {
-          // log('timebank: on timebank clicked');
-          animate = false;
-          int extendTime = minExtendTime;
-          if (availableTime < extendTime) {
-            extendTime =
-                availableTime; //widget.gameState.gameHiveStore.getTimeBankTime();
-          }
-          time += extendTime;
-          await widget.gameState.gameHiveStore
-              .deductTimebank(num: minExtendTime);
-          availableTime -= extendTime;
-
-          // my seat
-          final mySeat = gameState.mySeat;
-          if (mySeat != null) {
-            if (!TestService.isTesting) {
-              // log('TimeBank: extend time $extendTime');
-              gameContextObj.handActionProtoService.extendTime(
-                  mySeat.player.playerId,
-                  mySeat.player.seatNo,
-                  gameState.handInfo.handNum,
-                  extendTime);
+      Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        CircleImageButton(
+          icon: Icons.access_alarms,
+          theme: theme,
+          onTap: () async {
+            // log('timebank: on timebank clicked');
+            animate = false;
+            int extendTime = minExtendTime;
+            if (availableTime < extendTime) {
+              extendTime = availableTime;
             }
-          }
+            time += extendTime;
+            await widget.gameState.gameHiveStore
+                .deductTimebank(num: minExtendTime);
+            availableTime -= extendTime;
 
-          // log('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
-          setState(() {});
-          animate = true;
-          setState(() {});
-        },
-      ),
+            // my seat
+            final mySeat = gameState.mySeat;
+            if (mySeat != null) {
+              if (!TestService.isTesting) {
+                // log('TimeBank: extend time $extendTime');
+                gameContextObj.handActionProtoService.extendTime(
+                    mySeat.player.playerId,
+                    mySeat.player.seatNo,
+                    gameState.handInfo.handNum,
+                    extendTime);
+              }
+            }
+
+            // log('Remaining timebank: ${widget.gameState.gameHiveStore.getTimeBankTime()}');
+            setState(() {});
+            animate = true;
+            setState(() {});
+          },
+        ),
+        Text('$count')
+      ]),
     );
     if (animate) {
       // log('timebank: animation is added');

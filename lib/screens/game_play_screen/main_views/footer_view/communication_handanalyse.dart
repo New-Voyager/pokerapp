@@ -193,6 +193,11 @@ class _CommunitcationHandAnalyseViewState
   }
 
   List<Widget> getMenuItems(AppTheme theme) {
+    bool showResult = widget.gameState.gameSettings.showResult;
+    if (widget.gameState.isHost()) {
+      showResult = true;
+    }
+
     return [
       Row(
         mainAxisSize: MainAxisSize.min,
@@ -272,9 +277,9 @@ class _CommunitcationHandAnalyseViewState
           : SizedBox.shrink(),
 
       // bomb pot
-      !widget.gameState.currentPlayer.isHost()
-          ? SizedBox.shrink()
-          : Row(
+      (widget.gameState.currentPlayer.isHost() ||
+              widget.gameState.currentPlayer.isOwner())
+          ? Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -302,7 +307,8 @@ class _CommunitcationHandAnalyseViewState
                   ),
                 ),
               ],
-            ),
+            )
+          : SizedBox.shrink(),
 
       // game info
       Row(
@@ -329,7 +335,7 @@ class _CommunitcationHandAnalyseViewState
         ],
       ),
 
-      widget.gameState.gameSettings.showResult ?? false
+      showResult ?? false
           ?
           // result table
           Row(

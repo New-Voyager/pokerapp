@@ -74,15 +74,21 @@ class ClubMessageService {
         newMessagesAdded = true;
       }
       // _messages.addAll(newMessages);
-      // add all new Messages that are non existing
-      for (final message in newMessages) {
-        if (_messages.every((m) => m.id != message.id)) {
-          _messages.add(message);
+
+      if (newMessagesAdded) {
+        // add all new Messages that are non existing
+        for (final message in newMessages) {
+          if (_messages.every((m) => m.id != message.id)) {
+            _messages.add(message);
+          }
         }
-      }
-      for (final message in _messages) {
-        if (message.id > next) {
-          next = message.id;
+        // sort the messages here
+        _messages.sort((a, b) => a.id.compareTo(b.id));
+
+        for (final message in _messages) {
+          if (message.id > next) {
+            next = message.id;
+          }
         }
       }
     }
@@ -116,7 +122,7 @@ class ClubMessageService {
             _stream.sink.add(sharedHandMessages);
           } else {
             List<ClubMessageModel> chatMessages = [];
-
+            log('ClubChat: new messages received');
             _messages.reversed.forEach((message) {
               if (message.messageType != MessageType.HAND) {
                 chatMessages.add(message);
