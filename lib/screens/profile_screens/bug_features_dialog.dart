@@ -43,8 +43,7 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
             child: Text(
               "Report",
               textAlign: TextAlign.center,
-              style: AppDecorators.getHeadLine3Style(theme: theme)
-                  .copyWith(color: theme.accentColor),
+              style: AppDecorators.getHeadLine3Style(theme: theme),
             ),
           ),
           AppDimensionsNew.getVerticalSizedBox(4),
@@ -59,14 +58,18 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
             },
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
-          CardFormTextField(
-            hintText: "Enter text",
-            controller: _controller,
-            maxLines: 3,
-            theme: theme,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: CardFormTextField(
+              hintText: "Enter text",
+              controller: _controller,
+              elevation: 0,
+              maxLines: 3,
+              theme: theme,
+            ),
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
-          RoundRectButton(
+          ThemedButton(
             text: "Submit",
             onTap: () async {
               if (_controller.text.isNotEmpty) {
@@ -87,7 +90,7 @@ class _BugsFeaturesWidgetState extends State<BugsFeaturesWidget> {
               }
               Navigator.of(context).pop();
             },
-            theme: theme,
+            style: theme.blueButton,
           ),
           AppDimensionsNew.getVerticalSizedBox(16.0),
           Text(

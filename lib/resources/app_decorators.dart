@@ -71,9 +71,9 @@ class AppDecorators {
       );
 
   static BoxDecoration tileDecoration(AppTheme theme) => BoxDecoration(
-        border: Border.all(color: theme.accentColor, width: 1),
-        color: theme.fillInColor,
-        borderRadius: BorderRadius.circular(8),
+        color: Color(0x660C151D),
+        border: Border.all(color: Color(0xFFA9A9A9), width: 1),
+        borderRadius: BorderRadius.circular(12),
       );
 
   static BoxDecoration tileDecorationWithoutBorder(AppTheme theme) =>

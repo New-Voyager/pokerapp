@@ -422,11 +422,11 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                                   // Terms and privacy text
                                   _buildTermsAndPrivacyText(_appTheme),
 
-                                  RoundRectButton(
+                                  ThemedButton(
                                     text: _appScreenText['signup'],
                                     fontSize: 14.dp,
                                     onTap: () => _handleSignUpClick(),
-                                    theme: appTheme,
+                                    style: appTheme.blueButton,
                                   ),
                                 ],
                               ),

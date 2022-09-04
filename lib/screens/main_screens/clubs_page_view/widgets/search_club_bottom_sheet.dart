@@ -133,9 +133,9 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
             Positioned(
               top: -10.pw,
               right: 4.pw,
-              child: CircleImageButton(
+              child: ThemedCircleImageButton(
+                style: theme.orangeButton,
                 icon: Icons.close_rounded,
-                theme: theme,
                 onTap: () => Navigator.of(context).pop(),
               ),
             ),
@@ -171,9 +171,9 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                             SizedBox(
                               width: 10.pw,
                             ),
-                            CircleImageButton(
+                            ThemedCircleImageButton(
                               icon: Icons.search,
-                              theme: theme,
+                              style: theme.orangeButton,
                               onTap: () async {
                                 if (!_formKey.currentState.validate()) return;
                                 _formKey.currentState.save();

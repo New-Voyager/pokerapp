@@ -262,40 +262,64 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     final String result = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        backgroundColor: appTheme.fillInColor,
-        title: Text(
-          _appScreenText['gameCode'],
-          style: AppDecorators.getSubtitle2Style(theme: appTheme),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CardFormTextField(
-              theme: appTheme,
-              hintText: _appScreenText['enterGameCode'],
-              onChanged: (val) {
-                //log("VALUE : $val");
-                gameCode = val;
-              },
-              keyboardType: TextInputType.name,
-            ),
-          ],
-        ),
-        actions: [
-          RoundRectButton(
-            text: 'Join',
-            onTap: () async {
-              if (gameCode.isEmpty) {
-                toast(_appScreenText['emptyGameCode']);
-                return;
-              }
+        // actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        // backgroundColor: appTheme.fillInColor,
+        // title: Text(
+        //   _appScreenText['gameCode'],
+        //   style: AppDecorators.getSubtitle2Style(theme: appTheme),
+        // ),
 
-              Navigator.of(context).pop(gameCode);
-            },
-            theme: appTheme,
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        content: Container(
+          padding: EdgeInsets.all(16),
+          decoration:
+              AppDecorators.bgImageGradient(appTheme, noImage: true).copyWith(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Color(0xFFA9A9A9), width: 2),
           ),
-        ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _appScreenText['gameCode'],
+                style: AppDecorators.getHeadLine3Style(theme: appTheme),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              CardFormTextField(
+                theme: appTheme,
+                hintText: _appScreenText['enterGameCode'],
+                onChanged: (val) {
+                  //log("VALUE : $val");
+                  gameCode = val;
+                },
+                elevation: 0,
+                keyboardType: TextInputType.name,
+              ),
+              SizedBox(
+                height: 32.0,
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ThemedButton(
+                  text: 'Join',
+                  onTap: () async {
+                    if (gameCode.isEmpty) {
+                      toast(_appScreenText['emptyGameCode']);
+                      return;
+                    }
+
+                    Navigator.of(context).pop(gameCode);
+                  },
+                  style: appTheme.blueButton,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
 

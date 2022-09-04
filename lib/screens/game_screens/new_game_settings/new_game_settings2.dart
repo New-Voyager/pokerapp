@@ -728,19 +728,22 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
             // ),
             constraints: BoxConstraints(maxWidth: AppDimensionsNew.maxWidth),
             decoration:
-                BoxDecoration(color: theme.secondaryColorWithDark(0.40)),
+                AppDecorators.bgImageGradient(theme, noImage: true).copyWith(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Color(0xFFA9A9A9), width: 2),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleImageButton(
+                    ThemedCircleImageButton(
                       onTap: () async {
                         await onSaveSettings(context, theme, gmp);
                       },
                       icon: Icons.save,
-                      theme: theme,
+                      style: theme.orangeButton,
                     ),
                     /* HEADING */
                     Expanded(
@@ -748,12 +751,12 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                         heading: appScreenText['gameSettings'],
                       ),
                     ),
-                    CircleImageButton(
+                    ThemedCircleImageButton(
                       onTap: () {
                         gmp.cancelled = true;
                         Navigator.pop(context, null);
                       },
-                      theme: theme,
+                      style: theme.orangeButton,
                       icon: Icons.close,
                     ),
                   ],
@@ -1493,8 +1496,12 @@ class _NewGameSettings2State extends State<NewGameSettings2> {
                   //alignment: Alignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ButtonWidget(
+                    ThemedButton(
                       text: appScreenText['start'],
+                      style: theme.blueButton,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 64.pw, vertical: 8.ph),
+                      fontSize: 22.pw,
                       onTap: () {
                         if (gmp.buyInMax < gmp.buyInMin) {
                           Alerts.showNotification(

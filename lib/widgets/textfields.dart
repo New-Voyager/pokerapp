@@ -57,14 +57,14 @@ class RoundTextField extends StatelessWidget {
 class CardFormTextField extends StatelessWidget {
   const CardFormTextField(
       {this.theme,
-      this.color = Colors.transparent,
+      this.color = Colors.white12,
       this.onChanged,
       this.controller,
       @required this.hintText,
       this.obscureText,
       this.keyboardType,
       this.radius,
-      this.elevation = 10.0,
+      this.elevation = 0.0,
       this.validator,
       this.onSaved,
       this.inputFormatters,

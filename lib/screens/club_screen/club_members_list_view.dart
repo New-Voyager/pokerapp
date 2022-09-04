@@ -143,7 +143,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                   // (data.isManager || data.isOwner)
                   //     ? AppDecorators.tileDecoration(theme)
                   //     :
-                  AppDecorators.tileDecorationWithoutBorder(theme),
+                  AppDecorators.generalListItemWidget(),
               child: Column(
                 children: [
                   InkWell(

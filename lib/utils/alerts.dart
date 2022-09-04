@@ -296,9 +296,10 @@ class Alerts {
                 padding: EdgeInsets.only(bottom: 24, top: 8, right: 8, left: 8),
                 // width: MediaQuery.of(context).size.width * 0.70,
                 // height: 200.ph,
-                decoration: AppDecorators.bgRadialGradient(theme).copyWith(
+                decoration: AppDecorators.bgImageGradient(theme, noImage: true)
+                    .copyWith(
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: theme.accentColor, width: 3),
+                  border: Border.all(color: Color(0xFFA9A9A9), width: 2),
                 ),
                 child: child,
               ),

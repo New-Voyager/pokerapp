@@ -94,10 +94,10 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                           ),
                           Visibility(
                             visible: canAnnounce,
-                            child: RoundRectButton(
+                            child: ThemedButton(
                                 text: "+ ${_appScreenText['NEW']}",
                                 onTap: () => _handleNewAnnouncement(theme),
-                                theme: theme),
+                                style: theme.orangeButton),
                           ),
                         ],
                       ),

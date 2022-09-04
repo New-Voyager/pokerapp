@@ -192,7 +192,7 @@ class MemberMessagePreview extends StatelessWidget {
           top: 8,
           right: 8,
         ),
-        decoration: AppDecorators.tileDecoration(theme),
+        decoration: AppDecorators.generalListItemWidget(),
         child: Column(
           children: [
             Row(

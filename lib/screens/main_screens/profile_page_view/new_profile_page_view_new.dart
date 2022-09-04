@@ -476,37 +476,60 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
     final result = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: theme.fillInColor,
-        title: Text(
-          type == UpdateType.SCREEN_NAME
-              ? _appScreenText['changeScreenName']
-              : type == UpdateType.DISPLAY_NAME
-                  ? _appScreenText['changeDisplayName']
-                  : type == UpdateType.EMAIL
-                      ? _appScreenText['changeEmail']
-                      : _appScreenText['updateDetails'],
-          style: AppDecorators.getSubtitle3Style(theme: theme),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CardFormTextField(
-              controller: _controller,
-              maxLines: 1,
-              hintText: _appScreenText['enterText'],
-              theme: theme,
-            ),
-            AppDimensionsNew.getVerticalSizedBox(12),
-            RoundRectButton(
-              text: _appScreenText['SAVE'],
-              onTap: () {
-                if (_controller.text.isNotEmpty) {
-                  Navigator.of(context).pop(_controller.text);
-                }
-              },
-              theme: theme,
-            ),
-          ],
+        backgroundColor: Colors.transparent,
+        // title: Text(
+        //   type == UpdateType.SCREEN_NAME
+        //       ? _appScreenText['changeScreenName']
+        //       : type == UpdateType.DISPLAY_NAME
+        //           ? _appScreenText['changeDisplayName']
+        //           : type == UpdateType.EMAIL
+        //               ? _appScreenText['changeEmail']
+        //               : _appScreenText['updateDetails'],
+        //   style: AppDecorators.getSubtitle3Style(theme: theme),
+        // ),
+        content: Container(
+          padding: EdgeInsets.all(16.0),
+          decoration:
+              AppDecorators.bgImageGradient(theme, noImage: true).copyWith(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Color(0xFFA9A9A9), width: 2),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                type == UpdateType.SCREEN_NAME
+                    ? _appScreenText['changeScreenName']
+                    : type == UpdateType.DISPLAY_NAME
+                        ? _appScreenText['changeDisplayName']
+                        : type == UpdateType.EMAIL
+                            ? _appScreenText['changeEmail']
+                            : _appScreenText['updateDetails'],
+                style: AppDecorators.getHeadLine4Style(theme: theme),
+              ),
+              AppDimensionsNew.getVerticalSizedBox(12),
+              CardFormTextField(
+                controller: _controller,
+                maxLines: 1,
+                hintText: _appScreenText['enterText'],
+                theme: theme,
+              ),
+              AppDimensionsNew.getVerticalSizedBox(12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ThemedButton(
+                  text: _appScreenText['SAVE'],
+                  onTap: () {
+                    if (_controller.text.isNotEmpty) {
+                      Navigator.of(context).pop(_controller.text);
+                    }
+                  },
+                  style: theme.blueButton,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
