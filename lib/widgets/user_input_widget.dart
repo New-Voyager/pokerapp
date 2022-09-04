@@ -29,7 +29,7 @@ class UserInputWidget extends StatelessWidget {
     AppTextScreen _appScreenText = getAppTextScreen('gameChat');
 
     return Container(
-      decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+      decoration: AppDecorators.generalListItemWidget(stroke: false),
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       padding: EdgeInsets.all(10.0),
       child: Row(
@@ -42,7 +42,8 @@ class UserInputWidget extends StatelessWidget {
               },
               controller: editingController,
               // onChanged: (value) => _textVn.value = value,
-              style: AppDecorators.getSubtitle2Style(theme: theme),
+              style: AppDecorators.getSubtitle2Style(theme: theme)
+                  .copyWith(color: theme.supportingColor),
               textAlign: TextAlign.start,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(

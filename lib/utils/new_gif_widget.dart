@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
@@ -16,6 +18,7 @@ import 'package:pokerapp/services/tenor/src/model/tenor_result.dart';
 
 import 'package:pokerapp/utils/gif_category_model.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class NewGifWidget extends StatefulWidget {
   final List<String> gifSuggestions;
@@ -147,6 +150,7 @@ class _NewGifWidgetState extends State<NewGifWidget> {
         File(category.gif.cache),
         fit: BoxFit.cover,
         height: double.infinity,
+        width: double.infinity,
       );
     } else {
       image = CachedNetworkImage(
@@ -278,8 +282,9 @@ class _NewGifWidgetState extends State<NewGifWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = context.read<AppTheme>();
     return Container(
-      color: AppColorsNew.darkGreenShadeColor,
+      decoration: AppDecorators.bgImageGradient(theme),
       height: MediaQuery.of(context).size.height / 2,
       padding: const EdgeInsets.all(10.0),
       child: (!showCategoryItems)

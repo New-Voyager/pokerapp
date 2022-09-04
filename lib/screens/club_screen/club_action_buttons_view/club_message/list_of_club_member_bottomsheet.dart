@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/color_generator.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../main_helper.dart';
 
@@ -18,8 +21,9 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = context.read<AppTheme>();
     return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
+      decoration: AppDecorators.bgImageGradient(theme),
       height: 3 * MediaQuery.of(context).size.height / 4,
       child: Column(
         children: [
@@ -58,7 +62,8 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                           Navigator.pop(context);
                         },
                         child: Container(
-                          decoration: AppStylesNew.actionRowDecoration,
+                          decoration: AppDecorators.generalListItemWidget(
+                              stroke: false),
                           margin:
                               EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           padding: EdgeInsets.symmetric(vertical: 16),
