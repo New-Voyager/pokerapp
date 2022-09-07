@@ -272,7 +272,7 @@ class _PlayersOnTableViewNewState extends State<PlayersOnTableViewNew>
         // );
         overlayState.insert(chatHolder.overlayEntry);
 
-        chatHolder.timer = Timer(const Duration(seconds: 10), () {
+        chatHolder.timer = Timer(const Duration(seconds: 3), () {
           if (chatHolder.overlayEntry != null) {
             chatHolder.chatMessageHolder.value = null;
             if (!chatHolder.overlayRemoved) {

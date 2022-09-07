@@ -54,7 +54,7 @@ class Pub {
 ///NATS client
 class Client {
   bool pingServer = false;
-  int pingInterval = 15;
+  int pingInterval = 30;
   bool _wsConnection = false;
   String _uri;
   WebSocketChannel _channel;
@@ -183,8 +183,7 @@ class Client {
             var now = DateTime.now();
             var diff = now.difference(lastPongTime);
             lastPongTime = now;
-            if (diff.inSeconds >= 2 * pingInterval ||
-                (pingTimerTick % 5) == 0) {
+            if (diff.inSeconds >= 3 * pingInterval) {
               log('Nats: We did not receive pong ${DateTime.now().toString()} status: ${status} callback: ${natsConnectionLostCallback}');
               // looks like we lost the connection
               if (natsConnectionLostCallback != null) {
@@ -361,7 +360,6 @@ class Client {
   void ping() {
     //_pingCompleter = Completer();
     _add('ping');
-    log('Pause: [${DateTime.now().toString()}] PING');
     //return _pingCompleter.future;
   }
 

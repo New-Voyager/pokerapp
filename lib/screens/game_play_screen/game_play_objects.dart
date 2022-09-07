@@ -243,7 +243,8 @@ class GamePlayObjects {
     }
   }
 
-  void reconnectGameComService({bool reconnectNats = false}) async {
+  void reconnectGameComService(
+      {bool reconnectNats = false, bool forceQueryCurrentHand = false}) async {
     if (TestService.isTesting) {
       return;
     }
@@ -256,8 +257,16 @@ class GamePlayObjects {
     // drop connections -> re establish connections
     await _gameComService.reconnect(nats);
 
-    // query current hand
-    queryCurrentHandIfNeeded();
+    if (forceQueryCurrentHand) {
+      queryCurrentHand();
+    } else {
+      // query current hand
+      queryCurrentHandIfNeeded();
+    }
+  }
+
+  void queryCurrentHand() {
+    _gameContextObj.handActionProtoService.queryCurrentHand();
   }
 
   void queryCurrentHandIfNeeded() {

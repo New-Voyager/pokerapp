@@ -283,12 +283,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void onNatsLostConnectionCallback(bool reconnect) {
-    Alerts.showNotification(
-      titleText: "Connection Lost",
-      subTitleText: "Reconnecting to the servers",
-      duration: Duration(seconds: 3),
-    );
-    gamePlayObjects.reconnectGameComService(reconnectNats: true);
+    // Alerts.showNotification(
+    //   titleText: "Connection Lost",
+    //   subTitleText: "Reconnecting to the servers",
+    //   duration: Duration(seconds: 3),
+    // );
+    gamePlayObjects.reconnectGameComService(
+        reconnectNats: true, forceQueryCurrentHand: true);
   }
 
   void refreshGame() {
@@ -297,7 +298,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     //   subTitleText: "Reload game",
     //   duration: Duration(seconds: 3),
     // );
-    gamePlayObjects.reconnectGameComService(reconnectNats: true);
+    gamePlayObjects.reconnectGameComService(
+        reconnectNats: true, forceQueryCurrentHand: true);
   }
 
   void reload() {

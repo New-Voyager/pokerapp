@@ -62,10 +62,10 @@ class PlayerActionHandler {
   Future<void> handleQueryCurrentHand(proto.HandMessageItem message) async {
     final currentHandState = message.currentHandState;
     log('Hand: Current hand state: $currentHandState');
-    Alerts.showNotification(
-      titleText: "Refresh the screen",
-      duration: Duration(seconds: 3),
-    );
+    // Alerts.showNotification(
+    //   titleText: "Refresh the screen",
+    //   duration: Duration(seconds: 3),
+    // );
     if (_gameState.uiClosing) return;
 
     // current players cards
