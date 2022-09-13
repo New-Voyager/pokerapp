@@ -17,7 +17,7 @@ class DataFormatter {
       if (value > 1000 && value < 1000000) {
         value = value / 1000;
         inK = true;
-      } else {
+      } else if (value > 1000000) {
         value = value / 1000000;
         inM = true;
       }

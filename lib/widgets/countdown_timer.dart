@@ -2,17 +2,18 @@ import 'dart:developer';
 
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:timer_count_down/timer_count_down.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 class CountDownTimerInSecondsWidget extends StatefulWidget {
-  final int time;
+  final DateTime endTime;
   final int fontSize;
   final int blinkSecs;
 
-  CountDownTimerInSecondsWidget(this.time,
+  CountDownTimerInSecondsWidget(this.endTime,
       {this.fontSize = 14, this.blinkSecs = 5});
 
   @override
@@ -24,67 +25,37 @@ class _CountDownTimerInSecondsWidgetState
     extends State<CountDownTimerInSecondsWidget> {
   @override
   Widget build(BuildContext context) {
-    return Countdown(
-        seconds: widget.time,
-        onFinished: () {},
-        build: (_, time) {
-          if (time <= widget.blinkSecs) {
-            return BlinkText(printDuration(Duration(seconds: time.toInt())),
-                style: AppStylesNew.itemInfoTextStyle.copyWith(
-                  color: Colors.white,
-                  fontSize: widget.fontSize.dp,
-                ),
-                beginColor: Colors.white,
-                endColor: Colors.orange,
-                times: time.toInt(),
-                duration: Duration(seconds: 1));
-          } else {
-            return Text(
-              printDuration(Duration(seconds: time.toInt())),
-              style: AppStylesNew.itemInfoTextStyle.copyWith(
-                color: Colors.white,
-                fontSize: widget.fontSize.dp,
-              ),
-            );
+    return CountdownTimer(
+        endTime: widget.endTime.millisecondsSinceEpoch,
+        widgetBuilder: (_, CurrentRemainingTime time) {
+          Widget ret = Container();
+          if (time != null) {
+            if (time.sec <= widget.blinkSecs) {
+              ret = Container(
+                  key: UniqueKey(),
+                  child: BlinkText(
+                      printDuration(Duration(seconds: time.sec.toInt())),
+                      style: AppStylesNew.itemInfoTextStyle.copyWith(
+                        fontSize: widget.fontSize.dp,
+                        color: Colors.white,
+                      ),
+                      beginColor: Colors.white,
+                      endColor: Colors.orange,
+                      times: time.sec.toInt(),
+                      duration: Duration(seconds: 1)));
+            } else {
+              ret = Container(
+                  key: UniqueKey(),
+                  child: Text(
+                    printDuration(Duration(seconds: time.sec.toInt())),
+                    style: AppStylesNew.itemInfoTextStyle.copyWith(
+                      fontSize: widget.fontSize.dp,
+                      color: Colors.white,
+                    ),
+                  ));
+            }
           }
+          return ret;
         });
   }
-}
-
-Widget getCountdown(DateTime expiresAt,
-    {Function onFinished, int fontSize = 14}) {
-  var remainingDuration = expiresAt?.difference(DateTime.now());
-  if (remainingDuration == null || remainingDuration.isNegative) {
-    remainingDuration = Duration.zero;
-  }
-  return Countdown(
-      seconds: remainingDuration.inSeconds,
-      onFinished: () {
-        if (onFinished != null) {
-          onFinished();
-        }
-      },
-      build: (_, remainingSec) {
-        log('LevelTime: $remainingSec');
-        if (remainingSec <= 10) {
-          return BlinkText(
-              printDuration(Duration(seconds: remainingSec.toInt())),
-              style: AppStylesNew.itemInfoTextStyle.copyWith(
-                fontSize: fontSize.dp,
-                color: Colors.white,
-              ),
-              beginColor: Colors.white,
-              endColor: Colors.orange,
-              times: remainingSec.toInt(),
-              duration: Duration(seconds: 1));
-        } else {
-          return Text(
-            printDuration(Duration(seconds: remainingSec.toInt())),
-            style: AppStylesNew.itemInfoTextStyle.copyWith(
-              fontSize: fontSize.dp,
-              color: Colors.white,
-            ),
-          );
-        }
-      });
 }

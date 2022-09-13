@@ -68,22 +68,23 @@ class _HeaderViewState extends State<HeaderView> {
                 'Next: ${DataFormatter.chipsFormat(tls.next.sb, convertToK: true)}/${DataFormatter.chipsFormat(tls.next.bb, convertToK: true)} (${DataFormatter.chipsFormat(tls.next.ante, convertToK: true)})';
           }
           return Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Row(
               children: [
-                // CountDownTimerInSecondsWidget(tls.next.levelTime,
-                //     fontSize: 14, blinkSecs: 5),
                 Expanded(
                     child: Column(children: [
                   Text(titleText,
                       style: AppDecorators.getHeadLine4Style(theme: theme)
                           .copyWith(
-                        fontSize: 12.dp,
+                        fontSize: 10.dp,
                         fontWeight: FontWeight.bold,
                       )),
                   Text(secondLine),
                 ])),
-                getCountdown(tls.endsAt(), fontSize: 8),
+                CountDownTimerInSecondsWidget(
+                  tls.endsAt(),
+                  fontSize: 10,
+                ),
               ],
             ),
           );

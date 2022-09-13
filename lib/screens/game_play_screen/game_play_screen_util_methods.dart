@@ -62,6 +62,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
+          label: 'Tournament Level',
+          onTap: () => TestService.setTournamentLevel(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Straddle',
           labelBackgroundColor: Colors.black,
           onTap: () {

@@ -258,6 +258,7 @@ class TestService {
           maxPlayers: maxPlayers,
         );
         _gameInfo.showHandRank = true;
+        _gameInfo.tournament = true;
       }
 
       List<PlayerModel> playerInSeats = [];
@@ -326,6 +327,23 @@ class TestService {
       board1Card: 68,
       // board2Card: 72,
     );
+  }
+
+  static Future<void> setTournamentLevel() async {
+    final gameState = GameState.getState(_context);
+    var current = TournamentLevel();
+    current.sb = 100;
+    current.bb = 200;
+    current.ante = 10;
+
+    var next = TournamentLevel();
+    next.sb = 200;
+    next.bb = 400;
+    next.ante = 20;
+    next.levelTime = 30;
+    gameState.tournamentLevelState.current = current;
+    gameState.tournamentLevelState.next = next;
+    gameState.tournamentLevelState.notifyNewLevel();
   }
 
   static Future<void> addCardsWithoutAnimating() async {

@@ -10,7 +10,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/proto/enums.pb.dart' as proto;
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/services/audio/audio_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
@@ -120,6 +119,9 @@ class NewHandHandler {
         if (playerInSeat.playerId == 0) {
           // open seat
           final seat = gameState.getSeat(seatNo);
+          if (seat == null) {
+            continue;
+          }
           seat.player = null;
           continue;
         }
@@ -212,6 +214,7 @@ class NewHandHandler {
   }
 
   Future<void> handle() async {
+    log('NEWHAND: ${newHand.writeToJson()}');
     gameState.handState = HandState.STARTED;
     gameState.handChangeState.notify();
     gameState.highHand = null;
@@ -268,6 +271,7 @@ class NewHandHandler {
           seat.player.action.animateAction = false;
           seat.player.action.animateBet = true;
           seat.player.action.anteBet = true;
+          seat.player.inhand = true;
         }
       }
       for (final seatNo in newHand.playersInSeats.keys) {
