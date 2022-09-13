@@ -7,8 +7,8 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_player_text_service.dart';
+import 'package:pokerapp/services/game_play/action_services/tournament_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/ion/ion.dart';
 import 'package:pokerapp/services/livekit/livekit.dart';
 import 'package:pokerapp/services/nats/message.dart';
 
@@ -27,6 +27,7 @@ class GameContextObject extends ChangeNotifier {
   GameState gameState;
   HandActionProtoService handActionProtoService;
   GameUpdateService gameUpdateService;
+  TournamentService tournamentService;
   GameComService gameComService;
   EncryptionService encryptionService;
   LivenessSender livenessSender;
@@ -39,6 +40,7 @@ class GameContextObject extends ChangeNotifier {
     @required PlayerInfo player,
     GameState gameState,
     GameUpdateService gameUpdateService,
+    TournamentService tournamentService,
     HandToPlayerTextService handToPlayerTextService,
     HandActionProtoService handActionProtoService,
     GameComService gameComService,
@@ -55,6 +57,7 @@ class GameContextObject extends ChangeNotifier {
     this.gameUpdateService = gameUpdateService;
     this.handActionProtoService = handActionProtoService;
     this.handToPlayerTextService = handToPlayerTextService;
+    this.tournamentService = tournamentService;
   }
 
   void initializeAudioConf() {
@@ -251,6 +254,22 @@ class GameContextObject extends ChangeNotifier {
       gameComService.handToPlayerTextChannelStream?.listen((Message message) {
         if (!gameComService.active) return;
         handToPlayerTextService.handle(message.string);
+      });
+    }
+
+    if (tournamentService == null) {
+      /* setup the listeners to the channels
+            * Any messages received from these channel updates,
+            * will be taken care of by the respective class
+            * and actions will be taken in the UI
+            * as there will be Listeners implemented down this hierarchy level */
+
+      tournamentService = TournamentService(context, gameState);
+      tournamentService.loop();
+
+      gameComService.tournamentChannelStream?.listen((Message message) {
+        if (!gameComService.active) return;
+        tournamentService.handle(message.string);
       });
     }
   }

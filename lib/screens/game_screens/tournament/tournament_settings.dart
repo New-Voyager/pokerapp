@@ -60,7 +60,8 @@ class _TournamentSettingsViewState extends State<TournamentSettingsView> {
     loading = true;
     _tecMaxPlayers.text = _tournamentSettings.maxPlayers.toString();
     _tecName.text = _tournamentSettings.name;
-    _tecBotsCount.text = _tournamentSettings.botsCount.toString();
+    _tecBotsCount.text = '6';
+    //_tournamentSettings.botsCount.toString();
 
     loading = false;
     super.initState();

@@ -410,6 +410,7 @@ class GameInfoModel {
                 status
               }
               handToPlayerTextChannel
+              tournamentChannel
     }
   }
   """;

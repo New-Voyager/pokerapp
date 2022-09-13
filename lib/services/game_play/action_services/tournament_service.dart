@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/data/game_log_store.dart';
 
 class TournamentService {
   final GameState _gameState;
@@ -31,7 +30,7 @@ class TournamentService {
         // don't process table message in the middle of the hand
         dynamic message = _messages[0];
 
-        log(':GameUpdateService: ${jsonEncode(message)}');
+        log(':TournamentService: ${jsonEncode(message)}');
 
         dynamic m = _messages.removeAt(0);
         bool done = false;
@@ -73,6 +72,9 @@ class TournamentService {
         case AppConstants.TOURNAMENT_PLAYER_MOVED_TABLE:
           handlePlayerMovedTable(data);
           break;
+        case AppConstants.TOURNAMENT_LEVEL_CHANGED:
+          handleLevelChanged(data);
+          break;
       }
     }
   }
@@ -104,10 +106,10 @@ class TournamentService {
     int seatNo = data['seatNo'];
 
     if (tournamentId != _gameState.tournamentId) {
-      if (oldTable != _gameState.tournamentTableNo &&
-          newTableNo != _gameState.tournamentTableNo) {
-        return;
-      }
+      return;
+    }
+    if (oldTable != _gameState.tournamentTableNo &&
+        newTableNo != _gameState.tournamentTableNo) {
       return;
     }
 
@@ -120,6 +122,47 @@ class TournamentService {
       // this player joined the table
       log('Tournament: player joined the table');
     }
+    return;
+  }
+
+  void handleLevelChanged(dynamic data) {
+    /*
+    const message: any = {
+      type: 'LEVEL_CHANGED',
+      tournamentId: tournamentId,
+      level: level.level,
+      sb: level.smallBlind,
+      bb: level.bigBlind,
+      ante: level.ante,
+      message.nextLevel = nextLevel.level;
+      message.nextSb = nextLevel.smallBlind;
+      message.nextBb = nextLevel.bigBlind;
+      message.nextAnte = nextLevel.ante;
+      message.nextLevelTime = levelTime;      
+    };
+    */
+    if (!_gameState.isTournament) {
+      return;
+    }
+    _gameState.tournamentLevelState.current.levelNo = data["level"];
+    _gameState.tournamentLevelState.current.sb =
+        double.parse(data["sb"].toString());
+    _gameState.tournamentLevelState.current.bb =
+        double.parse(data["bb"].toString());
+    _gameState.tournamentLevelState.current.ante =
+        double.parse(data["ante"].toString());
+    _gameState.tournamentLevelState.next.levelTime =
+        int.parse(data["nextLevelTime"].toString());
+    _gameState.tournamentLevelState.next.levelNo = data["nextLevel"];
+    _gameState.tournamentLevelState.next.sb =
+        double.parse(data["nextSb"].toString());
+    _gameState.tournamentLevelState.next.bb =
+        double.parse(data["nextBb"].toString());
+    _gameState.tournamentLevelState.next.ante =
+        double.parse(data["nextAnte"].toString());
+    _gameState.tournamentLevelState.next.startTime = DateTime.now()
+        .add(Duration(seconds: _gameState.tournamentLevelState.next.levelTime));
+    _gameState.tournamentLevelState.notify();
     return;
   }
 }

@@ -93,7 +93,7 @@ class NewGameModel {
   bool runItTwice = true;
   bool seatChangeAllowed = true;
   bool waitList = true;
-  bool botGame = false;
+  bool botGame = true;
   bool highHandTracked = false;
   int buyInWaitTime = 120;
   Rewards rewards;
@@ -107,7 +107,7 @@ class NewGameModel {
   bool showResultOption = true;
   bool showResult = true;
   bool showCheckFold = true;
-  int breakTime = 5;
+  int breakTime = 1;
   bool allowFunAnimations = true;
   ChipUnit chipUnit = ChipUnit.DOLLAR;
   BuyInApprovalLimit buyInApprovalLimit = BuyInApprovalLimit.BUYIN_NO_LIMIT;

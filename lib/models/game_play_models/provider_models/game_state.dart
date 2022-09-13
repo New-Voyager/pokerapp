@@ -100,6 +100,7 @@ class GameState {
   ListenableProvider<ActionTimerState> _actionTimerStateProvider;
   ListenableProvider<SeatChangeNotifier> _seatChangeProvider;
   ListenableProvider<GameChatNotifState> _chatNotifyProvider;
+  ListenableProvider<TournamentLevelState> _tournamentLevelProvider;
 
   StraddlePromptState _straddlePromptState;
   HoleCardsState _holeCardsState;
@@ -223,6 +224,9 @@ class GameState {
   BuildContext mainScreenContext;
 
   CommunityCardState communityCardState;
+
+  // tournament states
+  TournamentLevelState tournamentLevelState = TournamentLevelState();
 
   Future<void> initialize({
     String gameCode,
@@ -384,6 +388,8 @@ class GameState {
 
     this._chatNotifyProvider =
         ListenableProvider<GameChatNotifState>(create: (_) => _chatNotifState);
+    this._tournamentLevelProvider = ListenableProvider<TournamentLevelState>(
+        create: (_) => tournamentLevelState);
 
     // load assets
     this.assets = new GameScreenAssets();
@@ -1078,6 +1084,7 @@ class GameState {
       this._actionTimerStateProvider,
       this._seatChangeProvider,
       this._chatNotifyProvider,
+      this._tournamentLevelProvider,
     ];
   }
 
@@ -1810,5 +1817,36 @@ class AudioConfState extends ChangeNotifier {
 class GameRefreshState extends ChangeNotifier {
   void refreshGame() {
     notifyListeners();
+  }
+}
+
+class TournamentLevel {
+  int levelNo = 0;
+  double sb = 0.0;
+  double bb = 0.0;
+  double ante = 0.0;
+  int levelTime = 0;
+  DateTime startTime = DateTime.now();
+}
+
+class TournamentLevelState extends ChangeNotifier {
+  TournamentLevel current = TournamentLevel();
+  TournamentLevel next = TournamentLevel();
+
+  void notifyNewLevel() {
+    next.startTime = DateTime.now();
+    notifyListeners();
+  }
+
+  void notify() {
+    notifyListeners();
+  }
+
+  DateTime endsAt() {
+    if (next != null && next.startTime != null) {
+      var endTime = next.startTime.add(Duration(seconds: next.levelTime));
+      return endTime;
+    }
+    return DateTime.now();
   }
 }

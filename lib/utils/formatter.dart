@@ -3,19 +3,43 @@ import 'package:intl/intl.dart';
 final DateFormat _dateFormatter =
     DateFormat.yMd().add_jms(); // internationalize this
 final NumberFormat _chipsFormatter = new NumberFormat("0.00");
+final NumberFormat _chipsConvertKFormatter = new NumberFormat("0.0");
 final NumberFormat _timeFormatter = new NumberFormat("00");
 
 class DataFormatter {
-  static String chipsFormat(double value) {
+  static String chipsFormat(double value, {bool convertToK = false}) {
     if (value == null) {
       return '';
     }
-
-    if (value == value.round()) {
-      return '${value.toInt()}';
-    } else {
-      return _chipsFormatter.format(value);
+    bool inK = false;
+    bool inM = false;
+    if (convertToK) {
+      if (value > 1000 && value < 1000000) {
+        value = value / 1000;
+        inK = true;
+      } else {
+        value = value / 1000000;
+        inM = true;
+      }
     }
+    String ret = '';
+    if (value == value.round()) {
+      ret = '${value.toInt()}';
+    } else {
+      if (convertToK) {
+        ret = _chipsConvertKFormatter.format(value);
+      } else {
+        ret = _chipsFormatter.format(value);
+      }
+    }
+
+    if (inK) {
+      ret = ret + "K";
+    }
+    if (inM) {
+      ret = ret + "M";
+    }
+    return ret;
   }
 
   static String dateFormat(DateTime dt) {
