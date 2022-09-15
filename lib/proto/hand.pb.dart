@@ -1679,6 +1679,7 @@ class CurrentHandState extends $pb.GeneratedMessage {
     ..aOB(36, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bombPot')
     ..aOB(37, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'doubleBoard')
     ..a<$core.double>(38, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bombPotBet', $pb.PbFieldType.OD)
+    ..a<$core.double>(39, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ante', $pb.PbFieldType.OD)
     ..hasRequiredFields = false
   ;
 
@@ -1711,6 +1712,7 @@ class CurrentHandState extends $pb.GeneratedMessage {
     $core.bool? bombPot,
     $core.bool? doubleBoard,
     $core.double? bombPotBet,
+    $core.double? ante,
   }) {
     final _result = create();
     if (gameId != null) {
@@ -1793,6 +1795,9 @@ class CurrentHandState extends $pb.GeneratedMessage {
     }
     if (bombPotBet != null) {
       _result.bombPotBet = bombPotBet;
+    }
+    if (ante != null) {
+      _result.ante = ante;
     }
     return _result;
   }
@@ -2031,6 +2036,15 @@ class CurrentHandState extends $pb.GeneratedMessage {
   $core.bool hasBombPotBet() => $_has(26);
   @$pb.TagNumber(38)
   void clearBombPotBet() => clearField(38);
+
+  @$pb.TagNumber(39)
+  $core.double get ante => $_getN(27);
+  @$pb.TagNumber(39)
+  set ante($core.double v) { $_setDouble(27, v); }
+  @$pb.TagNumber(39)
+  $core.bool hasAnte() => $_has(27);
+  @$pb.TagNumber(39)
+  void clearAnte() => clearField(39);
 }
 
 class HandWinner extends $pb.GeneratedMessage {

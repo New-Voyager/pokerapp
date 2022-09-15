@@ -145,12 +145,12 @@ class TournamentService {
       return;
     }
     _gameState.tournamentLevelState.current.levelNo = data["level"];
-    _gameState.tournamentLevelState.current.sb =
-        double.parse(data["sb"].toString());
-    _gameState.tournamentLevelState.current.bb =
-        double.parse(data["bb"].toString());
-    _gameState.tournamentLevelState.current.ante =
-        double.parse(data["ante"].toString());
+    // _gameState.tournamentLevelState.current.sb =
+    //     double.parse(data["sb"].toString());
+    // _gameState.tournamentLevelState.current.bb =
+    //     double.parse(data["bb"].toString());
+    // _gameState.tournamentLevelState.current.ante =
+    //     double.parse(data["ante"].toString());
     _gameState.tournamentLevelState.next.levelTime =
         int.parse(data["nextLevelTime"].toString());
     _gameState.tournamentLevelState.next.levelNo = data["nextLevel"];

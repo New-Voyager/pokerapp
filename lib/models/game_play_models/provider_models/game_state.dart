@@ -1834,7 +1834,6 @@ class TournamentLevelState extends ChangeNotifier {
   TournamentLevel next = TournamentLevel();
 
   void notifyNewLevel() {
-    next.startTime = DateTime.now();
     notifyListeners();
   }
 
@@ -1844,7 +1843,7 @@ class TournamentLevelState extends ChangeNotifier {
 
   DateTime endsAt() {
     if (next != null && next.startTime != null) {
-      var endTime = next.startTime.add(Duration(seconds: next.levelTime));
+      var endTime = next.startTime; //.add(Duration(seconds: next.levelTime));
       return endTime;
     }
     return DateTime.now();

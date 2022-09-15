@@ -226,7 +226,16 @@ class PlayerActionHandler {
       _actionTimer.reset(remainingActionTime * 1000);
     }
     _gameState.notifyAllSeats();
-    _gameState.myState.notify();
+    if (_gameState.myState != null) {
+      _gameState.myState.notify();
+    }
+
+    if (_gameState.isTournament) {
+      _gameState.tournamentLevelState.current.sb = smallBlind;
+      _gameState.tournamentLevelState.current.bb = bigBlind;
+      _gameState.tournamentLevelState.current.ante = currentHandState.ante;
+      _gameState.tournamentLevelState.notify();
+    }
 
     if (seatToAct != null)
       log('QueryCurrentHand: 3 seat no: ${seatToAct.serverSeatPos} action timer: ${seatToAct.actionTimer.getTotalTime()} remainingTime: ${seatToAct.actionTimer.getRemainingTime()}');

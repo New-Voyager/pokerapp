@@ -91,6 +91,10 @@ class GameInfoModel {
 
   bool demoGame;
   bool tournament = false;
+  double nextSb = 0;
+  double nextBb = 0;
+  double nextAnte = 0;
+  int nextLevelTimeInSecs = 0;
 
   /* this constructor is used in the replay hand section */
   GameInfoModel({
@@ -280,6 +284,10 @@ class GameInfoModel {
     this.demoGame = data['demoGame'] ?? false;
 
     this.tournament = true;
+    this.nextSb = double.parse(data['nextSB'].toString()) ?? 0;
+    this.nextBb = double.parse(data['nextBB'].toString()) ?? 0;
+    this.nextAnte = double.parse(data['nextAnte'].toString()) ?? 0;
+    this.nextLevelTimeInSecs = data['nextLevelTimeInSecs'] ?? 0;
   }
 
   void gameEnded() {
@@ -395,6 +403,9 @@ class GameInfoModel {
               nextLevel
               gameCode
               nextLevelTimeInSecs
+              nextSB
+              nextBB
+              nextAnte
               gameChatChannel
               gameToPlayerChannel
               playerToHandChannel

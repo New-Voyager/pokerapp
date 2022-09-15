@@ -606,6 +606,18 @@ class GamePlayObjects {
     if (!TestService.isTesting && customizationService == null) {
       _initChatListeners(_gameComService.gameMessaging);
     }
+
+    if (_gameInfoModel.tournament) {
+      // initialize tournament related stuff
+      _gameState.tournamentLevelState.next.sb = _gameInfoModel.nextSb;
+      _gameState.tournamentLevelState.next.bb = _gameInfoModel.nextBb;
+      _gameState.tournamentLevelState.next.ante = _gameInfoModel.ante;
+      _gameState.tournamentLevelState.current.sb = _gameInfoModel.smallBlind;
+      _gameState.tournamentLevelState.current.bb = _gameInfoModel.bigBlind;
+      _gameState.tournamentLevelState.current.ante = _gameInfoModel.ante;
+      _gameState.tournamentLevelState.next.startTime = DateTime.now()
+          .add(Duration(seconds: _gameInfoModel.nextLevelTimeInSecs));
+    }
     // send my information
     //_gameState.gameMessageService.sendMyInfo();
 

@@ -41,6 +41,9 @@ class _FooterGameActionViewState extends State<FooterGameActionView> {
   }
 
   void playerStateListener() {
+    if (widget.gameState.me == null) {
+      return;
+    }
     vnPlayerStatus.value = widget.gameState.me.status;
   }
 
