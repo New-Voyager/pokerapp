@@ -238,6 +238,12 @@ class NewHandHandler {
     final TableState tableState = gameState.tableState;
     gameState.resetSeatActions(newHand: true);
     gameState.communityCardState.reset();
+    if (gameState.isTournament) {
+      gameState.tournamentLevelState.current.sb = newHand.smallBlind;
+      gameState.tournamentLevelState.current.bb = newHand.bigBlind;
+      gameState.tournamentLevelState.current.ante = newHand.ante;
+      gameState.tournamentLevelState.notify();
+    }
 
     // remove all the community cards
     tableState.clear();
